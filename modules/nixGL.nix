@@ -1,4 +1,4 @@
-# Call once on import to load global context
+# Script snagged from here: https://github.com/nix-community/nixGL/issues/114#issuecomment-1585323281
 { pkgs, config }:
 
 # Wrap a single package
