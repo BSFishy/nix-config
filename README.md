@@ -34,6 +34,24 @@ For example, to enable the `graphical.nix`, your `home.nix` file might look like
 
 After you enable the modules you want, you can run `home-manager switch` to apply the changes.
 
+### Graphical Environment
+
+If on a non-NixOS system, you will most likely need to set up [NixGL](https://github.com/nix-community/nixGL).
+This will involve adding the proper channel:
+
+```shell
+nix-channel --add https://github.com/nix-community/nixGL/archive/main.tar.gz nixgl && nix-channel --update
+```
+
+Then adding the `nixGLPrefix` to your `home.nix` file.
+You can use whichever nixGL command you want, but a good starting point is the auto default:
+
+```nix
+{
+  nixGLPrefix = "${(import <nixgl> {}).auto.nixGLDefault}/bin/nixGL";
+}
+```
+
 ## Modules
 
 There are some top-level modules that are meant to be the main entry points for the configuration.
