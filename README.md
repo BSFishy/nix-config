@@ -42,7 +42,7 @@ For example, you can enable the graphical aspects with something like this:
 ```nix
 {
   distro = {
-    graphics = {
+    ui = {
       enable = true;
 
       # Typically necessary for non-NixOS systems
