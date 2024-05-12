@@ -58,3 +58,20 @@ The previous example has a NixGL prefix set as an example, but the channel will 
 ```shell
 nix-channel --add https://github.com/nix-community/nixGL/archive/main.tar.gz nixgl && nix-channel --update
 ```
+
+Some common (default) configuration options are:
+
+```nix
+{
+  distro = {
+    # Utilities such as git, ssh, direnv, etc.
+    utilities.enable = true;
+
+    # Editor setup (tmux & neovim)
+    editor.enable = true;
+
+    # Interface setup for fonts, programs, etc.
+    ui.enable = false;
+  };
+}
+```

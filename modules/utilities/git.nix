@@ -1,11 +1,16 @@
-{ ... }:
+{ config, lib, ... }:
 
+let
+  cfg = config.distro.utilities;
+in
 {
-  programs.git = {
-    enable = true;
-    lfs.enable = true;
+  config = lib.mkIf cfg.enable {
+    programs.git = {
+      enable = true;
+      lfs.enable = true;
 
-    userName = "Matt Provost";
-    userEmail = "mattprovost6@gmail.com";
+      userName = "Matt Provost";
+      userEmail = "mattprovost6@gmail.com";
+    };
   };
 }

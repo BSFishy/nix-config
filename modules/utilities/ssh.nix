@@ -1,7 +1,12 @@
-{ ... }:
+{ config, lib, ... }:
 
+let
+  cfg = config.distro.utilities;
+in
 {
-  programs.ssh = {
-    enable = true;
+  config = lib.mkIf cfg.enable {
+    programs.ssh = {
+      enable = true;
+    };
   };
 }
