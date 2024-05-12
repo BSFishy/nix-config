@@ -10,7 +10,7 @@ First, [Nix](https://nixos.org/download.html) and [home-manager](https://github.
 After that, this command can be run to clone the repository:
 
 ```shell
-$ git clone git@github.com:BSFishy/home.nix.git ~/.config/home-manager
+git clone git@github.com:BSFishy/home.nix.git ~/.config/home-manager
 ```
 
 This will add the modules to the home-manager configuration.
