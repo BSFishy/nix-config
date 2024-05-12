@@ -13,4 +13,23 @@ After that, this command can be run to clone the repository:
 $ git clone git@github.com:BSFishy/home.nix.git ~/.config/home-manager
 ```
 
-<!-- Info on how to update home.nix with modules -->
+This will add the modules to the home-manager configuration.
+To enable modules, import them in the `home.nix` file.
+For example, to enable the [`font.nix`](./font.nix), your `home.nix` file might look like this:
+
+```nix
+{ config, pkgs, ... }:
+
+{
+  home.username = "jdoe";
+  home.homeDirectory = "/home/jdoe";
+
+  home.stateVersion = "23.11";
+
+  imports = [ ./font.nix ];
+
+  programs.home-manager.enable = true;
+}
+```
+
+After you enable the modules you want, you can run `home-manager switch` to apply the changes.
