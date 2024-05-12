@@ -4,6 +4,7 @@
   imports = [
     # Install shell tools
     ./modules/zsh.nix
+    ./modules/direnv.nix
     ./modules/starship.nix
 
     # Install development tools
