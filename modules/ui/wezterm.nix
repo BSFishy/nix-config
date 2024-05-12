@@ -2,7 +2,7 @@
 
 let
   nixGL = import ./nixGL.nix { inherit pkgs config; };
-  cfg = config.distro.graphics;
+  cfg = config.distro.ui;
 in
 {
   config = lib.mkIf cfg.enable {

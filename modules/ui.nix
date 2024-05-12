@@ -1,8 +1,8 @@
 { lib, ... }:
 
 {
-  options.distro.graphics = {
-    enable = lib.mkEnableOption "graphical environment";
+  options.distro.ui = {
+    enable = lib.mkEnableOption "UI components";
 
     nixGLPrefix = lib.mkOption {
       type = lib.types.str;
@@ -17,9 +17,9 @@
 
   imports = [
     # Install fonts
-    ./modules/font.nix
+    ./ui/font.nix
 
     # Install terminal emulator
-    ./modules/wezterm.nix
+    ./ui/wezterm.nix
   ];
 }

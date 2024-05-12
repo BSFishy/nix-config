@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  imports = [ ./bat.nix ./lsd.nix ];
+  imports = [ ./tools/bat.nix ./tools/lsd.nix ];
 
   programs.zsh = {
     enable = true;
@@ -26,6 +26,7 @@
     };
 
     shellAliases = {
+      # TODO: should these reference the package names?
       cat = "bat";
       ls = "lsd";
     };

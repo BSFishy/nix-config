@@ -1,10 +1,10 @@
 { config, lib, pkgs, ... }:
 
 let
-  cfg = config.distro.graphics;
+  cfg = config.distro.ui;
 in
 {
-  options.distro.graphics.font = {
+  options.distro.ui.font = {
     enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
@@ -12,10 +12,10 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    fonts.fontconfig.enable = cfg.font.enable;
+  config = lib.mkIf (cfg.enable && cfg.font.enable) {
+    fonts.fontconfig.enable = true;
 
-    home.packages = lib.optionals cfg.font.enable [
+    home.packages = [
       (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
     ];
   };
