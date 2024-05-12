@@ -15,7 +15,7 @@ $ git clone git@github.com:BSFishy/home.nix.git ~/.config/home-manager
 
 This will add the modules to the home-manager configuration.
 To enable modules, import them in the `home.nix` file.
-For example, to enable the [`graphical.nix`](./graphical.nix), your `home.nix` file might look like this:
+For example, to enable the `graphical.nix`, your `home.nix` file might look like this:
 
 ```nix
 { config, pkgs, ... }:
@@ -26,7 +26,7 @@ For example, to enable the [`graphical.nix`](./graphical.nix), your `home.nix` f
 
   home.stateVersion = "23.11";
 
-  imports = [ ./font.nix ];
+  imports = [ ./graphical.nix ];
 
   programs.home-manager.enable = true;
 }
