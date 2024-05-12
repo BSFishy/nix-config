@@ -15,7 +15,7 @@ $ git clone git@github.com:BSFishy/home.nix.git ~/.config/home-manager
 
 This will add the modules to the home-manager configuration.
 To enable modules, import them in the `home.nix` file.
-For example, to enable the [`font.nix`](./font.nix), your `home.nix` file might look like this:
+For example, to enable the [`graphical.nix`](./graphical.nix), your `home.nix` file might look like this:
 
 ```nix
 { config, pkgs, ... }:
@@ -33,3 +33,14 @@ For example, to enable the [`font.nix`](./font.nix), your `home.nix` file might 
 ```
 
 After you enable the modules you want, you can run `home-manager switch` to apply the changes.
+
+## Modules
+
+There are some top-level modules that are meant to be the main entry points for the configuration.
+These are for specific environments, for example graphical or server.
+Submodules live in the [`modules`](./modules) directory and can be used directly if desired.
+
+| Name                               | Description                                                                                             |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| [`graphical.nix`](./graphical.nix) | Configuration for graphical environments. Imports `server.nix` for command line and related tools.      |
+| [`server.nix`](./server.nix)       | Configuration for server environments. Primarily command line, shell, and prompt related configuration. |
