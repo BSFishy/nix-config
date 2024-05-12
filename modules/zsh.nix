@@ -10,6 +10,9 @@
 
     autosuggestion.enable = true;
 
+    # Make autosuggestions use both history and completion
+    initExtraBeforeCompInit = "ZSH_AUTOSUGGEST_STRATEGY=(history completion)";
+
     oh-my-zsh = {
       enable = true;
       plugins = [

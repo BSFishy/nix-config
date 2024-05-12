@@ -5,10 +5,10 @@
     # Install shell tools
     ./modules/bash.nix
     ./modules/zsh.nix
-    ./modules/direnv.nix
     ./modules/starship.nix
 
     # Install development tools
+    ./modules/direnv.nix
     ./modules/ssh.nix
     ./modules/git.nix
     ./modules/tmux.nix
