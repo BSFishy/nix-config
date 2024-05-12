@@ -7,5 +7,8 @@
 
     # Install fonts
     ./modules/font.nix
+
+    # Install terminal emulator
+    ./modules/wezterm.nix
   ];
 }
