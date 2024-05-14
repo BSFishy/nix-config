@@ -1,5 +1,8 @@
 { pkgs, ... }:
 
+let
+  isLinux = pkgs.stdenv.hostPlatform.isLinux;
+in
 {
   imports = [
     ./modules/shell.nix
@@ -8,6 +11,6 @@
     ./modules/ui.nix
   ];
 
-  xdg.enable = true;
-  targets.genericLinux.enable = pkgs.stdenv.hostPlatform.isLinux;
+  xdg.enable = isLinux;
+  targets.genericLinux.enable = isLinux;
 }
