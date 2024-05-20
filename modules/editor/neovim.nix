@@ -21,7 +21,5 @@ in
       withNodeJs = true;
       withPython3 = true;
     };
-
-    home.file.".config/nvim".source = builtins.fetchGit "git@github.com:BSFishy/init.lua.git";
   };
 }
