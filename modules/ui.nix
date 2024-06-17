@@ -21,5 +21,8 @@
 
     # Install terminal emulator
     ./ui/wezterm.nix
+
+    # Install desktop environment settings
+    ./ui/de.nix
   ];
 }

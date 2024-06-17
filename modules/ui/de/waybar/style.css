@@ -1,0 +1,157 @@
+@define-color bg #282828;
+@define-color fg #ebdbb2;
+
+@define-color red #cc241d;
+@define-color green #98971a;
+@define-color yellow #d79921;
+@define-color blue #458588;
+@define-color purple #b16286;
+@define-color aqua #689d6a;
+@define-color orange #d65d0e;
+
+@define-color red-alt #fb4934;
+@define-color green-alt #b8bb26;
+@define-color yellow-alt #fabd2f;
+@define-color blue-alt #83a598;
+@define-color purple-alt #d3869b;
+@define-color aqua-alt #8ec07c;
+@define-color orange-alt #fe8019;
+
+@define-color bg0 #282828;
+@define-color bg1 #3c3836;
+@define-color bg2 #504945;
+@define-color bg3 #665c54;
+@define-color bg4 #7c6f64;
+@define-color fg0 #fbf1c7;
+@define-color fg1 #ebdbb2;
+@define-color fg2 #d5c4a1;
+@define-color fg3 #bdae93;
+@define-color fg4 #a89984;
+
+* {
+  font-size: 16px;
+  font-family: "JetBrainsMono Nerd Font,JetBrainsMono NF";
+}
+
+window#waybar {
+  background: @bg;
+  background: alpha(@bg, 0.7);
+  border: 2px solid @bg2;
+  border-radius: 18px;
+  color: @fg;
+}
+
+.modules-left {
+  margin: 10px 0 10px 10px;
+}
+
+.modules-right {
+  margin: 10px 10px 10px 0;
+}
+
+.modules-right > *:not(:first-child) > * {
+  margin-left: 4px;
+}
+
+.modules-right > *:not(:last-child) > * {
+  margin-right: 4px;
+}
+
+#info,
+#util {
+  background: @bg1;
+  background: alpha(@bg1, 0.7);
+  border: 2px solid @bg3;
+  border-radius: 8px;
+}
+
+#info > * > *,
+#util > * > * {
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: @bg2;
+}
+
+#info > *:not(:first-child) > *,
+#util > *:not(:first-child) > * {
+  margin-left: 4px;
+}
+
+#info > *:not(:last-child) > *,
+#util > *:not(:last-child) > * {
+  margin-right: 4px;
+}
+
+#audio,
+#light {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+#battery.discharging.warning {
+  animation-name: blink-yellow;
+  animation-duration: 1s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+#battery.discharging.critical {
+  animation-name: blink-red;
+  animation-duration: 1s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+#network.wifi {
+  padding-right: 14px;
+}
+
+#pulseaudio {
+  padding: 0 2px;
+}
+
+#backlight {
+  padding-right: 5px;
+}
+
+#backlight-slider,
+#pulseaudio-slider {
+  padding: 0 0 0 6px;
+}
+
+#backlight-slider slider,
+#pulseaudio-slider slider {
+  background-color: transparent;
+  border-color: @orange;
+  box-shadow: none;
+}
+
+#backlight-slider trough,
+#pulseaudio-slider trough {
+  min-width: 60px;
+  min-height: 6px;
+  border-radius: 8px;
+  background-color: alpha(@bg, 0.6);
+  border-color: @bg;
+}
+
+#backlight-slider highlight,
+#pulseaudio-slider highlight {
+  border-radius: 8px;
+  background-color: @orange-alt;
+  border-color: @orange;
+}
+
+@keyframes blink-red {
+  to {
+    background-color: @red;
+  }
+}
+
+@keyframes blink-yellow {
+  to {
+    background-color: @yellow;
+  }
+}
