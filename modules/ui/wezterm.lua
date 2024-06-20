@@ -29,6 +29,9 @@ config.window_padding = {
 -- Keybindings
 config.keys = {
 	{ key = "v", mods = "CTRL", action = act.PasteFrom("Clipboard") },
+	-- Remap C-CR and S-CR to their actual keys again
+	{ key = "Enter", mods = "SHIFT", action = act.SendString("\x1b[13;2u") },
+	{ key = "Enter", mods = "CTRL", action = act.SendString("\x1b[13;5u") },
 }
 
 return config
