@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.distro.ui;
@@ -15,8 +20,6 @@ in
   config = lib.mkIf (cfg.enable && cfg.font.enable) {
     fonts.fontconfig.enable = true;
 
-    home.packages = [
-      (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
-    ];
+    home.packages = [ (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; }) ];
   };
 }

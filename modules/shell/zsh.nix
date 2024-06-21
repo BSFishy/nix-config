@@ -1,7 +1,10 @@
 { ... }:
 
 {
-  imports = [ ./tools/bat.nix ./tools/lsd.nix ];
+  imports = [
+    ./tools/bat.nix
+    ./tools/lsd.nix
+  ];
 
   programs.zsh = {
     enable = true;
