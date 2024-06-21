@@ -14,6 +14,5 @@
     ./utilities/ssh.nix
     ./utilities/git.nix
     ./utilities/nixfmt.nix
-    ./utilities/warp.nix
   ];
 }
