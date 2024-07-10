@@ -19,6 +19,9 @@
     # Install fonts
     ./ui/font.nix
 
+    # Install cursor
+    ./ui/cursor.nix
+
     # Install terminal emulator
     ./ui/wezterm.nix
 

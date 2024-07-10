@@ -7,6 +7,7 @@
 
 let
   cfg = config.distro.ui;
+  package = (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; });
 in
 {
   options.distro.ui.font = {
@@ -20,6 +21,12 @@ in
   config = lib.mkIf (cfg.enable && cfg.font.enable) {
     fonts.fontconfig.enable = true;
 
-    home.packages = [ (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; }) ];
+    home.packages = [ package ];
+
+    gtk.font = {
+      package = package;
+      name = "JetBrainsMonoNerdFont-Regular";
+      size = 13;
+    };
   };
 }

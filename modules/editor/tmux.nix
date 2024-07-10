@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.distro.editor;
@@ -13,6 +18,7 @@ in
       mouse = true;
       keyMode = "vi";
       baseIndex = 1;
+      shell = "${pkgs.zsh}/bin/zsh";
 
       extraConfig = ''
         # Color support

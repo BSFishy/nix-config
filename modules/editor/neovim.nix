@@ -15,6 +15,7 @@ in
       pkgs.fd
       pkgs.ripgrep
       pkgs.lazygit
+      pkgs.lua54Packages.luarocks
 
       # Mason dependencies
       pkgs.curl

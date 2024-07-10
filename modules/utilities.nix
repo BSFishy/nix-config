@@ -10,6 +10,7 @@
   };
 
   imports = [
+    ./utilities/xdg.nix
     ./utilities/direnv.nix
     ./utilities/ssh.nix
     ./utilities/git.nix
