@@ -1,10 +1,34 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   cfg = config.distro.ui;
 in
 {
   config = lib.mkIf cfg.enable {
+    home.packages = [
+      # Supporting packages
+      pkgs.clipse # Clipboad manager
+      pkgs.wl-clipboard
+
+      # Screencast support
+      pkgs.pipewire
+      pkgs.wireplumber
+    ];
+
+    xdg.portal = {
+      enable = true;
+      xdgOpenUsePortal = true;
+
+      extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
+
+      config.common.default = [ "hyprland" ];
+    };
+
     wayland.windowManager.hyprland = {
       enable = true;
 
@@ -14,9 +38,14 @@ in
         # TODO: make this configurable?
         monitor = [ ",highres,auto,1" ];
 
-        "$terminal" = "wezterm start --always-new-process";
+        "$terminal" = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
+        "$browser" = "${pkgs.google-chrome}/bin/google-chrome-stable";
 
-        exec-once = "$terminal";
+        exec-once = [
+          "${pkgs.clipse}/bin/clispe -listen"
+          "dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+          "${pkgs.waybar}/bin/waybar"
+        ];
 
         env = [
           "XCURSOR_SIZE,24"
@@ -44,7 +73,7 @@ in
         };
 
         decoration = {
-          rounding = 10;
+          rounding = 18;
 
           active_opacity = 1.0;
           inactive_opacity = 1.0;
@@ -126,6 +155,7 @@ in
           # "$mainMod, E, exec, $fileManager"
           "$mainMod, V, togglefloating,"
           # "$mainMod, R, exec, $menu"
+          "$mainMod, B, exec, $browser"
           "$mainMod, P, pseudo," # dwindle
           "$mainMod, J, togglesplit," # dwindle
 

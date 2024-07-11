@@ -1,12 +1,12 @@
 {
   "layer": "top",
   "position": "bottom",
-  "margin": "5",
-  "modules-left": ["sway/workspaces", "sway/mode"],
+  "margin": "0 20 20 20",
+  "modules-left": ["hyprland/workspaces"],
   "modules-center": ["clock"],
   "modules-right": ["group/util", "group/info"],
-  "sway/window": {
-    "max-length": 50,
+  "hyprland/workspaces": {
+    "show-special": true,
   },
   "clock": {
     "interval": 1,

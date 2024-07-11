@@ -22,6 +22,9 @@
     # Install cursor
     ./ui/cursor.nix
 
+    # Install a browser
+    ./ui/browser.nix
+
     # Install terminal emulator
     ./ui/wezterm.nix
 
