@@ -122,6 +122,10 @@ window#waybar {
   padding-right: 14px;
 }
 
+#network.ethernet {
+  padding-right: 12px;
+}
+
 #pulseaudio {
   padding: 0 2px;
 }

@@ -10,8 +10,8 @@
   },
   "clock": {
     "interval": 1,
-    "format": "{:%H:%M:%S}",
-    "format-alt": "{:%a, %b %d %H:%M:%S}",
+    "format": "{:%I:%M:%S %p}",
+    "format-alt": "{:%a, %b %d %I:%M:%S %p}",
   },
   "group/info": {
     "orientation": "inherit",
@@ -33,6 +33,10 @@
       "\udb80\udc82",
       "\udb80\udc79",
     ],
+    "states": {
+      "warning": 30,
+      "critical": 15,
+    },
   },
   "network": {
     "format": "{icon}",
