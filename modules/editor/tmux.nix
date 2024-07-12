@@ -20,6 +20,7 @@ in
       baseIndex = 1;
       shell = "${pkgs.zsh}/bin/zsh";
 
+      # FIXME: make the copy command configurable
       extraConfig = ''
         # Color support
         set -ga terminal-overrides ",xterm-256color:Tc"
@@ -32,7 +33,7 @@ in
 
         # Vi-like bindings for copy mode
         bind-key -T copy-mode-vi 'v' send -X begin-selection
-        bind -T copy-mode-vi y send-keys -X copy-pipe "xclip -selection clipboard"
+        bind -T copy-mode-vi y send-keys -X copy-pipe "wl-copy"
       '';
     };
   };
