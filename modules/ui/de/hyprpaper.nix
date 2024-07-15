@@ -4,7 +4,7 @@ let
   cfg = config.distro.ui;
 in
 {
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf (cfg.enable && cfg.de.enable) {
     services.hyprpaper = {
       enable = true;
 

@@ -13,7 +13,9 @@ let
   size = 24;
 in
 {
-  config = lib.mkIf cfg.enable {
+  options.distro.ui.cursor.enable = lib.mkEnableOption "Cursor configuration";
+
+  config = lib.mkIf (cfg.enable && cfg.cursor.enable) {
     home.pointerCursor = {
       package = package;
       name = name;
