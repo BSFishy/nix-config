@@ -11,10 +11,13 @@
     # TODO: check this: https://nix-community.github.io/home-manager/options.xhtml#opt-programs.zsh.enableCompletion
     enableCompletion = true;
 
-    autosuggestion.enable = true;
-
-    # Make autosuggestions use both history and completion
-    initExtraBeforeCompInit = "ZSH_AUTOSUGGEST_STRATEGY=(history completion)";
+    autosuggestion = {
+      enable = true;
+      strategy = [
+        "history"
+        "completion"
+      ];
+    };
 
     oh-my-zsh = {
       enable = true;
