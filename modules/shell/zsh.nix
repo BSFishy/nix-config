@@ -14,8 +14,8 @@
     autosuggestion = {
       enable = true;
       strategy = [
-        "completion"
         "history"
+        "completion"
       ];
     };
 
