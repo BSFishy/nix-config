@@ -15,6 +15,7 @@ in
     programs.chromium = {
       enable = true;
       package = pkgs.google-chrome;
+      commandLineArgs = [ "--force-dark-mode" ];
     };
   };
 }

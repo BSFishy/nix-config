@@ -18,6 +18,9 @@ in
       # Screencast support
       pkgs.pipewire
       pkgs.wireplumber
+
+      # Display configuration
+      pkgs.kanshi
     ];
 
     xdg.portal = {
@@ -36,10 +39,13 @@ in
 
       settings = {
         # TODO: make this configurable?
-        monitor = [ ",highres,auto,1" ];
+        monitor = [
+          ",highres,auto,1"
+          "DP-4,highres,1920x0,1,mirror,eDP-1"
+        ];
 
         "$terminal" = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
-        "$browser" = "${pkgs.google-chrome}/bin/google-chrome-stable";
+        "$browser" = "${pkgs.google-chrome}/bin/google-chrome-stable --force-dark-mode";
 
         exec-once = [
           "${pkgs.clipse}/bin/clispe -listen"
@@ -207,5 +213,78 @@ in
         windowrulev2 = "suppressevent maximize, class:.*"; # You'll probably like this.
       };
     };
+
+    # Kanshi for dynamic display management
+    services.kanshi = {
+      enable = true;
+      settings = [
+        # Undocked profile
+        {
+          profile.name = "undocked";
+          profile.outputs = [
+            {
+              criteria = "eDP-1";
+              mode = "1920x1080";
+              position = "0,0";
+            }
+          ];
+        }
+        # Docked profile
+        {
+          profile.name = "docked";
+          profile.outputs = [
+            {
+              criteria = "eDP-1";
+              mode = "1920x1080";
+              position = "0,0";
+            }
+            {
+              criteria = "DP-4";
+              mode = "1920x1080";
+              position = "0,0";
+              transform = "normal";
+            }
+          ];
+        }
+      ];
+    };
+
+    # # Hyprland service
+    # systemd.user.services.hyprland = {
+    #   Unit = {
+    #     Description = "Hyprland Window Manager";
+    #     After = [ "graphical-session-pre.target" ];
+    #     PartOf = [ "graphical-session.target" ];
+    #   };
+    #
+    #   Service = {
+    #     ExecStart = "${pkgs.hyprland}/bin/hyprland";
+    #     Restart = "always";
+    #     Type = "simple";
+    #   };
+    #
+    #   Install = {
+    #     WantedBy = [ "graphical-session.target" ];
+    #   };
+    # };
+    #
+    # # Kanshi service to start with Hyprland
+    # systemd.user.services.kanshi = lib.mkForce {
+    #   Unit = {
+    #     # Description = "Kanshi display configuration daemon";
+    #     After = [ "graphical-session-pre.target" ];
+    #     PartOf = [ "graphical-session.target" ];
+    #   };
+    #
+    #   Service = {
+    #     ExecStart = "${pkgs.kanshi}/bin/kanshi";
+    #     #   Restart = "on-failure";
+    #     #   Type = "simple";
+    #   };
+    #
+    #   Install = {
+    #     WantedBy = [ "graphical-session.target" ];
+    #   };
+    # };
   };
 }
