@@ -12,6 +12,7 @@ in
   config = lib.mkIf cfg.enable {
     home.packages = [
       # LazyVim depdendencies
+      pkgs.gcc
       pkgs.fd
       pkgs.ripgrep
       pkgs.lazygit
