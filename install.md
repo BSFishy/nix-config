@@ -46,7 +46,7 @@ git fetch
 
 # restore the files
 git reset origin/main
-git restore .
+git checkout -t origin/main
 ```
 
 ## Apply the configuration
