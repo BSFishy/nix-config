@@ -67,6 +67,12 @@
 
       kotlin.symbol = " ";
 
+      kubernetes = {
+        symbol = "󱃾 ";
+        detect_env_vars = [ "KUBIE_ACTIVE" ];
+        disabled = false;
+      };
+
       lua.symbol = " ";
 
       memory_usage.symbol = "󰍛 ";
