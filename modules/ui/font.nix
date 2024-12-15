@@ -7,7 +7,7 @@
 
 let
   cfg = config.distro.ui;
-  package = (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; });
+  package = pkgs.nerd-fonts.jetbrains-mono;
 in
 {
   options.distro.ui.font = {

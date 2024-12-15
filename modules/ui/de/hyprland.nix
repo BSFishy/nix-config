@@ -12,7 +12,7 @@ in
   config = lib.mkIf (cfg.enable && cfg.de.enable) {
     home.packages = [
       # Supporting packages
-      pkgs.clipse # Clipboad manager
+      # pkgs.clipse # Clipboad manager
       pkgs.wl-clipboard
 
       # Screencast support
@@ -22,6 +22,11 @@ in
       # Display configuration
       pkgs.kanshi
     ];
+
+    home.sessionVariables = {
+      XDG_SESSION_TYPE = "wayland";
+      XDG_CURRENT_DESKTOP = "Hyprland";
+    };
 
     xdg.portal = {
       enable = true;
@@ -48,16 +53,16 @@ in
         "$browser" = "${pkgs.google-chrome}/bin/google-chrome-stable --force-dark-mode";
 
         exec-once = [
-          "${pkgs.clipse}/bin/clispe -listen"
+          # "${pkgs.clipse}/bin/clispe -listen"
           "dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
           "${pkgs.waybar}/bin/waybar"
         ];
 
         env = [
-          "XCURSOR_SIZE,24"
-          "XCURSOR_THEME,Vanilla-DMZ"
-          "HYPRCURSOR_SIZE,24"
-          "HYPRCURSOR_THEME,Vanilla-DMZ"
+          # "XCURSOR_SIZE,24"
+          # "XCURSOR_THEME,Vanilla-DMZ"
+          # "HYPRCURSOR_SIZE,24"
+          # "HYPRCURSOR_THEME,Vanilla-DMZ"
           "GDK_SCALE,1"
           "GDK_DPI_SCALE,1"
         ];

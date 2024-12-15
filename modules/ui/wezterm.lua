@@ -7,11 +7,14 @@ if wezterm.config_builder then
 	config = wezterm.config_builder()
 end
 
+-- Fix block rendering :/
+config.front_end = "WebGpu"
+
 -- Color config
 config.color_scheme = "Gruvbox dark, soft (base16)"
 
 -- Font config
-config.font = wezterm.font("JetBrains Mono")
+config.font = wezterm.font("JetBrainsMono Nerd Font")
 config.font_size = 13
 config.line_height = 1.2
 
@@ -33,7 +36,7 @@ end
 
 -- Configure clipboard handling based on display server
 local function paste_action()
-	if is_wayland() then
+	if false then
 		return wezterm.action_callback(function(window, pane)
 			-- Use wl-paste to get clipboard content
 			local clipboard_data = io.popen("wl-paste"):read("*a")
