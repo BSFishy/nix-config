@@ -13,6 +13,7 @@ in
     programs.tmux = {
       enable = true;
 
+      sensibleOnTop = false;
       terminal = "tmux-256color";
       escapeTime = 10;
       mouse = true;

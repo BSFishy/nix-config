@@ -7,13 +7,14 @@
 
 let
   cfg = config.distro.editor;
+  extraPkgs = if pkgs.stdenv.hostPlatform.isLinux then [ pkgs.gcc ] else [ ];
 in
 {
   config = lib.mkIf cfg.enable {
     home.packages = [
       # LazyVim depdendencies
-      pkgs.gcc
       pkgs.fd
+      pkgs.fzf
       pkgs.ripgrep
       pkgs.lazygit
       pkgs.lua54Packages.luarocks
@@ -27,7 +28,7 @@ in
 
       # Tree sitter binary
       pkgs.tree-sitter
-    ];
+    ] ++ extraPkgs;
 
     programs.neovim = {
       enable = true;
