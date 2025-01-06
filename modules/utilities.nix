@@ -10,6 +10,7 @@
   };
 
   imports = [
+    ./utilities/chimera.nix
     ./utilities/xdg.nix
     ./utilities/direnv.nix
     ./utilities/ssh.nix
