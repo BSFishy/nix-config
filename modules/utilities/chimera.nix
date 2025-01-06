@@ -22,6 +22,10 @@ in
       chimeraFlake.packages.${pkgs.system}.default
     ];
 
+    programs.bash.initExtra = ''
+      alias chimera="sudo $(which chimera)"
+    '';
+
     programs.zsh.initExtra = ''
       alias chimera="sudo $(which chimera)"
     '';
