@@ -6,6 +6,10 @@
     ./tools/lsd.nix
   ];
 
+  home.packages = [
+    pkgs.nix-your-shell
+  ];
+
   programs.zsh = {
     enable = true;
     # TODO: check this: https://nix-community.github.io/home-manager/options.xhtml#opt-programs.zsh.enableCompletion
@@ -13,6 +17,7 @@
 
     initExtra = ''
       export PATH="$PATH:${config.home.homeDirectory}/.local/bin"
+      ${pkgs.nix-your-shell}/bin/nix-your-shell ${pkgs.zsh}/bin/zsh | source /dev/stdin
     '';
 
     autosuggestion = {
@@ -34,19 +39,6 @@
         "nvm"
       ];
     };
-
-    plugins = [
-      {
-        name = "zsh-nix-shell";
-        file = "nix-shell.plugin.zsh";
-        src = pkgs.fetchFromGitHub {
-          owner = "chisui";
-          repo = "zsh-nix-shell";
-          rev = "v0.8.0";
-          sha256 = "1lzrn0n4fxfcgg65v0qhnj7wnybybqzs4adz7xsrkgmcsr0ii8b7";
-        };
-      }
-    ];
 
     shellAliases = {
       # TODO: should these reference the package names?
