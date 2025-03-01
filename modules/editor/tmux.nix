@@ -10,6 +10,11 @@ let
 in
 {
   config = lib.mkIf cfg.enable {
+    home.packages = [
+      pkgs.wl-clipboard
+      pkgs.xclip
+    ];
+
     programs.tmux = {
       enable = true;
 
@@ -34,7 +39,9 @@ in
 
         # Vi-like bindings for copy mode
         bind-key -T copy-mode-vi 'v' send -X begin-selection
-        # bind -T copy-mode-vi y send-keys -X copy-pipe "wl-copy"
+
+        # Vi-like bindings for copy mode with universal clipboard support
+        bind-key -T copy-mode-vi y send -X copy-pipe "tmux save-buffer - | sh -c 'if [ -n \"\$WAYLAND_DISPLAY\" ]; then wl-copy; else xclip -selection clipboard; fi'"
       '';
     };
   };

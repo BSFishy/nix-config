@@ -23,7 +23,7 @@
     ./ui/browser.nix
 
     # Install terminal emulator
-    ./ui/wezterm.nix
+    ./ui/ghostty.nix
   ];
 
   config = {
