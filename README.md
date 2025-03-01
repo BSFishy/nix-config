@@ -16,14 +16,10 @@ For example, you can enable the graphical aspects with something like this:
 
 ```nix
 {
-  distro = {
-    ui = {
-      enable = true;
+  distro.ui.enable  = true;
 
-      # Typically necessary for non-NixOS systems
-      nixGLPrefix = "${(import <nixgl> {}).auto.nixGLDefault}/bin/nixGL";
-    };
-  };
+  # Typically necessary for non-NixOS systems
+  nixGL.packages = import <nixgl> { inherit pkgs; };
 }
 ```
 

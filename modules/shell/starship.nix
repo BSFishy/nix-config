@@ -23,13 +23,11 @@
       directory = {
         format = "[$read_only]($read_only_style)[$path]($style) ";
         truncation_length = 8;
-        read_only = " 󰌾";
+        read_only = "󰌾 ";
       };
 
       direnv = {
         disabled = false;
-        # until https://github.com/starship/starship/pull/5969 is merged
-        style = "bold bright-yellow";
       };
 
       docker_context.symbol = " ";
@@ -83,7 +81,7 @@
 
       nix_shell = {
         format = "via [$symbol$state]($style) ";
-        symbol = " ";
+        symbol = "󱄅 ";
       };
 
       nodejs.symbol = " ";

@@ -19,16 +19,14 @@
     # Install fonts
     ./ui/font.nix
 
-    # Install cursor
-    ./ui/cursor.nix
-
     # Install a browser
     ./ui/browser.nix
 
     # Install terminal emulator
     ./ui/wezterm.nix
-
-    # Install desktop environment settings
-    ./ui/de.nix
   ];
+
+  config = {
+    nixGL.defaultWrapper = lib.mkDefault "mesa";
+  };
 }

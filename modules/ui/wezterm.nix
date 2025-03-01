@@ -6,7 +6,7 @@
 }:
 
 let
-  nixGL = import ./nixGL.nix { inherit pkgs config; };
+  # nixGL = import ./nixGL.nix { inherit pkgs config; };
   cfg = config.distro.ui;
 in
 {
@@ -15,7 +15,7 @@ in
       enable = true;
       enableZshIntegration = true;
 
-      package = (nixGL pkgs.wezterm);
+      package = config.lib.nixGL.wrap pkgs.wezterm;
 
       extraConfig = builtins.readFile ./wezterm.lua;
     };

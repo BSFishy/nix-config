@@ -34,7 +34,7 @@ in
 
         # Vi-like bindings for copy mode
         bind-key -T copy-mode-vi 'v' send -X begin-selection
-        bind -T copy-mode-vi y send-keys -X copy-pipe "wl-copy"
+        # bind -T copy-mode-vi y send-keys -X copy-pipe "wl-copy"
       '';
     };
   };
