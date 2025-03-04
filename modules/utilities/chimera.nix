@@ -2,26 +2,27 @@
   config,
   lib,
   pkgs,
+  chimera-flake,
   ...
 }:
 
 let
   cfg = config.distro.utilities;
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
-  chimera-flake = builtins.getFlake "github:BSFishy/chimera";
+  pkg = chimera-flake.packages.${pkgs.system}.default;
 in
 {
   config = lib.mkIf (cfg.enable && isLinux) {
     home.packages = [
-      chimera-flake.packages.${pkgs.system}.default
+      pkg
     ];
 
     programs.bash.initExtra = ''
-      alias chimera="sudo $(which chimera)"
+      alias chimera="sudo ${pkg}/bin/chimera"
     '';
 
     programs.zsh.initExtra = ''
-      alias chimera="sudo $(which chimera)"
+      alias chimera="sudo ${pkg}/bin/chimera"
     '';
   };
 }

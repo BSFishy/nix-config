@@ -2,13 +2,13 @@
   config,
   lib,
   pkgs,
+  zen-flake,
   ...
 }:
 
 let
   cfg = config.distro.utilities;
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
-  zen-flake = builtins.getFlake "github:0xc000022070/zen-browser-flake";
 in
 {
   config = lib.mkIf (cfg.enable && isLinux) {

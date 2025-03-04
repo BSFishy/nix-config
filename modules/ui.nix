@@ -20,7 +20,6 @@
     ./ui/font.nix
 
     # Install a browser
-    ./ui/chrome.nix
     ./ui/zen.nix
 
     # Install terminal emulator
