@@ -21,6 +21,7 @@
 
     # Install a browser
     ./ui/browser.nix
+    ./ui/zen.nix
 
     # Install terminal emulator
     ./ui/ghostty.nix
