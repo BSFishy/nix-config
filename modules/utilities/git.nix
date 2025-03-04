@@ -11,6 +11,10 @@ in
 
       userName = "Matt Provost";
       userEmail = "mattprovost6@gmail.com";
+
+      extraConfig = {
+        init.defaultBranch = "main";
+      };
     };
   };
 }

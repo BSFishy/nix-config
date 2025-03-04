@@ -7,9 +7,10 @@
 
 let
   cfg = config.distro.ui;
+  isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
 in
 {
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf (cfg.enable && !isDarwin) {
     programs.ghostty = {
       enable = true;
       enableZshIntegration = true;
