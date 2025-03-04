@@ -20,11 +20,12 @@
     ./ui/font.nix
 
     # Install a browser
-    ./ui/browser.nix
+    ./ui/chrome.nix
     ./ui/zen.nix
 
     # Install terminal emulator
     ./ui/ghostty.nix
+    ./ui/wezterm.nix
   ];
 
   config = {
