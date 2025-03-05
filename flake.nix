@@ -51,7 +51,17 @@
           "personal-linux" = home-manager.lib.homeManagerConfiguration {
             inherit pkgs;
 
-            modules = [ ./hosts/personal-linux/home.nix ];
+            modules = [
+              # base configuration
+              ./hosts/personal-linux/home.nix
+
+              # environment configuration
+              ./modules/home-manager/editor
+              ./modules/home-manager/shell
+              ./modules/home-manager/ui
+              ./modules/home-manager/utilities
+            ];
+
             extraSpecialArgs = {
               inherit nixgl zen-flake chimera-flake;
               configurationName = "personal-linux";
@@ -61,7 +71,17 @@
           "work-darwin" = home-manager.lib.homeManagerConfiguration {
             inherit pkgs;
 
-            modules = [ ./hosts/personal-linux/home.nix ];
+            modules = [
+              # base configuration
+              ./hosts/work-darwin/home.nix
+
+              # environment configuration
+              ./modules/home-manager/editor
+              ./modules/home-manager/shell
+              ./modules/home-manager/ui
+              ./modules/home-manager/utilities
+            ];
+
             extraSpecialArgs = {
               configurationName = "work-darwin";
             };

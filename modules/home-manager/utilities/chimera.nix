@@ -1,5 +1,4 @@
 {
-  config,
   lib,
   pkgs,
   chimera-flake,
@@ -7,12 +6,11 @@
 }:
 
 let
-  cfg = config.distro.utilities;
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
   pkg = chimera-flake.packages.${pkgs.system}.default;
 in
 {
-  config = lib.mkIf (cfg.enable && isLinux) {
+  config = lib.mkIf isLinux {
     home.packages = [
       pkg
     ];

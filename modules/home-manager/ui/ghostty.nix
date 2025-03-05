@@ -6,15 +6,12 @@
 }:
 
 let
-  cfg = config.distro.ui;
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
 in
 {
-  config = lib.mkIf (cfg.enable && !isDarwin) {
+  config = lib.mkIf (!isDarwin) {
     programs.ghostty = {
       enable = true;
-      enableZshIntegration = true;
-      enableBashIntegration = true;
 
       package = config.lib.nixGL.wrap pkgs.ghostty;
 

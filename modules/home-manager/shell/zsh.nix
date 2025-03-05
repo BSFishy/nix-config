@@ -5,11 +5,6 @@
 }:
 
 {
-  imports = [
-    ./tools/bat.nix
-    ./tools/lsd.nix
-  ];
-
   home.packages = [
     pkgs.nix-your-shell
   ];
@@ -45,9 +40,8 @@
     };
 
     shellAliases = {
-      # TODO: should these reference the package names?
-      cat = "bat";
-      ls = "lsd";
+      cat = "${pkgs.bat}/bin/bat";
+      ls = "${pkgs.lsd}/bin/lsd";
     };
   };
 }
