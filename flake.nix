@@ -41,52 +41,55 @@
       chimera-flake,
       ...
     }:
-    flake-utils.lib.eachDefaultSystemPassThrough (
-      system:
-      let
-        pkgs = nixpkgs.legacyPackages.${system};
-      in
-      {
-        homeConfigurations = {
-          "personal-linux" = home-manager.lib.homeManagerConfiguration {
-            inherit pkgs;
+    let
+      personal-linux-home-configuration = {
+        pkgs = nixpkgs.legacyPackages."x86_64-linux";
 
-            modules = [
-              # base configuration
-              ./hosts/personal-linux/home.nix
+        modules = [
+          # base configuration
+          ./hosts/personal-linux/home.nix
 
-              # environment configuration
-              ./modules/home-manager/editor
-              ./modules/home-manager/shell
-              ./modules/home-manager/ui
-              ./modules/home-manager/utilities
-            ];
+          # environment configuration
+          ./modules/home-manager/editor
+          ./modules/home-manager/shell
+          ./modules/home-manager/ui
+          ./modules/home-manager/utilities
+        ];
 
-            extraSpecialArgs = {
-              inherit nixgl zen-flake chimera-flake;
-              configurationName = "personal-linux";
-            };
-          };
-
-          "work-darwin" = home-manager.lib.homeManagerConfiguration {
-            inherit pkgs;
-
-            modules = [
-              # base configuration
-              ./hosts/work-darwin/home.nix
-
-              # environment configuration
-              ./modules/home-manager/editor
-              ./modules/home-manager/shell
-              ./modules/home-manager/ui
-              ./modules/home-manager/utilities
-            ];
-
-            extraSpecialArgs = {
-              configurationName = "work-darwin";
-            };
-          };
+        extraSpecialArgs = {
+          inherit nixgl zen-flake chimera-flake;
+          configurationName = "personal-linux";
         };
-      }
-    );
+      };
+
+      work-darwin-home-configuration = {
+        pkgs = nixpkgs.legacyPackages."aarch64-darwin";
+
+        modules = [
+          # base configuration
+          ./hosts/work-darwin/home.nix
+
+          # environment configuration
+          ./modules/home-manager/editor
+          ./modules/home-manager/shell
+          ./modules/home-manager/ui
+          ./modules/home-manager/utilities
+        ];
+
+        extraSpecialArgs = {
+          configurationName = "work-darwin";
+        };
+      };
+    in
+    {
+      homeConfigurations = {
+        "personal-linux" = home-manager.lib.homeManagerConfiguration personal-linux-home-configuration;
+        "work-darwin" = home-manager.lib.homeManagerConfiguration work-darwin-home-configuration;
+      };
+
+      rawHomeConfigurations = {
+        "personal-linux" = personal-linux-home-configuration;
+        "work-darwin" = work-darwin-home-configuration;
+      };
+    };
 }
