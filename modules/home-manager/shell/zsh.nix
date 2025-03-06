@@ -11,7 +11,6 @@
 
   programs.zsh = {
     enable = true;
-    # TODO: check this: https://nix-community.github.io/home-manager/options.xhtml#opt-programs.zsh.enableCompletion
     enableCompletion = true;
 
     initExtra = ''

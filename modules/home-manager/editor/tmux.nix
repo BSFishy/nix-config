@@ -5,6 +5,7 @@
 }:
 
 let
+  # some additional packages for clipboard support on linux
   packages =
     if pkgs.stdenv.hostPlatform.isLinux then
       [
@@ -28,7 +29,6 @@ in
     baseIndex = 1;
     shell = "${pkgs.zsh}/bin/zsh";
 
-    # FIXME: make the copy command configurable
     extraConfig = ''
       # Color support
       set -ga terminal-overrides ",xterm-256color:Tc"

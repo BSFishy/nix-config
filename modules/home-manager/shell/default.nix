@@ -8,7 +8,6 @@
 
   imports = [
     # Set up shell related things
-    ./bash.nix
     ./zsh.nix
 
     # Set up prompt

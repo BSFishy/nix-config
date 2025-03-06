@@ -5,4 +5,8 @@
     pkgs.bat
     pkgs.lsd
   ];
+
+  programs.bash = {
+    enable = true;
+  };
 }

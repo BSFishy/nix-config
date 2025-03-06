@@ -9,9 +9,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # flake utils
-    flake-utils.url = "github:numtide/flake-utils";
-
     # home manager latest
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -19,6 +16,7 @@
     };
 
     # zen browser
+    # only using this while there isnt a zen package in nixpkgs
     zen-flake = {
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -36,24 +34,28 @@
       nixpkgs,
       nixgl,
       home-manager,
-      flake-utils,
       zen-flake,
       chimera-flake,
       ...
     }:
     let
+      # home manager modules that are used basically everywhere
+      standard-home-modules = [
+        ./modules/home-manager/editor
+        ./modules/home-manager/shell
+        ./modules/home-manager/utilities
+      ];
+
+      # home manager configuration for graphical personal linux machines
       personal-linux-home-configuration = {
         pkgs = nixpkgs.legacyPackages."x86_64-linux";
 
-        modules = [
+        modules = standard-home-modules ++ [
           # base configuration
           ./hosts/personal-linux/home.nix
 
-          # environment configuration
-          ./modules/home-manager/editor
-          ./modules/home-manager/shell
+          # graphical programs
           ./modules/home-manager/ui
-          ./modules/home-manager/utilities
         ];
 
         extraSpecialArgs = {
@@ -62,18 +64,32 @@
         };
       };
 
+      # home manager configuration for linux machines without graphical
+      # environments
+      server-linux-home-configuration = {
+        pkgs = nixpkgs.legacyPackages."x86_64-linux";
+
+        modules = standard-home-modules ++ [
+          # base configuration
+          ./hosts/server-linux/home.nix
+        ];
+
+        extraSpecialArgs = {
+          inherit chimera-flake;
+          configurationName = "server-linux";
+        };
+      };
+
+      # home manager configuration for my work mac
       work-darwin-home-configuration = {
         pkgs = nixpkgs.legacyPackages."aarch64-darwin";
 
-        modules = [
+        modules = standard-home-modules ++ [
           # base configuration
           ./hosts/work-darwin/home.nix
 
-          # environment configuration
-          ./modules/home-manager/editor
-          ./modules/home-manager/shell
+          # graphical programs
           ./modules/home-manager/ui
-          ./modules/home-manager/utilities
         ];
 
         extraSpecialArgs = {
@@ -82,13 +98,18 @@
       };
     in
     {
+      # home manager configurations
       homeConfigurations = {
         "personal-linux" = home-manager.lib.homeManagerConfiguration personal-linux-home-configuration;
+        "server-linux" = home-manager.lib.homeManagerConfiguration server-linux-home-configuration;
         "work-darwin" = home-manager.lib.homeManagerConfiguration work-darwin-home-configuration;
       };
 
+      # the raw home manager configurations. useful for my work setup, where i
+      # use a separate flake to futher configure my home manager setup
       rawHomeConfigurations = {
         "personal-linux" = personal-linux-home-configuration;
+        "server-linux" = server-linux-home-configuration;
         "work-darwin" = work-darwin-home-configuration;
       };
     };
