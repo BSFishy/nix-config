@@ -30,14 +30,7 @@
   };
 
   outputs =
-    {
-      nixpkgs,
-      nixgl,
-      home-manager,
-      zen-flake,
-      chimera-flake,
-      ...
-    }:
+    { nixpkgs, home-manager, ... }@inputs:
     let
       # home manager modules that are used basically everywhere
       standard-home-modules = [
@@ -59,7 +52,7 @@
         ];
 
         extraSpecialArgs = {
-          inherit nixgl zen-flake chimera-flake;
+          inherit inputs;
           configurationName = "personal-linux";
         };
       };
@@ -75,7 +68,7 @@
         ];
 
         extraSpecialArgs = {
-          inherit chimera-flake;
+          inherit inputs;
           configurationName = "server-linux";
         };
       };
@@ -93,6 +86,7 @@
         ];
 
         extraSpecialArgs = {
+          inherit inputs;
           configurationName = "work-darwin";
         };
       };

@@ -1,5 +1,8 @@
-{ pkgs, nixgl, ... }:
+{ pkgs, inputs, ... }:
 
+let
+  nixgl = inputs.nixgl;
+in
 {
   # set basic home configuration
   home.username = "matt";

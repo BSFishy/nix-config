@@ -2,11 +2,12 @@
   config,
   lib,
   pkgs,
-  zen-flake,
+  inputs,
   ...
 }:
 
 let
+  zen-flake = inputs.zen-flake;
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
 in
 {

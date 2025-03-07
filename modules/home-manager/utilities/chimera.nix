@@ -1,12 +1,13 @@
 {
   lib,
   pkgs,
-  chimera-flake,
+  inputs,
   ...
 }:
 
 let
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
+  chimera-flake = inputs.chimera-flake;
   pkg = chimera-flake.packages.${pkgs.system}.default;
 in
 {
