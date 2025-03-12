@@ -4,10 +4,13 @@
   inputs = {
     # universal flakes
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixgl = {
-      url = "github:nix-community/nixGL";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
+    # don't currently use nixgl since im on nixos
+    # nixgl = {
+    #   url = "github:nix-community/nixGL";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
     # home manager latest
     home-manager = {
@@ -30,7 +33,12 @@
   };
 
   outputs =
-    { nixpkgs, home-manager, ... }@inputs:
+    {
+      nixpkgs,
+      nixos-hardware,
+      home-manager,
+      ...
+    }@inputs:
     let
       # home manager modules that are used basically everywhere
       standard-home-modules = [
@@ -38,6 +46,36 @@
         ./modules/home-manager/shell
         ./modules/home-manager/utilities
       ];
+
+      personal-linux-nixos-configuration =
+        let
+          homeCfg = personal-linux-home-configuration;
+        in
+        {
+          system = "x86_64-linux";
+          modules = [
+            # base configuration
+            ./hosts/personal-linux/configuration.nix
+
+            # hardware configurations
+            nixos-hardware.nixosModules.framework-13-7040-amd
+            ./hosts/personal-linux/hardware-configuration.nix
+
+            # home manager configuration
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+
+              home-manager.extraSpecialArgs = homeCfg.extraSpecialArgs;
+              home-manager.users.matt =
+                { ... }:
+                {
+                  imports = homeCfg.modules;
+                };
+            }
+          ];
+        };
 
       # home manager configuration for graphical personal linux machines
       personal-linux-home-configuration = {
@@ -92,6 +130,11 @@
       };
     in
     {
+      # nixos configurations
+      nixosConfigurations = {
+        "personal-linux" = nixpkgs.lib.nixosSystem personal-linux-nixos-configuration;
+      };
+
       # home manager configurations
       homeConfigurations = {
         "personal-linux" = home-manager.lib.homeManagerConfiguration personal-linux-home-configuration;
