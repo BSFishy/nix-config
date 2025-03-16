@@ -57,9 +57,8 @@
             # base configuration
             ./hosts/personal-linux/configuration.nix
 
-            # hardware configurations
+            # hardware configuration
             nixos-hardware.nixosModules.framework-13-7040-amd
-            ./hosts/personal-linux/hardware-configuration.nix
 
             # home manager configuration
             home-manager.nixosModules.home-manager
