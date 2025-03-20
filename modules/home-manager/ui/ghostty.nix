@@ -1,25 +1,25 @@
 {
   config,
-  lib,
   pkgs,
   ...
 }:
 
 let
+  # allow ghostty to be configured on darwin but dont actually install the
+  # package while it's broken
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
+  pkg = if isDarwin then null else config.lib.nixGL.wrap pkgs.ghostty;
 in
 {
-  config = lib.mkIf (!isDarwin) {
-    programs.ghostty = {
-      enable = true;
+  programs.ghostty = {
+    enable = true;
 
-      package = config.lib.nixGL.wrap pkgs.ghostty;
+    package = pkg;
 
-      settings = {
-        theme = "GruvboxDark";
-        font-size = 13;
-        adjust-font-baseline = "20%";
-      };
+    settings = {
+      theme = "GruvboxDark";
+      font-size = 13;
+      adjust-font-baseline = "20%";
     };
   };
 }

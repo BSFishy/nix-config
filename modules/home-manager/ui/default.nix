@@ -7,7 +7,6 @@
 
     # Install terminal emulator
     ./ghostty.nix
-    ./wezterm.nix
   ];
 
   config = {

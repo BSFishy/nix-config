@@ -12,6 +12,12 @@
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
 
+    # nix darwin latest
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # home manager latest
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -35,6 +41,7 @@
   outputs =
     {
       nixpkgs,
+      nix-darwin,
       nixos-hardware,
       home-manager,
       ...
@@ -110,6 +117,21 @@
         };
       };
 
+      work-darwin-configuration = {
+        modules = [
+          # base configuration
+          ./hosts/work-darwin/nix-darwin.nix
+
+          # homebrew configuration
+          ./modules/nix-darwin/homebrew
+        ];
+
+        specialArgs = {
+          inherit inputs;
+          configurationName = "work-darwin";
+        };
+      };
+
       # home manager configuration for my work mac
       work-darwin-home-configuration = {
         pkgs = nixpkgs.legacyPackages."aarch64-darwin";
@@ -132,6 +154,16 @@
       # nixos configurations
       nixosConfigurations = {
         "personal-linux" = nixpkgs.lib.nixosSystem personal-linux-nixos-configuration;
+      };
+
+      # nix-darwin configurations
+      darwinConfigurations = {
+        "work-darwin" = nix-darwin.lib.darwinSystem work-darwin-configuration;
+      };
+
+      # the raw nix-darwin configurations
+      rawDarwinConfigurations = {
+        "work-darwin" = work-darwin-configuration;
       };
 
       # home manager configurations

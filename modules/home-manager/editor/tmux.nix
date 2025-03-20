@@ -14,9 +14,12 @@ let
       ]
     else
       [ ];
+
+  # add sessionizer
+  sessionizer = pkgs.writeShellScriptBin "tmux-sessionizer" (builtins.readFile ./tmux-sessionizer.sh);
 in
 {
-  home.packages = packages;
+  home.packages = [ sessionizer ] ++ packages;
 
   programs.tmux = {
     enable = true;
