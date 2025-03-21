@@ -15,6 +15,9 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
+  # Required for incus
+  networking.nftables.enable = true;
+
   # Set your time zone.
   time.timeZone = "America/Chicago";
 
@@ -78,6 +81,9 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+
+      # give admin permissions to use incus commands
+      "incus-admin"
     ];
   };
 

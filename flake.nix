@@ -30,12 +30,6 @@
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # chimera lxc front end
-    chimera-flake = {
-      url = "github:BSFishy/chimera";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
@@ -66,6 +60,9 @@
 
             # hardware configuration
             nixos-hardware.nixosModules.framework-13-7040-amd
+
+            # standard configurations
+            ./modules/nixos/tools
 
             # home manager configuration
             home-manager.nixosModules.home-manager
