@@ -17,6 +17,10 @@
 
   # Required for incus
   networking.nftables.enable = true;
+  networking.firewall.trustedInterfaces = [
+    # Required for networking inside the containers
+    "incusbr0"
+  ];
 
   # Set your time zone.
   time.timeZone = "America/Chicago";
@@ -72,6 +76,10 @@
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
+
+  # Set the default shell to zsh
+  programs.zsh.enable = true;
+  users.defaultUserShell = pkgs.zsh;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.matt = {
