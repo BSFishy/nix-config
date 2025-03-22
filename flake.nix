@@ -45,9 +45,11 @@
       standard-home-modules = [
         ./modules/home-manager/editor
         ./modules/home-manager/shell
+        ./modules/home-manager/tools
         ./modules/home-manager/utilities
       ];
 
+      # nixos configuration for personal laptop
       personal-linux-nixos-configuration =
         let
           homeCfg = personal-linux-home-configuration;
@@ -114,20 +116,39 @@
         };
       };
 
-      work-darwin-configuration = {
-        modules = [
-          # base configuration
-          ./hosts/work-darwin/nix-darwin.nix
+      # nix-darwin setup for my work mac
+      work-darwin-configuration =
+        let
+          homeCfg = work-darwin-home-configuration;
+        in
+        {
+          modules = [
+            # base configuration
+            ./hosts/work-darwin/nix-darwin.nix
 
-          # homebrew configuration
-          ./modules/nix-darwin/homebrew
-        ];
+            # homebrew configuration
+            ./modules/nix-darwin/homebrew
 
-        specialArgs = {
-          inherit inputs;
-          configurationName = "work-darwin";
+            # home manager configuration
+            home-manager.darwinModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+
+              home-manager.extraSpecialArgs = homeCfg.extraSpecialArgs;
+              home-manager.users.mprovost =
+                { ... }:
+                {
+                  imports = homeCfg.modules;
+                };
+            }
+          ];
+
+          specialArgs = {
+            inherit inputs;
+            configurationName = "work-darwin";
+          };
         };
-      };
 
       # home manager configuration for my work mac
       work-darwin-home-configuration = {
