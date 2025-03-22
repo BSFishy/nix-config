@@ -1,8 +1,5 @@
-{ pkgs, inputs, ... }:
+{ pkgs, ... }:
 
-let
-  nixgl = inputs.nixgl;
-in
 {
   # set basic home configuration
   home.username = "matt";
@@ -11,9 +8,8 @@ in
   # set home manager state version
   home.stateVersion = "24.11";
 
-  # allow home manager to install and manage the nix commands
+  # install a few basic packages for this system
   home.packages = [
-    pkgs.nix
     pkgs.xdg-utils
   ];
 
