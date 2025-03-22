@@ -72,12 +72,8 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
 
+              home-manager.users.matt.imports = homeCfg.modules;
               home-manager.extraSpecialArgs = homeCfg.extraSpecialArgs;
-              home-manager.users.matt =
-                { ... }:
-                {
-                  imports = homeCfg.modules;
-                };
             }
           ];
         };
@@ -135,12 +131,8 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
 
+              home-manager.users.mprovost.imports = homeCfg.modules;
               home-manager.extraSpecialArgs = homeCfg.extraSpecialArgs;
-              home-manager.users.mprovost =
-                { ... }:
-                {
-                  imports = homeCfg.modules;
-                };
             }
           ];
 
