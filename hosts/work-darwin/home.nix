@@ -13,12 +13,6 @@
     pkgs.nix
   ];
 
-  # allow broken and unfree packages
-  nixpkgs.config = {
-    allowBroken = true;
-    allowUnfree = true;
-  };
-
   # allow home manager to manage itself
   programs.home-manager.enable = true;
 }
