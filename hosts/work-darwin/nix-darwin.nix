@@ -16,6 +16,7 @@
     allowUnfree = true;
   };
 
+  # configure user profile
   users.users.mprovost = {
     home = "/Users/mprovost";
   };

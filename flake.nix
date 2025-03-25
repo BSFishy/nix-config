@@ -124,6 +124,7 @@
 
             # homebrew configuration
             ./modules/nix-darwin/homebrew
+            ./modules/nix-darwin/system
 
             # home manager configuration
             home-manager.darwinModules.home-manager
