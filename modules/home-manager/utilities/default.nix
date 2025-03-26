@@ -6,5 +6,6 @@
     ./git.nix
     ./nixfmt.nix
     ./ssh.nix
+    ./switch-shell.nix
   ];
 }
