@@ -6,6 +6,9 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
+    # flake utils
+    flake-utils.url = "github:numtide/flake-utils";
+
     # don't currently use nixgl since im on nixos
     # nixgl = {
     #   url = "github:nix-community/nixGL";
@@ -35,6 +38,7 @@
   outputs =
     {
       nixpkgs,
+      flake-utils,
       nix-darwin,
       nixos-hardware,
       home-manager,
@@ -191,5 +195,34 @@
         "server-linux" = server-linux-home-configuration;
         "work-darwin" = work-darwin-home-configuration;
       };
-    };
+    }
+    // flake-utils.lib.eachDefaultSystem (
+      system:
+      let
+        pkgs = import nixpkgs { inherit system; };
+      in
+      {
+        devShells.default = pkgs.mkShell {
+          buildInputs = [
+            pkgs.go
+          ];
+        };
+
+        packages = rec {
+          setup = pkgs.buildGoModule {
+            pname = "setup";
+            version = "0.1.0";
+            src = ./setup;
+
+            vendorHash = "sha256-HZDEbwXAoAiEINxWkGmMUzXWnGk0MQ8phwo4HSBmd0c=";
+            buildInputs = [
+              pkgs.git
+              pkgs.nix
+            ];
+          };
+
+          default = setup;
+        };
+      }
+    );
 }
