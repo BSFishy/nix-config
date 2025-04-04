@@ -237,6 +237,10 @@ func setupHomeManager(configuration string) error {
 }
 
 func setupExtras() error {
+	if err := clone("https://github.com/BSFishy/init.lua.git", filepath.Join(homeDir, ".config", "nvim")); err != nil {
+		return fmt.Errorf("failed to clone nvim config: %s", err)
+	}
+
 	if err := mkdir(filepath.Join(homeDir, "projects")); err != nil {
 		return fmt.Errorf("failed to create projects dir: %s", err)
 	}

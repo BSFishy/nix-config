@@ -42,4 +42,4 @@ fi
 
 # Connect to the container
 echo "Connecting to container '$NAME'..."
-incus exec "$NAME" -- bash
+incus exec "$NAME" --force-interactive -- bash
