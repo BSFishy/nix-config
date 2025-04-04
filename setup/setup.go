@@ -143,6 +143,8 @@ func command(name string, args ...string) (*exec.Cmd, error) {
 				Gid: uint32(gid),
 			},
 		}
+
+		cmd.Env = append(cmd.Env, fmt.Sprintf("HOME=%s", u.HomeDir), fmt.Sprintf("USER=%s", u.Username))
 	}
 
 	return cmd, nil
