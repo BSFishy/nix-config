@@ -145,6 +145,10 @@ func command(name string, args ...string) (*exec.Cmd, error) {
 		}
 
 		cmd.Env = append(cmd.Env, fmt.Sprintf("HOME=%s", u.HomeDir), fmt.Sprintf("USER=%s", u.Username))
+
+		if pathEnv, ok := os.LookupEnv("PATH"); ok {
+			cmd.Env = append(cmd.Env, fmt.Sprintf("PATH=%s", pathEnv))
+		}
 	}
 
 	return cmd, nil
