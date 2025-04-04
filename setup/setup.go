@@ -208,7 +208,7 @@ func nix(args ...string) (*exec.Cmd, error) {
 }
 
 func setupHomeManager(configuration string) error {
-	cmd, err := nix("run", "home-manager/master", "--", "switch", "--flake", fmt.Sprintf("%s/dotfiles#%s", homeDir, configuration))
+	cmd, err := nix("run", "home-manager/master", "--", "switch", "--flake", fmt.Sprintf("%s/dotfiles#%s", homeDir, configuration), "-b", "backup")
 	if err != nil {
 		return err
 	}
