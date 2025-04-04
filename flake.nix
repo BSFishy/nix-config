@@ -215,10 +215,23 @@
             src = ./setup;
 
             vendorHash = "sha256-HZDEbwXAoAiEINxWkGmMUzXWnGk0MQ8phwo4HSBmd0c=";
+            nativeBuildInputs = [
+              pkgs.makeWrapper
+            ];
+
             buildInputs = [
               pkgs.git
               pkgs.nix
             ];
+
+            postFixup = ''
+              wrapProgram $out/bin/setup --prefix PATH : ${
+                pkgs.lib.makeBinPath [
+                  pkgs.git
+                  pkgs.nix
+                ]
+              }
+            '';
           };
 
           default = setup;

@@ -30,11 +30,7 @@ func main() {
 	flag.BoolVar(&dryRun, "dry-run", false, "don't actually run any commands")
 	flag.Parse()
 
-	user, err := user.Lookup(userName)
-	if err != nil {
-		fmt.Printf("Failed to lookup user: %s\n", err)
-	}
-
+	user, _ := user.Lookup(userName)
 	createUser = user == nil
 
 	osOption, validConfigurations := getValidConfigurations()
@@ -85,7 +81,7 @@ func main() {
 		}),
 	)
 
-	err = form.Run()
+	err := form.Run()
 	if err != nil {
 		fatal("Failed to run form: %s\n", err)
 	}
