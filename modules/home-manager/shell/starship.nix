@@ -5,6 +5,19 @@
     enable = true;
 
     settings = {
+      format = builtins.replaceStrings [ "\n" ] [ "" ] ''
+        $all
+        $container
+        $line_break
+        $jobs
+        $battery
+        $time
+        $status
+        $os
+        $shell
+        $character
+      '';
+
       add_newline = true;
 
       c.symbol = " ";
