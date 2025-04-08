@@ -30,7 +30,12 @@
       enable = true;
       plugins = [
         "colored-man-pages"
-        "command-not-found"
+
+        # NOTE: flake setups don't currently generate the database that this
+        # uses for command recommendations. I would like to use it if flakes
+        # ever do generate it tho
+        # "command-not-found"
+
         "git"
         "git-flow"
         "rust"
