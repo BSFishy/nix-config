@@ -108,6 +108,9 @@
         modules = standard-home-modules ++ [
           # base configuration
           ./hosts/server-linux/home.nix
+
+          # add ghostty for terminfo
+          ./modules/home-manager/ui/ghostty.nix
         ];
 
         extraSpecialArgs = {
