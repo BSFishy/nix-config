@@ -17,18 +17,17 @@ if [ -n "$GHOSTTY_RESOURCES_DIR" ]; then
   export GHOSTTY_RESOURCES_DIR="$GHOSTTY_RESOURCES_DIR"
 fi
 
-if [[ -z $TMUX ]]; then
-  if [[ -z $tmux_running ]]; then
-    tmux new-session -s "$selected_name" -c "$selected"
-    exit 0
-  else
-    tmux attach-session -t "$selected_name"
-    exit 0
-  fi
+if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
+  tmux new-session -s "$selected_name" -c "$selected"
+  exit 0
 fi
 
 if ! tmux has-session -t="$selected_name" 2>/dev/null; then
   tmux -u new-session -ds "$selected_name" -c "$selected"
 fi
 
-tmux switch-client -t "$selected_name"
+if [[ -z $TMUX ]]; then
+  tmux attach-session -t "$selected_name"
+else
+  tmux switch-client -t "$selected_name"
+fi
