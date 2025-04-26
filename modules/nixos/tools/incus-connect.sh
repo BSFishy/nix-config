@@ -34,7 +34,7 @@ else
 fi
 
 # Check if container is running
-STATUS=$(incus list "$NAME" --format csv | cut -d',' -f2)
+STATUS=$(incus list "$NAME" --format csv | cut -d',' -f2 | head -n1)
 if [[ "$STATUS" != "RUNNING" ]]; then
   echo "Starting container '$NAME'..."
   incus start "$NAME"
