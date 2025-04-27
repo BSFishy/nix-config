@@ -33,6 +33,20 @@ else
   incus launch "$IMAGE" "$NAME"
 fi
 
+# Check if nesting is enabled
+NESTING=$(incus config get "$NAME" security.nesting)
+if [[ "$NESTING" != "true" ]]; then
+  echo "Enabling nesting"
+  incus config set "$NAME" security.nesting=true
+fi
+
+# Check if privileged is enabled
+PRIVILEGED=$(incus config get "$NAME" security.privileged)
+if [[ "$PRIVILEGED" != "true" ]]; then
+  echo "Enabling privileged"
+  incus config set "$NAME" security.privileged=true
+fi
+
 # Check if container is running
 STATUS=$(incus list "$NAME" --format csv | cut -d',' -f2 | head -n1)
 if [[ "$STATUS" != "RUNNING" ]]; then
