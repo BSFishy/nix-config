@@ -13,14 +13,6 @@ fi
 selected_name=$(basename "$selected" | tr . _)
 tmux_running=$(pgrep tmux)
 
-# i think this is unnecessary and that it was initially not working because i
-# had a tmux session already started without this, which was causing the
-# integration to not work. i still need to actually test that hypothesis, but i
-# would imagine that this does absolutely nothing
-if [ -n "$GHOSTTY_RESOURCES_DIR" ]; then
-  export GHOSTTY_RESOURCES_DIR="$GHOSTTY_RESOURCES_DIR"
-fi
-
 if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
   tmux new-session -s "$selected_name" -c "$selected"
   exit 0

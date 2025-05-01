@@ -42,6 +42,9 @@ in
       # Reload config file with prefix R
       bind r source-file ${config.xdg.configHome}/tmux/tmux.conf \; display-message "Config reloaded.."
 
+      # Open sessionizer with C-b + ;
+      bind \; display-popup -E "${sessionizer}/bin/tmux-sessionizer"
+
       # Vi-like bindings for copy mode
       bind-key -T copy-mode-vi 'v' send -X begin-selection
 
