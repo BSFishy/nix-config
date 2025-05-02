@@ -14,6 +14,7 @@ in
     pkgs.ripgrep
     pkgs.lazygit
     pkgs.lua54Packages.luarocks
+    pkgs.lua-language-server
 
     # Mason dependencies
     pkgs.curl
