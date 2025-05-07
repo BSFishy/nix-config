@@ -15,5 +15,8 @@
 
     # Set up tools
     ./tools.nix
+
+    # Set up Nix command-not-found replacement
+    ./nix-index.nix
   ];
 }

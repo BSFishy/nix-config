@@ -13,8 +13,10 @@ in
     pkgs.fzf
     pkgs.ripgrep
     pkgs.lazygit
+
     pkgs.lua54Packages.luarocks
     pkgs.lua-language-server
+    pkgs.ast-grep
 
     # Mason dependencies
     pkgs.curl
