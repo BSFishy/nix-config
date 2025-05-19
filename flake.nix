@@ -167,6 +167,21 @@
           configurationName = "work-darwin";
         };
       };
+
+      # home manager configuration for my work linux vm
+      work-linux-home-configuration = {
+        pkgs = nixpkgs.legacyPackages.aarch64-linux;
+
+        modules = standard-home-modules ++ [
+          # base configuration
+          ./hosts/work-linux/home.nix
+        ];
+
+        extraSpecialArgs = {
+          inherit inputs;
+          configurationName = "work-linux";
+        };
+      };
     in
     {
       # nixos configurations
@@ -189,6 +204,7 @@
         "personal-linux" = home-manager.lib.homeManagerConfiguration personal-linux-home-configuration;
         "server-linux" = home-manager.lib.homeManagerConfiguration server-linux-home-configuration;
         "work-darwin" = home-manager.lib.homeManagerConfiguration work-darwin-home-configuration;
+        "work-linux" = home-manager.lib.homeManagerConfiguration work-linux-home-configuration;
       };
 
       # the raw home manager configurations. useful for my work setup, where i
@@ -197,6 +213,7 @@
         "personal-linux" = personal-linux-home-configuration;
         "server-linux" = server-linux-home-configuration;
         "work-darwin" = work-darwin-home-configuration;
+        "work-linux" = work-linux-home-configuration;
       };
     }
     // flake-utils.lib.eachDefaultSystem (
