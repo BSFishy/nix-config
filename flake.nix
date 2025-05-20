@@ -33,6 +33,11 @@
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -42,15 +47,29 @@
       nix-darwin,
       nixos-hardware,
       home-manager,
+      nix-index-database,
       ...
     }@inputs:
     let
+      # nixos modules that are used basically everywhere
+      standard-nixos-modules = [
+        nix-index-database.nixosModules.nix-index
+      ];
+
+      # nix-darwin modules that are used basically everywhere
+      standard-darwin-modules = [
+        nix-index-database.darwinModules.nix-index
+      ];
+
       # home manager modules that are used basically everywhere
       standard-home-modules = [
         ./modules/home-manager/editor
         ./modules/home-manager/shell
         ./modules/home-manager/tools
         ./modules/home-manager/utilities
+
+        # nix-index precompiled database
+        nix-index-database.hmModules.nix-index
       ];
 
       # nixos configuration for personal laptop
@@ -60,7 +79,7 @@
         in
         {
           system = "x86_64-linux";
-          modules = [
+          modules = standard-nixos-modules ++ [
             # base configuration
             ./hosts/personal-linux/configuration.nix
 
@@ -125,7 +144,7 @@
           homeCfg = work-darwin-home-configuration;
         in
         {
-          modules = [
+          modules = standard-darwin-modules ++ [
             # base configuration
             ./hosts/work-darwin/nix-darwin.nix
 
