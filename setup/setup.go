@@ -236,6 +236,35 @@ func setupHomeManager(configuration string) error {
 	return cmd.Run()
 }
 
+func setupNixos(configuration string) error {
+	cmd, err := command("nixos-rebuild", "switch", "--flake", fmt.Sprintf("%s/dotfiles#%s", homeDir, configuration))
+	if err != nil {
+		return err
+	}
+
+	printCommand(cmd)
+
+	if dryRun {
+		return nil
+	}
+
+	outputFile, err := os.Create(filepath.Join(outputDir, "nixos-switch.log"))
+	if err != nil {
+		return fmt.Errorf("failed to create clone output log: %s", err)
+	}
+
+	defer outputFile.Close()
+
+	if err := setPermissions(outputFile); err != nil {
+		return fmt.Errorf("failed to set log permissions: %s", err)
+	}
+
+	cmd.Stdout = outputFile
+	cmd.Stderr = outputFile
+
+	return cmd.Run()
+}
+
 func setupExtras() error {
 	if err := clone("https://github.com/BSFishy/init.lua.git", filepath.Join(homeDir, ".config", "nvim")); err != nil {
 		return fmt.Errorf("failed to clone nvim config: %s", err)

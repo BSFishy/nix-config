@@ -101,6 +101,31 @@
           ];
         };
 
+      incus-mora-linux-nixos-configuration =
+        let
+          homeCfg = server-linux-home-configuration;
+        in
+        {
+          system = "x86_64-linux";
+          modules = standard-nixos-modules ++ [
+            # base configuration
+            ./hosts/incus-linux/configuration.nix
+
+            # k3s
+            ./modules/nixos/k8s/k3s.nix
+
+            # home manager configuration
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+
+              home-manager.users.matt.imports = homeCfg.modules;
+              home-manager.extraSpecialArgs = homeCfg.extraSpecialArgs;
+            }
+          ];
+        };
+
       # home manager configuration for graphical personal linux machines
       personal-linux-home-configuration = {
         pkgs = nixpkgs.legacyPackages."x86_64-linux";
@@ -206,6 +231,7 @@
       # nixos configurations
       nixosConfigurations = {
         "personal-linux" = nixpkgs.lib.nixosSystem personal-linux-nixos-configuration;
+        "incus-mora-linux" = nixpkgs.lib.nixosSystem incus-mora-linux-nixos-configuration;
       };
 
       # nix-darwin configurations

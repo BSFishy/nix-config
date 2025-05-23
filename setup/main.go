@@ -86,15 +86,6 @@ func main() {
 		fatal("Failed to run form: %s\n", err)
 	}
 
-	fmt.Printf("dry run: %t\n", dryRun)
-	fmt.Printf("installation: %s\n", installationType)
-	fmt.Printf("config: %s\n", dotfilesConfiguration)
-	fmt.Printf("create user: %t\n", createUser)
-	if createUser {
-		fmt.Printf("user name: %s\n", userName)
-		fmt.Printf("user sudo: %t\n", userSudo)
-	}
-
 	if createUser {
 		err = doCreateUser()
 		if err != nil {
@@ -114,7 +105,7 @@ func main() {
 
 	switch installationType {
 	case NIXOS:
-		panic("unimplemented")
+		setupNixos(dotfilesConfiguration)
 	case NIX_DARWIN:
 		panic("unimplemented")
 	case HOME_MANAGER:
@@ -137,6 +128,7 @@ func getValidConfigurations() (huh.Option[string], []huh.Option[string]) {
 		return huh.NewOption("NixOS", NIXOS), []huh.Option[string]{
 			huh.NewOption("Personal", "personal-linux"),
 			huh.NewOption("Server", "server-linux"),
+			huh.NewOption("Mora", "incus-mora-linux"),
 		}
 	case "darwin":
 		return huh.NewOption("Nix-Darwin", NIX_DARWIN), []huh.Option[string]{
