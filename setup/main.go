@@ -15,6 +15,7 @@ var (
 	installationType      string
 	dotfilesConfiguration string
 	createUser            bool   = true
+	importUser            bool   = false
 	userName              string = "matt"
 	userPassword          string
 	userSudo              bool = true
@@ -56,6 +57,11 @@ func main() {
 				Affirmative("Yes").
 				Negative("No").
 				Value(&createUser),
+			huh.NewConfirm().
+				Title("Should the user matt be imported?").
+				Affirmative("Yes").
+				Negative("No").
+				Value(&importUser),
 		)
 	} else {
 		createUser = false
@@ -91,6 +97,10 @@ func main() {
 		if err != nil {
 			fatal("Failed to create user: %s\n", err)
 		}
+	}
+
+	if importUser {
+		userName = "matt"
 	}
 
 	err = setupHomeDirectory()

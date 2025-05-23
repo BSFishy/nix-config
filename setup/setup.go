@@ -13,7 +13,7 @@ import (
 )
 
 func getUser() (*user.User, error) {
-	if createUser {
+	if createUser || importUser {
 		return user.Lookup(userName)
 	} else {
 		return user.Current()
