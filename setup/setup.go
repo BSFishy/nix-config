@@ -236,8 +236,8 @@ func setupHomeManager(configuration string) error {
 	return cmd.Run()
 }
 
-func setupNixos(configuration string) error {
-	cmd, err := command("nixos-rebuild", "switch", "--flake", fmt.Sprintf("%s/dotfiles#%s", homeDir, configuration))
+func setupNixos(path, configuration string) error {
+	cmd, err := command("nixos-rebuild", "switch", "--flake", fmt.Sprintf("%s#%s", path, configuration))
 	if err != nil {
 		return err
 	}

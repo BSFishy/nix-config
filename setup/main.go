@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os/user"
+	"path/filepath"
 	"runtime"
 
 	"github.com/charmbracelet/huh"
@@ -100,6 +101,17 @@ func main() {
 	}
 
 	if importUser {
+		// need to setup the config so that the user will be there to begin with
+		err = clone("https://github.com/BSFishy/nix-config.git", "/tmp/dotfiles")
+		if err != nil {
+			fatal("Failed to clone dotfiles: %s\n", err)
+		}
+
+		err = setupNixos("/tmp/dotfiles", dotfilesConfiguration)
+		if err != nil {
+			fatal("Failed to setup nixos: %s\n", err)
+		}
+
 		userName = "matt"
 	}
 
@@ -115,13 +127,17 @@ func main() {
 
 	switch installationType {
 	case NIXOS:
-		setupNixos(dotfilesConfiguration)
+		err = setupNixos(filepath.Join(homeDir, "dotfiles"), dotfilesConfiguration)
 	case NIX_DARWIN:
 		panic("unimplemented")
 	case HOME_MANAGER:
-		setupHomeManager(dotfilesConfiguration)
+		err = setupHomeManager(dotfilesConfiguration)
 	default:
 		panic(fmt.Sprintf("invalid installation type: %s", installationType))
+	}
+
+	if err != nil {
+		fatal("Failed to setup: %s\n", err)
 	}
 
 	err = setupExtras()
