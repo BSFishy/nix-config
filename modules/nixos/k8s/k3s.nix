@@ -14,4 +14,10 @@
     User = "root";
     Group = "root";
   };
+
+  # this is also needed for /dev/kmsg
+  systemd.services.k3s.serviceConfig.Capabilities =
+    "CAP_SYSLOG CAP_NET_ADMIN CAP_NET_RAW CAP_SYS_ADMIN";
+  systemd.services.k3s.serviceConfig.CapabilityBoundingSet =
+    "CAP_SYSLOG CAP_NET_ADMIN CAP_NET_RAW CAP_SYS_ADMIN";
 }
