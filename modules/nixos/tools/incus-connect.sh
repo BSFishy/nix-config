@@ -47,6 +47,13 @@ if [[ "$PRIVILEGED" != "true" ]]; then
   incus config set "$NAME" security.privileged=true
 fi
 
+# Check if overlay kernel module is set
+OVERLAY=$(incus config get "$NAME" linux.kernel_modules)
+if [[ "$OVERLAY" != "overlay" ]]; then
+  echo "Enabling overlay kernel module"
+  incus config set "$NAME" linux.kernel_modules overlay
+fi
+
 # Check if container is running
 STATUS=$(incus list "$NAME" --format csv | cut -d',' -f2 | head -n1)
 if [[ "$STATUS" != "RUNNING" ]]; then

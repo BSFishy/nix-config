@@ -18,6 +18,8 @@ in
     "${modulesPath}/virtualisation/lxc-container.nix"
   ] ++ lib.optional (builtins.pathExists incusConfig) incusConfig;
 
+  boot.isContainer = true;
+
   networking = {
     dhcpcd.enable = false;
     useDHCP = false;
