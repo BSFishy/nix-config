@@ -237,7 +237,7 @@ func setupHomeManager(configuration string) error {
 }
 
 func setupNixos(path, configuration string) error {
-	cmd, err := command("nixos-rebuild", "--no-sandbox", "switch", "--flake", fmt.Sprintf("%s#%s", path, configuration))
+	cmd, err := command("nixos-rebuild", "switch", "--no-sandbox", "--flake", fmt.Sprintf("%s#%s", path, configuration))
 	if err != nil {
 		return err
 	}
