@@ -101,6 +101,10 @@ func main() {
 	}
 
 	if importUser {
+		// this needs to be temporarily set to false while we clone as the
+		// current user
+		importUser = false
+
 		// need to setup the config so that the user will be there to begin with
 		err = clone("https://github.com/BSFishy/nix-config.git", "/tmp/dotfiles")
 		if err != nil {
@@ -112,6 +116,7 @@ func main() {
 			fatal("Failed to setup nixos: %s\n", err)
 		}
 
+		importUser = true
 		userName = "matt"
 	}
 
