@@ -7,6 +7,7 @@
 
   services.k3s = {
     enable = true;
+    extraFlags = "--write-kubeconfig-group=k8s --write-kubeconfig-mode=0640";
   };
 
   # run the service as root so it has access to /dev/kmsg

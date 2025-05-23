@@ -49,8 +49,11 @@ in
     extraGroups = [
       "networkmanager"
       "wheel"
+      "k8s"
     ];
   };
+
+  users.groups.k8s = { };
 
   system.stateVersion = "25.11"; # Did you read the comment?
 }
