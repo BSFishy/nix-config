@@ -13,7 +13,7 @@ import (
 )
 
 func getUser() (*user.User, error) {
-	if createUser || importUser {
+	if createUser {
 		return user.Lookup(userName)
 	} else {
 		return user.Current()
@@ -220,35 +220,6 @@ func setupHomeManager(configuration string) error {
 	}
 
 	outputFile, err := os.Create(filepath.Join(outputDir, "home-manager-switch.log"))
-	if err != nil {
-		return fmt.Errorf("failed to create clone output log: %s", err)
-	}
-
-	defer outputFile.Close()
-
-	if err := setPermissions(outputFile); err != nil {
-		return fmt.Errorf("failed to set log permissions: %s", err)
-	}
-
-	cmd.Stdout = outputFile
-	cmd.Stderr = outputFile
-
-	return cmd.Run()
-}
-
-func setupNixos(path, configuration string) error {
-	cmd, err := command("nixos-rebuild", "switch", "--option", "sandbox", "false", "--flake", fmt.Sprintf("%s#%s", path, configuration))
-	if err != nil {
-		return err
-	}
-
-	printCommand(cmd)
-
-	if dryRun {
-		return nil
-	}
-
-	outputFile, err := os.Create(filepath.Join(outputDir, "nixos-switch.log"))
 	if err != nil {
 		return fmt.Errorf("failed to create clone output log: %s", err)
 	}

@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"os/user"
-	"path/filepath"
 	"runtime"
 
 	"github.com/charmbracelet/huh"
@@ -16,7 +15,6 @@ var (
 	installationType      string
 	dotfilesConfiguration string
 	createUser            bool   = true
-	importUser            bool   = false
 	userName              string = "matt"
 	userPassword          string
 	userSudo              bool = true
@@ -58,11 +56,6 @@ func main() {
 				Affirmative("Yes").
 				Negative("No").
 				Value(&createUser),
-			huh.NewConfirm().
-				Title("Should the user matt be imported?").
-				Affirmative("Yes").
-				Negative("No").
-				Value(&importUser),
 		)
 	} else {
 		createUser = false
@@ -93,31 +86,20 @@ func main() {
 		fatal("Failed to run form: %s\n", err)
 	}
 
+	fmt.Printf("dry run: %t\n", dryRun)
+	fmt.Printf("installation: %s\n", installationType)
+	fmt.Printf("config: %s\n", dotfilesConfiguration)
+	fmt.Printf("create user: %t\n", createUser)
+	if createUser {
+		fmt.Printf("user name: %s\n", userName)
+		fmt.Printf("user sudo: %t\n", userSudo)
+	}
+
 	if createUser {
 		err = doCreateUser()
 		if err != nil {
 			fatal("Failed to create user: %s\n", err)
 		}
-	}
-
-	if importUser {
-		// this needs to be temporarily set to false while we clone as the
-		// current user
-		importUser = false
-
-		// need to setup the config so that the user will be there to begin with
-		err = clone("https://github.com/BSFishy/nix-config.git", "/tmp/dotfiles")
-		if err != nil {
-			fatal("Failed to clone dotfiles: %s\n", err)
-		}
-
-		err = setupNixos("/tmp/dotfiles", dotfilesConfiguration)
-		if err != nil {
-			fatal("Failed to setup nixos: %s\n", err)
-		}
-
-		importUser = true
-		userName = "matt"
 	}
 
 	err = setupHomeDirectory()
@@ -132,17 +114,13 @@ func main() {
 
 	switch installationType {
 	case NIXOS:
-		err = setupNixos(filepath.Join(homeDir, "dotfiles"), dotfilesConfiguration)
+		panic("unimplemented")
 	case NIX_DARWIN:
 		panic("unimplemented")
 	case HOME_MANAGER:
-		err = setupHomeManager(dotfilesConfiguration)
+		setupHomeManager(dotfilesConfiguration)
 	default:
 		panic(fmt.Sprintf("invalid installation type: %s", installationType))
-	}
-
-	if err != nil {
-		fatal("Failed to setup: %s\n", err)
 	}
 
 	err = setupExtras()
@@ -159,7 +137,6 @@ func getValidConfigurations() (huh.Option[string], []huh.Option[string]) {
 		return huh.NewOption("NixOS", NIXOS), []huh.Option[string]{
 			huh.NewOption("Personal", "personal-linux"),
 			huh.NewOption("Server", "server-linux"),
-			huh.NewOption("Mora", "incus-mora-linux"),
 		}
 	case "darwin":
 		return huh.NewOption("Nix-Darwin", NIX_DARWIN), []huh.Option[string]{

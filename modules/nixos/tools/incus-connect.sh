@@ -47,23 +47,6 @@ if [[ "$PRIVILEGED" != "true" ]]; then
   incus config set "$NAME" security.privileged=true
 fi
 
-# Check if overlay kernel module is set
-OVERLAY=$(incus config get "$NAME" linux.kernel_modules)
-if [[ "$OVERLAY" != "overlay" ]]; then
-  echo "Enabling overlay kernel module"
-  incus config set "$NAME" linux.kernel_modules overlay
-fi
-
-# Check if kmsg device is created
-if ! incus config device list "$NAME" | grep -q "^kmsg$"; then
-  echo "Enabling kmsg device"
-  incus config device add "$NAME" kmsg unix-char source=/dev/kmsg path=/dev/kmsg
-fi
-
-incus config set "$NAME" raw.lxc "lxc.apparmor.profile=unconfined
-lxc.cgroup.devices.allow=a
-lxc.cap.drop="
-
 # Check if container is running
 STATUS=$(incus list "$NAME" --format csv | cut -d',' -f2 | head -n1)
 if [[ "$STATUS" != "RUNNING" ]]; then
