@@ -14,7 +14,8 @@ in
     pkgs.ripgrep
     pkgs.lazygit
 
-    pkgs.lua54Packages.luarocks
+    pkgs.lua51Packages.lua
+    pkgs.lua51Packages.luarocks
     pkgs.lua-language-server
     pkgs.ast-grep
 
