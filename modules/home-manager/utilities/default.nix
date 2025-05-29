@@ -10,6 +10,7 @@
   imports = [
     ./direnv.nix
     ./git.nix
+    ./insert-license.nix
     ./nixfmt.nix
     ./ssh.nix
     ./switch-shell.nix
