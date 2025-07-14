@@ -9,12 +9,6 @@
     # flake utils
     flake-utils.url = "github:numtide/flake-utils";
 
-    # don't currently use nixgl since im on nixos
-    # nixgl = {
-    #   url = "github:nix-community/nixGL";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
-
     # nix darwin latest
     nix-darwin = {
       url = "github:LnL7/nix-darwin/master";
@@ -119,6 +113,32 @@
         };
       };
 
+      # nixos configuration for prometheus 02
+      prometheus-nixos-configuration =
+        let
+          homeCfg = server-linux-home-configuration;
+        in
+        {
+          system = "x86_64-linux";
+          modules = standard-nixos-modules ++ [
+            # base configuration
+            ./hosts/prometheus-02/configuration.nix
+
+            # k3s
+            ./modules/nixos/k8s/k3s.nix
+
+            # home manager configuration
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+
+              home-manager.users.matt.imports = homeCfg.modules;
+              home-manager.extraSpecialArgs = homeCfg.extraSpecialArgs;
+            }
+          ];
+        };
+
       # home manager configuration for linux machines without graphical
       # environments
       server-linux-home-configuration = {
@@ -206,6 +226,7 @@
       # nixos configurations
       nixosConfigurations = {
         "personal-linux" = nixpkgs.lib.nixosSystem personal-linux-nixos-configuration;
+        "prometheus-02" = nixpkgs.lib.nixosSystem prometheus-nixos-configuration;
       };
 
       # nix-darwin configurations
