@@ -287,9 +287,10 @@
     nodeSelector = { };
   };
   ingress = {
-    enabled = false;
     ingressClassName = null;
-    host = "sslip.io";
+    enabled = true;
+    # TODO: make this configurable?
+    host = "longhorn.home.mattprovost.dev";
     tls = false;
     secureBackends = false;
     tlsSecret = "longhorn.local-tls";
