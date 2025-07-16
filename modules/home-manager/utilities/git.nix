@@ -1,4 +1,4 @@
-{ configurationName, lib, ... }:
+{ work, ... }:
 
 {
   programs.git = {
@@ -6,11 +6,7 @@
     lfs.enable = true;
 
     userName = "Matt Provost";
-    userEmail =
-      if lib.strings.hasPrefix "work" configurationName then
-        "mprovost@cloudflare.com"
-      else
-        "mattprovost6@gmail.com";
+    userEmail = if work then "mprovost@cloudflare.com" else "mattprovost6@gmail.com";
 
     extraConfig = {
       init.defaultBranch = "main";

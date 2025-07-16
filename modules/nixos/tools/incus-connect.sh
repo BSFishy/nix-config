@@ -56,4 +56,4 @@ fi
 
 # Connect to the container
 echo "Connecting to container '$NAME'..."
-incus exec "$NAME" --force-interactive -- bash
+TERM=xterm-256color incus exec "$NAME" --force-interactive -- bash

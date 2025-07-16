@@ -41,219 +41,110 @@
       nix-darwin,
       nixos-hardware,
       home-manager,
-      nix-index-database,
       ...
     }@inputs:
     let
-      # nixos modules that are used basically everywhere
-      standard-nixos-modules = [
-        nix-index-database.nixosModules.nix-index
-      ];
-
-      # nix-darwin modules that are used basically everywhere
-      standard-darwin-modules = [
-        nix-index-database.darwinModules.nix-index
-      ];
-
-      # home manager modules that are used basically everywhere
-      standard-home-modules = [
-        ./modules/home-manager/editor
-        ./modules/home-manager/shell
-        ./modules/home-manager/tools
-        ./modules/home-manager/utilities
-
-        # nix-index precompiled database
-        nix-index-database.hmModules.nix-index
-      ];
-
       # nixos configuration for personal laptop
-      personal-linux-nixos-configuration =
-        let
-          homeCfg = personal-linux-home-configuration;
-        in
-        {
-          system = "x86_64-linux";
-          modules = standard-nixos-modules ++ [
-            # base configuration
-            ./hosts/personal-linux/configuration.nix
+      orion-02-nixos = import ./systems/nixos.nix {
+        inherit inputs;
 
-            # hardware configuration
-            nixos-hardware.nixosModules.framework-13-7040-amd
+        system = "x86_64-linux";
+        hostname = "orion-02";
+        username = "matt";
+        extraModules = [
+          # detected hardware configurations
+          ./hosts/orion-02/hardware-configuration.nix
 
-            # standard configurations
-            ./modules/nixos/tools
-
-            # home manager configuration
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-
-              home-manager.users.matt.imports = homeCfg.modules;
-              home-manager.extraSpecialArgs = homeCfg.extraSpecialArgs;
-            }
-          ];
-        };
-
-      # home manager configuration for graphical personal linux machines
-      personal-linux-home-configuration = {
-        pkgs = nixpkgs.legacyPackages."x86_64-linux";
-
-        modules = standard-home-modules ++ [
-          # base configuration
-          ./hosts/personal-linux/home.nix
-
-          # graphical programs
-          ./modules/home-manager/ui
+          # framework laptop hardware configurations
+          nixos-hardware.nixosModules.framework-13-7040-amd
         ];
 
-        extraSpecialArgs = {
-          inherit inputs;
-          configurationName = "personal-linux";
+        homeManagerConfiguration = personal-linux-home-configuration {
+          graphical = true;
         };
+
+        graphical = true;
+        fat = true;
       };
 
-      # nixos configuration for prometheus 02
-      prometheus-nixos-configuration =
-        let
-          homeCfg = server-linux-home-configuration;
-        in
-        {
-          system = "x86_64-linux";
-          modules = standard-nixos-modules ++ [
-            # base configuration
-            ./hosts/prometheus-02/configuration.nix
+      # prometheus-02 server nixos configuration
+      prometheus-02-nixos = import ./systems/nixos.nix {
+        inherit inputs;
 
-            # k3s
-            ./modules/nixos/k8s/k3s.nix
-
-            # home manager configuration
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-
-              home-manager.users.matt.imports = homeCfg.modules;
-              home-manager.extraSpecialArgs = homeCfg.extraSpecialArgs;
-            }
-          ];
-        };
-
-      # home manager configuration for linux machines without graphical
-      # environments
-      server-linux-home-configuration = {
-        pkgs = nixpkgs.legacyPackages."x86_64-linux";
-
-        modules = standard-home-modules ++ [
-          # base configuration
-          ./hosts/server-linux/home.nix
-
-          # add ghostty for terminfo
-          ./modules/home-manager/ui/ghostty.nix
+        system = "x86_64-linux";
+        hostname = "prometheus-02";
+        username = "matt";
+        extraModules = [
+          # detected hardware configuration
+          ./hosts/prometheus-02/hardware-configuration.nix
         ];
 
-        extraSpecialArgs = {
-          inherit inputs;
-          configurationName = "server-linux";
+        homeManagerConfiguration = personal-linux-home-configuration {
+          graphical = false;
         };
+
+        k8s = true;
       };
 
       # nix-darwin setup for my work mac
-      work-darwin-configuration =
-        let
-          homeCfg = work-darwin-home-configuration;
-        in
+      work-darwin-configuration = import ./systems/darwin.nix {
+        inherit inputs;
+
+        username = "mprovost";
+        homeManagerConfiguration = work-darwin-home-configuration;
+      };
+
+      personal-linux-home-configuration =
         {
-          modules = standard-darwin-modules ++ [
-            # base configuration
-            ./hosts/work-darwin/nix-darwin.nix
+          graphical,
+        }:
+        import ./systems/home-manager.nix {
+          inherit inputs graphical;
 
-            # homebrew configuration
-            ./modules/nix-darwin/homebrew
-            ./modules/nix-darwin/system
-
-            # home manager configuration
-            home-manager.darwinModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-
-              home-manager.users.mprovost.imports = homeCfg.modules;
-              home-manager.extraSpecialArgs = homeCfg.extraSpecialArgs;
-            }
-          ];
-
-          specialArgs = {
-            inherit inputs;
-            configurationName = "work-darwin";
-          };
+          system = "x86_64-linux";
+          username = "matt";
         };
 
       # home manager configuration for my work mac
       work-darwin-home-configuration = {
-        pkgs = nixpkgs.legacyPackages."aarch64-darwin";
+        inherit inputs;
 
-        modules = standard-home-modules ++ [
-          # base configuration
-          ./hosts/work-darwin/home.nix
+        system = "aarch64-darwin";
+        username = "mprovost";
 
-          # graphical programs
-          ./modules/home-manager/ui
-        ];
-
-        extraSpecialArgs = {
-          inherit inputs;
-          configurationName = "work-darwin";
-        };
+        graphical = true;
+        work = true;
       };
 
-      # home manager configuration for my work linux vm
-      work-linux-home-configuration = {
-        pkgs = nixpkgs.legacyPackages.aarch64-linux;
+      work-linux-home-configuration = import ./systems/home-manager.nix {
+        inherit inputs;
 
-        modules = standard-home-modules ++ [
-          # base configuration
-          ./hosts/work-linux/home.nix
-        ];
+        system = "x86_64-linux";
+        username = "mprovost";
 
-        extraSpecialArgs = {
-          inherit inputs;
-          configurationName = "work-linux";
-        };
+        work = true;
       };
     in
     {
       # nixos configurations
       nixosConfigurations = {
-        "personal-linux" = nixpkgs.lib.nixosSystem personal-linux-nixos-configuration;
-        "prometheus-02" = nixpkgs.lib.nixosSystem prometheus-nixos-configuration;
-      };
+        orion-02 = nixpkgs.lib.nixosSystem orion-02-nixos;
 
-      # nix-darwin configurations
-      darwinConfigurations = {
-        "work-darwin" = nix-darwin.lib.darwinSystem work-darwin-configuration;
+        # servers
+        prometheus-02 = nixpkgs.lib.nixosSystem prometheus-02-nixos;
       };
 
       # the raw nix-darwin configurations
       rawDarwinConfigurations = {
-        "work-darwin" = work-darwin-configuration;
+        work-darwin = work-darwin-configuration;
       };
 
-      # home manager configurations
-      homeConfigurations = {
-        "personal-linux" = home-manager.lib.homeManagerConfiguration personal-linux-home-configuration;
-        "server-linux" = home-manager.lib.homeManagerConfiguration server-linux-home-configuration;
-        "work-darwin" = home-manager.lib.homeManagerConfiguration work-darwin-home-configuration;
-        "work-linux" = home-manager.lib.homeManagerConfiguration work-linux-home-configuration;
-      };
-
-      # the raw home manager configurations. useful for my work setup, where i
-      # use a separate flake to futher configure my home manager setup
-      rawHomeConfigurations = {
-        "personal-linux" = personal-linux-home-configuration;
-        "server-linux" = server-linux-home-configuration;
-        "work-darwin" = work-darwin-home-configuration;
-        "work-linux" = work-linux-home-configuration;
+      # the raw home-manager configurations
+      rawHomeManagerConfigurations = {
+        # keep this separate from the darwin configuration so it can be
+        # extended
+        work-darwin = work-darwin-home-configuration;
+        work-linux = work-linux-home-configuration;
       };
     }
     // flake-utils.lib.eachDefaultSystem (

@@ -1,9 +1,10 @@
 { ... }:
 
 {
-  # set basic home configuration
-  home.username = "mprovost";
-  home.homeDirectory = "/Users/mprovost";
+  imports = [
+    ./linux.nix
+    ./user.nix
+  ];
 
   # set home manager state version
   home.stateVersion = "24.11";

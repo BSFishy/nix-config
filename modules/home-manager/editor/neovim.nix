@@ -17,6 +17,7 @@ in
     pkgs.lua51Packages.lua
     pkgs.lua51Packages.luarocks
     pkgs.lua-language-server
+    pkgs.helm-ls
     pkgs.ast-grep
 
     # Mason dependencies
