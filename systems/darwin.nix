@@ -8,7 +8,6 @@ let
   home-manager = inputs.home-manager;
 in
 {
-
   modules = [
     # basic configurations
     ../modules/nix-darwin/basic
@@ -22,7 +21,6 @@ in
       home-manager.useUserPackages = true;
 
       home-manager.users.${username}.imports = homeManagerConfiguration.modules;
-      home-manager.extraSpecialArgs = homeManagerConfiguration.extraSpecialArgs;
     }
 
     # add extra arguments to modules

@@ -11,4 +11,8 @@
       experimental-features = nix-command flakes
     '';
   };
+
+  programs.nh = {
+    enable = true;
+  };
 }

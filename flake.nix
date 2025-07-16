@@ -106,7 +106,7 @@
         };
 
       # home manager configuration for my work mac
-      work-darwin-home-configuration = {
+      work-darwin-home-configuration = import ./systems/home-manager.nix {
         inherit inputs;
 
         system = "aarch64-darwin";
@@ -139,12 +139,9 @@
         work-darwin = work-darwin-configuration;
       };
 
-      # the raw home-manager configurations
-      rawHomeManagerConfigurations = {
-        # keep this separate from the darwin configuration so it can be
-        # extended
-        work-darwin = work-darwin-home-configuration;
-        work-linux = work-linux-home-configuration;
+      # the home-manager configurations
+      homeConfigurations = {
+        work-linux = home-manager.lib.homeManagerConfiguration work-linux-home-configuration;
       };
     }
     // flake-utils.lib.eachDefaultSystem (

@@ -3,6 +3,7 @@
 {
   imports = [
     ./linux.nix
+    ./nix.nix
     ./user.nix
   ];
 
