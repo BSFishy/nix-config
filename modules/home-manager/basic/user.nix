@@ -6,7 +6,5 @@ in
 {
   # set basic home configuration
   home.username = username;
-  home.homeDirectory = builtins.trace "home directory" (
-    if isLinux then "/home/${username}" else "/Users/${username}"
-  );
+  home.homeDirectory = if isLinux then "/home/${username}" else "/Users/${username}";
 }
