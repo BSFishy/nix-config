@@ -8,7 +8,7 @@ let
   home-manager = inputs.home-manager;
 in
 {
-  modules = builtins.trace "here" [
+  modules = [
     # basic configurations
     ../modules/nix-darwin/basic
     ../modules/nix-darwin/homebrew
@@ -20,7 +20,6 @@ in
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
 
-      home-manager.users.${username}.home.homeDirectory = "/Users/${username}";
       home-manager.users.${username}.imports = homeManagerConfiguration.modules;
     }
 
