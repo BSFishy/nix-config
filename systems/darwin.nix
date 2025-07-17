@@ -27,7 +27,7 @@ in
     # add extra arguments to modules
     {
       config._module.args = {
-        inherit inputs;
+        inherit inputs username;
       };
     }
   ];
