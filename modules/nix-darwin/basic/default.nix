@@ -1,7 +1,10 @@
-{ inputs, ... }:
+{ config, inputs, ... }:
 
+let
+  value = builtins.trace "Final home.homeDirectory: ${toString config.home-manager.users.mprovost.home.homeDirectory}" "/Users/mprovost";
+in
 {
-  imports = [
+  imports = builtins.trace value [
     ./nix.nix
   ];
 
