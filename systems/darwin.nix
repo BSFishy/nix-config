@@ -20,7 +20,8 @@ in
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
 
-      home-manager.users.${username}.imports = homeManagerConfiguration.modules;
+      home-manager.users.${username}.imports =
+        builtins.trace homeManagerConfiguration.modules homeManagerConfiguration.modules;
     }
 
     # add extra arguments to modules
