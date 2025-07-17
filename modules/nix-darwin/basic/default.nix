@@ -3,6 +3,7 @@
 {
   imports = [
     ./nix.nix
+    ./user.nix
   ];
 
   # Set Git commit hash for darwin-version.
