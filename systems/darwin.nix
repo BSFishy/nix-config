@@ -15,7 +15,7 @@ in
     ../modules/nix-darwin/system
 
     # home manager configuration
-    home-manager.nixosModules.home-manager
+    home-manager.darwinModules.home-manager
     {
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
