@@ -1,10 +1,15 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   imports = [
     ./linux.nix
     ./nix.nix
     ./user.nix
+  ];
+
+  # add ghostty terminfo so everyone understands the terminal features
+  home.packages = [
+    pkgs.ghostty.terminfo
   ];
 
   # set home manager state version
