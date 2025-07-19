@@ -77,6 +77,9 @@
         extraModules = [
           # detected hardware configuration
           ./hosts/prometheus-02/hardware-configuration.nix
+
+          # run ssh server
+          ./modules/nixos/tools/ssh.nix
         ];
 
         homeManagerConfiguration = personal-linux-home-configuration {
