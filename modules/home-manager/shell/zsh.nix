@@ -13,7 +13,7 @@
     enable = true;
     enableCompletion = true;
 
-    initExtra = ''
+    initContent = ''
       export PATH="$PATH:${config.home.homeDirectory}/.local/bin"
       ${pkgs.nix-your-shell}/bin/nix-your-shell ${pkgs.zsh}/bin/zsh | source /dev/stdin
     '';

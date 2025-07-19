@@ -5,7 +5,7 @@
     enable = true;
   };
 
-  programs.zsh.initExtra = ''
-    eval "$(nh completions --shell zsh)"
+  programs.zsh.initContent = ''
+    eval "$(nh completions zsh)"
   '';
 }

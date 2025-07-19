@@ -23,7 +23,7 @@ in
       ../modules/home-manager/utilities
 
       # nix-index precompiled database
-      inputs.nix-index-database.hmModules.nix-index
+      inputs.nix-index-database.homeModules.nix-index
 
       # add extra arguments to modules
       {
