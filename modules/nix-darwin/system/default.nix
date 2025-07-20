@@ -1,6 +1,7 @@
-{ ... }:
+{ username, ... }:
 
 {
+  system.primaryUser = username;
   system.defaults = {
     NSGlobalDomain = {
       AppleShowAllExtensions = true;
