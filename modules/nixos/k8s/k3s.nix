@@ -19,6 +19,14 @@
     extraFlags = [
       "--disable traefik"
       "--disable servicelb"
+
+      # vip configuration
+      "--tls-san=192.168.1.90"
+
+      # dual stack
+      "--cluster-cidr 10.42.0.0/16,fd42:abcd:1234::/48"
+      "--flannel-ipv6-masq"
+      "--service-cidr 10.43.0.0/16,fd42:abcd:1234:1::/112"
     ];
 
     manifests = {
