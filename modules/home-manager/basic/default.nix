@@ -1,5 +1,8 @@
 { pkgs, ... }:
 
+let
+  isLinux = pkgs.stdenv.hostPlatform.isLinux;
+in
 {
   imports = [
     ./linux.nix
@@ -8,7 +11,7 @@
   ];
 
   # add ghostty terminfo so everyone understands the terminal features
-  home.packages = [
+  home.packages = pkgs.lib.optionals isLinux [
     pkgs.ghostty.terminfo
   ];
 
