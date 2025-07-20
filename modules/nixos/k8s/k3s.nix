@@ -19,7 +19,6 @@
     extraFlags = [
       "--disable traefik"
       "--disable servicelb"
-      "--disable coredns"
     ];
 
     manifests = {
