@@ -20,8 +20,9 @@
       "--disable traefik"
       "--disable servicelb"
 
-      # vip configuration
-      "--tls-san=192.168.1.90"
+      # cluster controlplane configuration
+      "--tls-san=10.0.1.250"
+      "--tls-san=k8s.mattprovost.dev"
 
       # dual stack
       "--cluster-cidr 10.42.0.0/16,fd42:abcd:1234::/48"

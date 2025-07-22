@@ -41,7 +41,7 @@ metadata:
   name: kubevip
   namespace: kube-system
 data:
-  range-global: 192.168.1.91-192.168.1.110
+  range-global: 10.0.1.31-10.0.1.224
 ---
 apiVersion: apps/v1
 kind: Deployment

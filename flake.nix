@@ -76,6 +76,9 @@
         hostname = "prometheus-02";
         username = "matt";
         extraModules = [
+          # extra host-specific configurations
+          ./hosts/prometheus-02/configuration.nix
+
           # detected hardware configuration
           ./hosts/prometheus-02/hardware-configuration.nix
 
