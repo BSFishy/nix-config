@@ -41,7 +41,7 @@ metadata:
   name: kubevip
   namespace: kube-system
 data:
-  range-global: 10.0.1.31-10.0.1.224
+  range-global: 10.0.1.31-10.0.1.224,2603:8080:1e00:1b00::2-2603:8080:1e00:1b00:ffff:ffff:ffff:fff0
 ---
 apiVersion: apps/v1
 kind: Deployment
