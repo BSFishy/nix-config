@@ -296,7 +296,9 @@
     tlsSecret = "longhorn.local-tls";
     path = "/";
     pathType = "ImplementationSpecific";
-    annotations = null;
+    annotations = {
+      "traefik.ingress.kubernetes.io/router.middlewares" = "authentik-authentik@kubernetescrd";
+    };
     secrets = null;
   };
   enablePSP = false;
