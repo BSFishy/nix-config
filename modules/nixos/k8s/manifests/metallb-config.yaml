@@ -1,0 +1,46 @@
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: default-pool
+  namespace: metallb-system
+spec:
+  addresses:
+    - 10.0.1.31-10.0.1.255
+    - 2603:8080:1e00:1b00::2-2603:8080:1e00:1b00:ffff:ffff:ffff:fff0
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: defaultv4-peer
+  namespace: metallb-system
+spec:
+  myASN: 65000
+  peerASN: 65000
+  peerAddress: 10.0.1.1
+  bfdProfile: default-bfd
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: defaultv6-peer
+  namespace: metallb-system
+spec:
+  myASN: 65000
+  peerASN: 65000
+  peerAddress: 2603:8080:1e00:1b00::1
+  bfdProfile: default-bfd
+---
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: default-ad
+  namespace: metallb-system
+---
+apiVersion: metallb.io/v1beta1
+kind: BFDProfile
+metadata:
+  name: default-bfd
+  namespace: metallb-system
+spec:
+  receiveInterval: 380
+  transmitInterval: 270

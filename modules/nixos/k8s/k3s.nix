@@ -21,7 +21,6 @@
       "--disable servicelb"
 
       # cluster controlplane configuration
-      "--tls-san=10.0.1.250"
       "--tls-san=k8s.mattprovost.dev"
 
       # dual stack
@@ -31,8 +30,8 @@
     ];
 
     manifests = {
-      kube-vip.source = ./manifests/kube-vip.yaml;
-      kube-vip-cloud-controller.source = ./manifests/kube-vip-cloud-controller.yaml;
+      metallb-frr.source = ./manifests/metallb-frr.yaml;
+      metallb-config.source = ./manifests/metallb-config.yaml;
 
       # fix for longhorn paths
       longhorn-fix.source = ./manifests/longhorn-fix.yaml;
