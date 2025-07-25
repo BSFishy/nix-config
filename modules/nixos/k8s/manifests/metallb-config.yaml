@@ -17,6 +17,7 @@ spec:
   myASN: 65000
   peerASN: 65000
   peerAddress: 10.0.1.1
+  sourceAddress: 10.0.1.2
   bfdProfile: default-bfd
 ---
 apiVersion: metallb.io/v1beta2
@@ -28,6 +29,7 @@ spec:
   myASN: 65000
   peerASN: 65000
   peerAddress: 2603:8080:1e00:1b00::1
+  sourceAddress: 2603:8080:1e00:1b00:5a47:caff:fe7e:9303
   bfdProfile: default-bfd
 ---
 apiVersion: metallb.io/v1beta1
