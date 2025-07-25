@@ -33,6 +33,8 @@
       metallb-frr.source = ./manifests/metallb-frr.yaml;
       metallb-config.source = ./manifests/metallb-config.yaml;
 
+      multus-daemonset-thick.source = ./manifests/multus-daemonset-thick.yaml;
+
       # fix for longhorn paths
       longhorn-fix.source = ./manifests/longhorn-fix.yaml;
     };
