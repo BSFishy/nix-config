@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubeapi-vip
+  namespace: kube-system
+  annotations:
+    coredns.io/hostname: k8s.mattprovost.dev
+spec:
+  selector:
+    app: kubeapi-vip
+  type: LoadBalancer
+  loadBalancerIP: 10.0.1.249
+  ports:
+    - protocol: TCP
+      port: 6443
+      targetPort: 6443
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubeapi-vip
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubeapi-vip
+  template:
+    metadata:
+      labels:
+        app: kubeapi-vip
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: "true"
+      containers:
+        - name: kubeapi-vip
+          image: alpine/socat
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+          args: ["TCP-LISTEN:6443,reuseaddr,fork", "TCP:$(NODE_IP):6443"]
+          ports:
+            - containerPort: 6443

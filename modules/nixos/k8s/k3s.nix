@@ -30,6 +30,8 @@
     ];
 
     manifests = {
+      controlplan-vip.source = ./manifests/controlplane-vip.yaml;
+
       metallb-frr.source = ./manifests/metallb-frr.yaml;
       metallb-config.source = ./manifests/metallb-config.yaml;
 
