@@ -1,3 +1,27 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kyverno-longhorn-mutator
+  namespace: longhorn-system
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments", "statefulsets", "daemonsets"]
+    verbs: ["get", "list", "watch", "patch", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kyverno-longhorn-mutator
+  namespace: longhorn-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kyverno-longhorn-mutator
+subjects:
+  - kind: ServiceAccount
+    name: kyverno-background-controller
+    namespace: kyverno
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -31,6 +55,16 @@ spec:
             - longhorn-system
       mutate:
         mutateExistingOnPolicyUpdate: true
+        targets:
+          - apiVersion: apps/v1
+            kind: Deployment
+            namespace: longhorn-system
+          - apiVersion: apps/v1
+            kind: StatefulSet
+            namespace: longhorn-system
+          - apiVersion: apps/v1
+            kind: DaemonSet
+            namespace: longhorn-system
         patchStrategicMerge:
           spec:
             template:
