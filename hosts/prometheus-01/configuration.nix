@@ -2,6 +2,8 @@
 
 {
   networking = {
+    useDHCP = false;
+
     interfaces.enp1s0 = {
       ipv4.addresses = [
         {
