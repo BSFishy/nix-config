@@ -18,6 +18,7 @@ spec:
   peerASN: 65000
   peerAddress: 10.0.1.1
   bfdProfile: default-bfd
+  dualStackAddressFamily: true
 ---
 apiVersion: metallb.io/v1beta2
 kind: BGPPeer
@@ -29,6 +30,7 @@ spec:
   peerASN: 65000
   peerAddress: 2603:8080:1e00:1b00::1
   bfdProfile: default-bfd
+  dualStackAddressFamily: true
 ---
 apiVersion: metallb.io/v1beta1
 kind: BGPAdvertisement
