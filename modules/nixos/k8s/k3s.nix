@@ -7,12 +7,8 @@
       6443
       10250
       5001
-    ];
-    allowedTCPPortRanges = [
-      {
-        from = 2379;
-        to = 2380;
-      }
+      2379
+      2380
     ];
 
     allowedUDPPorts = [
@@ -29,9 +25,12 @@
     name = "${config.networking.hostName}-initiatorhost";
   };
 
+  age.secrets.k3s-token.file = ../../../secrets/k3s-token.age;
+
   services.k3s = {
     enable = true;
     gracefulNodeShutdown.enable = true;
+    tokenFile = config.age.secrets.k3s-token.path;
 
     extraFlags = [
       "--disable traefik"
