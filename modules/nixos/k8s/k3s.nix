@@ -1,8 +1,26 @@
 { config, pkgs, ... }:
 
 {
-  # allow the port for local changes
-  networking.firewall.allowedTCPPorts = [ 6443 ];
+  # allow ingress for required k3s communications
+  networking.firewall = {
+    allowedTCPPorts = [
+      6443
+      10250
+      5001
+    ];
+    allowedTCPPortRanges = [
+      {
+        from = 2379;
+        to = 2380;
+      }
+    ];
+
+    allowedUDPPorts = [
+      8472
+      51820
+      51821
+    ];
+  };
 
   # for longhorn
   environment.systemPackages = [ pkgs.nfs-utils ];
@@ -13,7 +31,6 @@
 
   services.k3s = {
     enable = true;
-    clusterInit = true;
     gracefulNodeShutdown.enable = true;
 
     extraFlags = [
@@ -28,43 +45,5 @@
       "--flannel-ipv6-masq"
       "--service-cidr 10.43.0.0/16,fd42:abcd:1234:1::/112"
     ];
-
-    manifests = {
-      controlplan-vip.source = ./manifests/controlplane-vip.yaml;
-
-      metallb-frr.source = ./manifests/metallb-frr.yaml;
-      metallb-config.source = ./manifests/metallb-config.yaml;
-
-      multus-daemonset-thick.source = ./manifests/multus-daemonset-thick.yaml;
-
-      # fix for longhorn paths
-      longhorn-fix.source = ./manifests/longhorn-fix.yaml;
-    };
-
-    autoDeployCharts = {
-      kyverno = {
-        name = "kyverno";
-        createNamespace = true;
-        targetNamespace = "kyverno";
-        repo = "https://kyverno.github.io/kyverno/";
-        version = "3.4.4";
-        hash = "sha256-Jz9gucK3BjSnA1pZGILk7DxCZN8461aLUm3KzXroAG4=";
-
-        # TODO: i would really like this to be a yaml file
-        values = import ./values/kyverno.nix { };
-      };
-
-      longhorn = {
-        name = "longhorn";
-        createNamespace = true;
-        targetNamespace = "longhorn-system";
-        repo = "https://charts.longhorn.io";
-        version = "1.9.0";
-        hash = "sha256-xQEQ3Od9EZnGxr2levfQpKgh3Qinet9xhiNM4twALtw=";
-
-        # TODO: i would really like this to be a yaml file
-        values = import ./values/longhorn.nix { };
-      };
-    };
   };
 }

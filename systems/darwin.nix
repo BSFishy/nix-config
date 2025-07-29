@@ -6,6 +6,7 @@
 
 let
   home-manager = inputs.home-manager;
+  agenix = inputs.agenix;
 in
 {
   modules = [
@@ -13,6 +14,9 @@ in
     ../modules/nix-darwin/basic
     ../modules/nix-darwin/homebrew
     ../modules/nix-darwin/system
+
+    # agenix
+    agenix.darwinModules.default
 
     # home manager configuration
     home-manager.darwinModules.home-manager

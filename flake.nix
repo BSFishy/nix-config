@@ -29,9 +29,18 @@
       inputs.home-manager.follows = "home-manager";
     };
 
+    # nix-index database so i dont have to build the database on every machine
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # secrets manager
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+      inputs.darwin.follows = "nix-darwin";
     };
   };
 
@@ -68,6 +77,34 @@
         fat = true;
       };
 
+      # prometheus-01 server nixos configuration
+      prometheus-01-nixos = import ./systems/nixos.nix {
+        inherit inputs;
+
+        system = "x86_64-linux";
+        hostname = "prometheus-01";
+        username = "matt";
+        extraModules = [
+          # extra host-specific configurations
+          ./hosts/prometheus-01/configuration.nix
+
+          # detected hardware configuration
+          ./hosts/prometheus-01/hardware-configuration.nix
+
+          # run ssh server
+          ./modules/nixos/tools/ssh.nix
+
+          # k8s server node
+          ./modules/nixos/k8s/server.nix
+        ];
+
+        homeManagerConfiguration = personal-linux-home-configuration {
+          graphical = false;
+        };
+
+        k8s = true;
+      };
+
       # prometheus-02 server nixos configuration
       prometheus-02-nixos = import ./systems/nixos.nix {
         inherit inputs;
@@ -84,6 +121,9 @@
 
           # run ssh server
           ./modules/nixos/tools/ssh.nix
+
+          # bootstrap k8s node
+          ./modules/nixos/k8s/bootstrap.nix
         ];
 
         homeManagerConfiguration = personal-linux-home-configuration {
@@ -138,6 +178,7 @@
         orion-02 = nixpkgs.lib.nixosSystem orion-02-nixos;
 
         # servers
+        prometheus-01 = nixpkgs.lib.nixosSystem prometheus-01-nixos;
         prometheus-02 = nixpkgs.lib.nixosSystem prometheus-02-nixos;
       };
 

@@ -13,6 +13,7 @@
 let
   pkgs = inputs.nixpkgs;
   home-manager = inputs.home-manager;
+  agenix = inputs.agenix;
 in
 {
   inherit system;
@@ -24,6 +25,9 @@ in
 
       # basic universal configurations
       ../modules/nixos/basic
+
+      # agenix
+      agenix.nixosModules.default
 
       # home manager configuration
       home-manager.nixosModules.home-manager

@@ -9,6 +9,7 @@
 
 let
   pkgs = inputs.nixpkgs;
+  agenix = inputs.agenix;
 in
 {
   pkgs = pkgs.legacyPackages.${system};
@@ -24,6 +25,9 @@ in
 
       # nix-index precompiled database
       inputs.nix-index-database.homeModules.nix-index
+
+      # agenix
+      agenix.homeManagerModules.default
 
       # add extra arguments to modules
       {
