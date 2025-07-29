@@ -4,6 +4,19 @@
   services.k3s = {
     clusterInit = true;
 
+    extraFlags = [
+      "--disable traefik"
+      "--disable servicelb"
+
+      # cluster controlplane configuration
+      "--tls-san=k8s.mattprovost.dev"
+
+      # dual stack
+      "--cluster-cidr 10.42.0.0/16,fd42:abcd:1234::/48"
+      "--flannel-ipv6-masq"
+      "--service-cidr 10.43.0.0/16,fd42:abcd:1234:1::/112"
+    ];
+
     manifests = {
       controlplan-vip.source = ./manifests/controlplane-vip.yaml;
 
