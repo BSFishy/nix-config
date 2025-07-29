@@ -178,7 +178,6 @@ spec:
       # -- Replica count of the default Longhorn StorageClass.
       defaultClassReplicaCount: 3
       # -- Data locality of the default Longhorn StorageClass. (Options: "disabled", "best-effort")
-      # TODO: set this to best-effort when more nodes are added to the cluster
       defaultDataLocality: disabled
       # -- Reclaim policy that provides instructions for handling of a volume after its claim is released. (Options: "Retain", "Delete")
       reclaimPolicy: Delete
@@ -253,7 +252,7 @@ spec:
       # -- Setting that allows scheduling on nodes with healthy replicas of the same volume. This setting is disabled by default.
       replicaSoftAntiAffinity: ~
       # -- Setting that automatically rebalances replicas when an available node is discovered.
-      replicaAutoBalance: best-effort
+      replicaAutoBalance: ~
       # -- Percentage of storage that can be allocated relative to hard drive capacity. The default value is "100".
       storageOverProvisioningPercentage: ~
       # -- Percentage of minimum available disk capacity. When the minimum available capacity exceeds the total available capacity, the disk becomes unschedulable until more space is made available for use. The default value is "25".
