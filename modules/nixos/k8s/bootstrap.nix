@@ -18,14 +18,18 @@
     ];
 
     manifests = {
+      # distributed storage
       kyverno-chart.source = ./manifests/kyverno-chart.yaml;
       longhorn-chart.source = ./manifests/longhorn-chart.yaml;
 
-      controlplan-vip.source = ./manifests/controlplane-vip.yaml;
+      # expose control plane through a vip
+      controlplane-vip.source = ./manifests/controlplane-vip.yaml;
 
+      # bgp
       metallb-frr.source = ./manifests/metallb-frr.yaml;
       metallb-config.source = ./manifests/metallb-config.yaml;
 
+      # multus cni for home assistant
       multus-daemonset-thick.source = ./manifests/multus-daemonset-thick.yaml;
 
       # fix for longhorn paths
