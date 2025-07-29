@@ -12,7 +12,7 @@
 
       ipv6.addresses = [
         {
-          address = "2603:8080:1e00:1b00:5a47:caff:fe7e:9303";
+          address = "2603:8080:1e00:1b00:5a47:caff:fe78:85b3";
           prefixLength = 64;
         }
       ];
