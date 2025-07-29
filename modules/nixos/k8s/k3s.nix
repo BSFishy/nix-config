@@ -4,6 +4,7 @@
   # allow ingress for required k3s communications
   networking.firewall = {
     allowedTCPPorts = [
+      179
       6443
       10250
       5001
