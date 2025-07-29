@@ -41,18 +41,6 @@
         # TODO: i would really like this to be a yaml file
         values = import ./values/kyverno.nix { };
       };
-
-      longhorn = {
-        name = "longhorn";
-        createNamespace = true;
-        targetNamespace = "longhorn-system";
-        repo = "https://charts.longhorn.io";
-        version = "1.9.0";
-        hash = "sha256-xQEQ3Od9EZnGxr2levfQpKgh3Qinet9xhiNM4twALtw=";
-
-        # TODO: i would really like this to be a yaml file
-        values = import ./values/longhorn.nix { };
-      };
     };
   };
 }
