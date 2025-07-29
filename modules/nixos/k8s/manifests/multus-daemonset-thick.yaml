@@ -4,6 +4,7 @@ metadata:
   name: multus
   namespace: kube-system
 spec:
+  version: 4.2.1
   repo: https://rke2-charts.rancher.io
   chart: rke2-multus
   targetNamespace: kube-system
