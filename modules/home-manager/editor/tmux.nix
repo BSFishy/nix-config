@@ -46,10 +46,17 @@ in
       bind-key -N "Open sessionizer" \; display-popup -E "${sessionizer}/bin/tmux-sessionizer"
 
       # Vi-like bindings for copy mode
-      bind-key -T copy-mode-vi 'v' send -X begin-selection
+      bind-key -T copy-mode-vi v send -X begin-selection
 
       # Vi-like bindings for copy mode with universal clipboard support
-      bind-key -T copy-mode-vi y send -X copy-pipe "tmux save-buffer - | sh -c 'if [ -n \"\$WAYLAND_DISPLAY\" ]; then wl-copy; else xclip -selection clipboard; fi'"
+      # bind-key -T copy-mode-vi y send -X copy-pipe "tmux save-buffer - | sh -c 'if [ -n \"\$WAYLAND_DISPLAY\" ]; then wl-copy; else xclip -selection clipboard; fi'"
+      bind-key -T copy-mode-vi y send -X copy-selection
+
+      # Vi-like bindings for copy line
+      bind-key -T copy-mode-vi Y send -X copy-line
+
+      # Vi-like bindings for paste in pane
+      bind-key -T copy-mode-vi p paste-buffer
     '';
   };
 }

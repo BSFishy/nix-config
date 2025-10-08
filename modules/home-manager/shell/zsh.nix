@@ -13,9 +13,34 @@
     enable = true;
     enableCompletion = true;
 
+    sessionVariables = {
+      KEYTIMEOUT = "1";
+    };
+
     initContent = ''
       export PATH="$PATH:${config.home.homeDirectory}/.local/bin"
       ${pkgs.nix-your-shell}/bin/nix-your-shell ${pkgs.zsh}/bin/zsh | source /dev/stdin
+
+      ### --- Vi mode for ZLE ---
+      set -o vi
+      bindkey -v
+
+      # Edit the current command line in $EDITOR with `v` (press Esc first)
+      autoload -Uz edit-command-line
+      zle -N edit-command-line
+      bindkey -M vicmd 'v' edit-command-line
+
+      # Prefix-aware history on Up/Down
+      bindkey '^[[A' history-beginning-search-backward
+      bindkey '^[[B' history-beginning-search-forward
+
+      # Optional: word-wise moves in insert mode (Alt-b / Alt-f)
+      bindkey '^[b' backward-word
+      bindkey '^[f' forward-word
+
+      # Optional: nicer line kills
+      bindkey '^U' backward-kill-line
+      bindkey '^K' kill-line
     '';
 
     autosuggestion = {
