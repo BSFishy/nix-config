@@ -10,6 +10,11 @@
 
     extraConfig = {
       init.defaultBranch = "main";
+
+      # merge tool
+      merge.tool = "nvimdiff";
+      mergetool.nvimdiff.cmd = ''nvim -d "$LOCAL" "$REMOTE" "$MERGED"'';
+      mergetool.prompt = false;
     };
   };
 }
