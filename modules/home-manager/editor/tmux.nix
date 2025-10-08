@@ -57,6 +57,10 @@ in
 
       # Vi-like bindings for paste in pane
       bind-key -T copy-mode-vi p paste-buffer
+
+      # Fix vi-mode mouse binds
+      unbind -T root MouseDragEnd1Pane
+      bind -T copy-mode-vi MouseDragEnd1Pane send -X stop-selection
     '';
   };
 }
