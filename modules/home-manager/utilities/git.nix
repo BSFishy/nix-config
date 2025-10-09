@@ -10,6 +10,7 @@
 
     extraConfig = {
       init.defaultBranch = "main";
+      core.autocrlf = "input";
 
       # merge tool
       merge.tool = "nvimdiff";

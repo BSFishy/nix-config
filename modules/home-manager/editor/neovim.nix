@@ -18,6 +18,8 @@ in
     pkgs.lua51Packages.luarocks
     pkgs.lua-language-server
     pkgs.helm-ls
+    pkgs.stylua
+    pkgs.ruff
     pkgs.ast-grep
 
     # Mason dependencies
@@ -29,7 +31,8 @@ in
 
     # Tree sitter binary
     pkgs.tree-sitter
-  ] ++ extraPkgs;
+  ]
+  ++ extraPkgs;
 
   programs.neovim = {
     enable = true;
