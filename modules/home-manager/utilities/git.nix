@@ -19,14 +19,16 @@ in
     enable = true;
     lfs.enable = true;
 
-    userName = "Matt Provost";
-    userEmail = if work then "mprovost@cloudflare.com" else "mattprovost6@gmail.com";
-
     includes = [
       { path = "${delta-git}/themes.gitconfig"; }
     ];
 
-    extraConfig = {
+    settings = {
+      user = {
+        name = "Matt Provost";
+        email = if work then "mprovost@cloudflare.com" else "mattprovost6@gmail.com";
+      };
+
       init.defaultBranch = "main";
       core.autocrlf = "input";
 
