@@ -2,7 +2,7 @@
 
 {
   # Set your time zone.
-  time.timeZone = "America/Chicago";
+  time.timeZone = "Etc/Utc";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";

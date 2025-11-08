@@ -23,6 +23,10 @@ in
       { path = "${delta-git}/themes.gitconfig"; }
     ];
 
+    ignores = [
+      "/.direnv"
+    ];
+
     settings = {
       user = {
         name = "Matt Provost";
