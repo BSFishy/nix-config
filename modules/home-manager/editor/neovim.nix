@@ -14,6 +14,7 @@ in
     pkgs.ripgrep
     pkgs.lazygit
 
+    # Language servers
     pkgs.lua51Packages.lua
     pkgs.lua51Packages.luarocks
     pkgs.lua-language-server
@@ -21,6 +22,7 @@ in
     pkgs.stylua
     pkgs.ruff
     pkgs.ast-grep
+    pkgs.rubyPackages.solargraph
 
     # Mason dependencies
     pkgs.curl
