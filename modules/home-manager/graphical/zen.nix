@@ -3,6 +3,7 @@
   lib,
   pkgs,
   inputs,
+  system,
   ...
 }:
 
@@ -13,7 +14,7 @@ in
 {
   config = lib.mkIf isLinux {
     home.packages = [
-      (config.lib.nixGL.wrap zen-flake.packages.${pkgs.system}.default)
+      (config.lib.nixGL.wrap zen-flake.packages.${system}.default)
     ];
   };
 }

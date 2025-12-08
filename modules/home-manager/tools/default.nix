@@ -1,18 +1,20 @@
-{ inputs, pkgs, ... }:
+{
+  inputs,
+  pkgs,
+  system,
+  ...
+}:
 
 {
+  imports = [
+    ./ai.nix
+  ];
+
   home.packages = [
     pkgs.go
     pkgs.lazydocker
     pkgs.vault
 
-    inputs.agenix.packages.${pkgs.system}.agenix
+    inputs.agenix.packages.${system}.agenix
   ];
-
-  programs.codex = {
-    enable = true;
-    settings = {
-      tools.web_search = true;
-    };
-  };
 }

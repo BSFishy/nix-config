@@ -10,6 +10,6 @@
   ];
 
   config = {
-    nixGL.defaultWrapper = lib.mkDefault "mesa";
+    targets.genericLinux.nixGL.defaultWrapper = lib.mkDefault "mesa";
   };
 }
