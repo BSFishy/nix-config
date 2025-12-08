@@ -1,4 +1,5 @@
 {
+  system,
   username,
   inputs,
   homeManagerConfiguration,
@@ -30,7 +31,7 @@ in
     # add extra arguments to modules
     {
       config._module.args = {
-        inherit inputs username;
+        inherit inputs username system;
       };
     }
   ];

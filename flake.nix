@@ -137,7 +137,9 @@
       work-darwin-configuration = import ./systems/darwin.nix {
         inherit inputs;
 
+        system = "aarch64-darwin";
         username = "mprovost";
+
         homeManagerConfiguration = work-darwin-home-configuration;
       };
 
