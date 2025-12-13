@@ -8,6 +8,7 @@
 {
   imports = [
     ./ai.nix
+    ./shell.nix
   ];
 
   home.packages = [

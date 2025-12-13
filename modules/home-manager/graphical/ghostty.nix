@@ -17,7 +17,7 @@ in
     package = pkg;
 
     settings = {
-      theme = "GruvboxDark";
+      theme = "Gruvbox Dark";
       font-size = 13;
       adjust-font-baseline = "20%";
     };
