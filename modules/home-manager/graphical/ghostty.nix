@@ -8,7 +8,7 @@ let
   # allow ghostty to be configured on darwin but dont actually install the
   # package while it's broken
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
-  pkg = if isDarwin then null else config.lib.nixGL.wrap pkgs.ghostty;
+  pkg = if isDarwin then pkgs.ghostty-bin else config.lib.nixGL.wrap pkgs.ghostty;
 in
 {
   programs.ghostty = {
