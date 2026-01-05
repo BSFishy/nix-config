@@ -27,7 +27,7 @@ in
     sensibleOnTop = false;
     terminal = "tmux-256color";
     escapeTime = 10;
-    mouse = true;
+    mouse = false;
     keyMode = "vi";
     baseIndex = 1;
     shell = "${pkgs.zsh}/bin/zsh";
