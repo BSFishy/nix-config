@@ -1,23 +1,32 @@
-{ ... }:
+_:
 
 {
-  programs.codex = {
-    enable = true;
-    settings = {
-      tools.web_search = true;
-    };
-  };
+  programs = {
+    codex = {
+      enable = true;
+      settings = {
+        check_for_update_on_startup = false;
 
-  programs.opencode = {
-    enable = true;
-    settings = {
-      theme = "gruvbox";
-      autoshare = false;
-      autoupdate = false;
-    };
-  };
+        features = {
+          web_search_request = true;
+          tui2 = true;
+        };
 
-  programs.claude-code = {
-    enable = true;
+        projects."*".trust_level = "trusted";
+      };
+    };
+
+    opencode = {
+      enable = true;
+      settings = {
+        theme = "gruvbox";
+        autoshare = false;
+        autoupdate = false;
+      };
+    };
+
+    claude-code = {
+      enable = true;
+    };
   };
 }
