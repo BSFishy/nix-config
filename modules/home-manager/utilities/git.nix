@@ -1,8 +1,7 @@
 { pkgs, work, ... }:
 
 let
-  difftastic = pkgs.difftastic;
-  delta = pkgs.delta;
+  inherit (pkgs) difftastic delta;
 
   delta-git = builtins.fetchGit {
     url = "https://github.com/dandavison/delta.git";

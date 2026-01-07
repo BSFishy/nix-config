@@ -1,5 +1,8 @@
-_:
+{ inputs, ... }:
 
+let
+  opencode = inputs.opencode.packages.default;
+in
 {
   programs = {
     codex = {
@@ -18,6 +21,8 @@ _:
 
     opencode = {
       enable = true;
+      package = opencode;
+
       settings = {
         theme = "gruvbox";
         autoshare = false;

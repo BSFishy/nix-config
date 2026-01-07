@@ -6,8 +6,7 @@
 }:
 
 let
-  home-manager = inputs.home-manager;
-  agenix = inputs.agenix;
+  inherit (inputs) home-manager agenix;
 in
 {
   modules = [
@@ -22,10 +21,12 @@ in
     # home manager configuration
     home-manager.darwinModules.home-manager
     {
-      home-manager.useGlobalPkgs = true;
-      home-manager.useUserPackages = true;
+      home-manager = {
+        useGlobalPkgs = true;
+        useUserPackages = true;
 
-      home-manager.users.${username}.imports = homeManagerConfiguration.modules;
+        users.${username}.imports = homeManagerConfiguration.modules;
+      };
     }
 
     # add extra arguments to modules
