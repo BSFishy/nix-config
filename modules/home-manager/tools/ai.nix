@@ -1,7 +1,7 @@
-{ inputs, ... }:
+{ inputs, system, ... }:
 
 let
-  opencode = inputs.opencode.packages.default;
+  opencode = inputs.opencode.packages.${system}.default;
 in
 {
   programs = {
