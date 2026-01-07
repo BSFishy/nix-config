@@ -24,7 +24,11 @@ in
     ];
 
     ignores = [
+      # direnv caches
       "/.direnv"
+
+      # mergetool backups
+      "*.orig"
     ];
 
     settings = {
