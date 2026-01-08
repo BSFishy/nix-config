@@ -12,6 +12,7 @@
   programs.zsh = {
     enable = true;
     enableCompletion = true;
+    dotDir = config.home.homeDirectory;
 
     sessionVariables = {
       KEYTIMEOUT = "1";

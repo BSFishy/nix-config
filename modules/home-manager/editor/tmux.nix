@@ -32,6 +32,30 @@ in
     baseIndex = 1;
     shell = "${pkgs.zsh}/bin/zsh";
 
+    plugins = [
+      {
+        plugin = pkgs.tmuxPlugins.gruvbox;
+        extraConfig = ''
+          set -g @tmux-gruvbox-right-status-x '#T'
+          set -g @tmux-gruvbox-right-status-y '%Y-%m-%d'
+        '';
+      }
+
+      {
+        plugin = pkgs.tmuxPlugins.resurrect;
+        extraConfig = ''
+          set -g @resurrect-strategy-nvim 'session'
+        '';
+      }
+
+      {
+        plugin = pkgs.tmuxPlugins.continuum;
+        extraConfig = ''
+          set -g @continuum-restore 'on'
+        '';
+      }
+    ];
+
     extraConfig = ''
       # Color support
       set -ga terminal-overrides ",xterm-256color:Tc"
