@@ -38,6 +38,7 @@ in
         extraConfig = ''
           set -g @tmux-gruvbox-right-status-x '#T'
           set -g @tmux-gruvbox-right-status-y '%Y-%m-%d'
+          set -g @tmux-gruvbox-right-status-z '%H:%M '
         '';
       }
 
@@ -59,6 +60,9 @@ in
     extraConfig = ''
       # Color support
       set -ga terminal-overrides ",xterm-256color:Tc"
+
+      # Set statusbar redraw interval to every second
+      set -g status-interval 1
 
       # For Neovim
       set-option -g focus-events on
