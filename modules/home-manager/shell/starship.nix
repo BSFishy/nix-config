@@ -65,6 +65,7 @@
       rust.symbol = " ";
 
       sudo.disabled = false;
+      sudo.symbol = "󱑷 ";
 
       username = {
         format = "[$user]($style) on ";

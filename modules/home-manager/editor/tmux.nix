@@ -39,9 +39,10 @@ in
       {
         plugin = pkgs.tmuxPlugins.gruvbox;
         extraConfig = ''
+          set -g @tmux-gruvbox-left-status-a '#{?client_prefix, ,}#S'
           set -g @tmux-gruvbox-right-status-x '#T'
-          set -g @tmux-gruvbox-right-status-y '%Y-%m-%d'
-          set -g @tmux-gruvbox-right-status-z '%H:%M '
+          set -g @tmux-gruvbox-right-status-y '󰃭 %Y-%m-%d'
+          set -g @tmux-gruvbox-right-status-z ' %H:%M '
         '';
       }
 
