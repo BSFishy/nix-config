@@ -17,6 +17,9 @@ let
 
   # add sessionizer
   sessionizer = pkgs.writeShellScriptBin "tmux-sessionizer" (builtins.readFile ./tmux-sessionizer.sh);
+
+  # patched tmux-resurrect plugin
+  tmux-resurrect = import ./tmux-resurrect.nix { inherit pkgs; };
 in
 {
   home.packages = [ sessionizer ] ++ packages;
@@ -33,6 +36,7 @@ in
     shell = "${pkgs.zsh}/bin/zsh";
 
     plugins = [
+      # gruvbox theme
       {
         plugin = pkgs.tmuxPlugins.gruvbox;
         extraConfig = ''
@@ -42,13 +46,17 @@ in
         '';
       }
 
+      # save and restore all sessions
       {
-        plugin = pkgs.tmuxPlugins.resurrect;
+        plugin = tmux-resurrect;
         extraConfig = ''
+          set -g @resurrect-processes '"~nvim->nvim"'
           set -g @resurrect-strategy-nvim 'session'
+          set -g @resurrect-capture-pane-contents 'on'
         '';
       }
 
+      # continuously save sessions and automatically restore them
       {
         plugin = pkgs.tmuxPlugins.continuum;
         extraConfig = ''
