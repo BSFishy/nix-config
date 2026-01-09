@@ -27,9 +27,8 @@ in
   programs.tmux = {
     enable = true;
 
-    sensibleOnTop = false;
+    sensibleOnTop = true;
     terminal = "tmux-256color";
-    escapeTime = 10;
     mouse = false;
     keyMode = "vi";
     baseIndex = 1;
@@ -66,14 +65,8 @@ in
     ];
 
     extraConfig = ''
-      # Color support
-      set -ga terminal-overrides ",xterm-256color:Tc"
-
       # Set statusbar redraw interval to every second
       set -g status-interval 1
-
-      # For Neovim
-      set-option -g focus-events on
 
       # Reload config file with prefix R
       bind-key -N "Reload the tmux configuration" r source-file ${config.xdg.configHome}/tmux/tmux.conf \; display-message "Config reloaded.."
@@ -85,7 +78,6 @@ in
       bind-key -T copy-mode-vi v send -X begin-selection
 
       # Vi-like bindings for copy mode with universal clipboard support
-      # bind-key -T copy-mode-vi y send -X copy-pipe "tmux save-buffer - | sh -c 'if [ -n \"\$WAYLAND_DISPLAY\" ]; then wl-copy; else xclip -selection clipboard; fi'"
       bind-key -T copy-mode-vi y send -X copy-selection
 
       # Vi-like bindings for copy line
