@@ -27,12 +27,17 @@ in
   programs.tmux = {
     enable = true;
 
-    sensibleOnTop = true;
     terminal = "tmux-256color";
     mouse = false;
     keyMode = "vi";
     baseIndex = 1;
     shell = "${pkgs.zsh}/bin/zsh";
+
+    # sensible options
+    escapeTime = 5;
+    historyLimit = 50000;
+    focusEvents = true;
+    aggressiveResize = true;
 
     plugins = [
       # gruvbox theme
@@ -90,6 +95,24 @@ in
       # Fix vi-mode mouse binds
       unbind -T root MouseDragEnd1Pane
       bind -T copy-mode-vi MouseDragEnd1Pane send -X stop-selection
+
+      ####################################
+      # Sensible options
+
+      # Increase tmux messages display duration from 750ms to 4s
+      set -g display-time 4000
+
+      # Emacs key bindings in tmux command prompt (prefix + :) are better than
+      # vi keys, even for vim users
+      set -g status-keys emacs
+
+      # Easier and faster switching between next/prev window
+      bind C-p previous-window
+      bind C-n next-window
+
+      # Quick window movement
+      bind C-a send-prefix
+      bind a last-window
     '';
   };
 }
