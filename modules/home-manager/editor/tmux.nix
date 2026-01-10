@@ -79,6 +79,7 @@ in
 
       # Open sessionizer with C-b + ;
       bind-key -N "Open sessionizer" \; display-popup -E "${sessionizer}/bin/tmux-sessionizer"
+      bind-key -N "Open sessionizer" C-\; display-popup -E "${sessionizer}/bin/tmux-sessionizer"
 
       # Vi-like bindings for copy mode
       bind-key -T copy-mode-vi v send -X begin-selection
