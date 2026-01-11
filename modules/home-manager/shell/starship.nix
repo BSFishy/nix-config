@@ -38,6 +38,7 @@
 
       git_branch.symbol = " ";
       golang.symbol = " ";
+      elixir.symbol = " ";
 
       hostname = {
         ssh_only = false;
