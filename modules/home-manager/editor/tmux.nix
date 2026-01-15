@@ -74,6 +74,9 @@ in
       # Set statusbar redraw interval to every second
       set -g status-interval 1
 
+      # Do not exit the server if there are no active sessions
+      set -g exit-empty off
+
       # Reload config file with prefix R
       bind-key -N "Reload the tmux configuration" r source-file ${config.xdg.configHome}/tmux/tmux.conf \; display-message "Config reloaded.."
 
