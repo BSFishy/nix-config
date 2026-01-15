@@ -1,6 +1,8 @@
 { username, ... }:
 
 {
+  imports = [ ./ui.nix ];
+
   system.primaryUser = username;
   system.defaults = {
     NSGlobalDomain = {
@@ -21,6 +23,7 @@
   # TouchID for sudo
   security.pam.services.sudo_local = {
     enable = true;
+    reattach = true;
     touchIdAuth = true;
   };
 }
