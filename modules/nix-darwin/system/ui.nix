@@ -48,6 +48,7 @@
         --set clock \
         update_freq=1 \
         icon= \
+        icon.color=0xffd79921 \
         icon.padding_right=5 \
         script="${./plugins/clock.sh}"
 
@@ -56,6 +57,7 @@
         update_freq=15 \
         background.padding_right=10 \
         icon=󰃭 \
+        icon.color=0xffd65d0e \
         icon.padding_right=5 \
         script="${./plugins/date.sh}"
 
