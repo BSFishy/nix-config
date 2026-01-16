@@ -105,7 +105,6 @@
           };
           run = [
             "move-node-to-workspace 9"
-            "resize-node"
           ];
         }
       ];
