@@ -29,7 +29,7 @@
     config = ''
       # DEFAULT SETTINGS
 
-      FONT="JetBrainsMono Nerd Font"
+      FONT="JetBrainsMono Nerd Font Mono"
 
       defaults=(
         icon.font="$FONT:Bold:14.0"
