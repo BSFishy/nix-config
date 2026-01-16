@@ -96,6 +96,25 @@
         "${pkgs.sketchybar}/bin/sketchybar --trigger aerospace_workspace_change AEROSPACE_FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE AEROSPACE_PREV_WORKSPACE=$AEROSPACE_PREV_WORKSPACE"
       ];
 
+      on-window-detected = [
+        # always move ghostty to workspace 9
+        {
+          check-further-callbacks = false;
+          "if" = {
+            app-id = "com.mitchellh.ghostty";
+          };
+          run = [
+            "move-node-to-workspace 9"
+            "resize-node"
+          ];
+        }
+      ];
+
+      workspace-to-monitor-force-assignment = {
+        # keep ghostty workspace on the second monitor if it exists
+        "9" = "secondary";
+      };
+
       gaps = {
         outer = {
           left = 8;
