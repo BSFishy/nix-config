@@ -21,15 +21,15 @@ in
           # dim screen after 2.5min
           {
             timeout = 150;
-            on-timeout = "bightnessctl -s set 10";
-            on-resume = "bightnessctl -r";
+            on-timeout = "${pkgs.brightnessctl}/bin/brightnessctl -s set 10";
+            on-resume = "${pkgs.brightnessctl}/bin/brightnessctl -r";
           }
 
           # dim keyboard backlight after 2.5min
           {
             timeout = 150;
-            on-timeout = "bightnessctl -sd rgb:kbd_backlight set 0";
-            on-resume = "brightnessctl -rd rgb:kbd_backlight";
+            on-timeout = "${pkgs.brightnessctl}/bin/brightnessctl -sd rgb:kbd_backlight set 0";
+            on-resume = "${pkgs.brightnessctl}/bin/brightnessctl -rd rgb:kbd_backlight";
           }
 
           # lock screen after 5min
@@ -42,7 +42,7 @@ in
           {
             timeout = 330;
             on-timeout = "hyprctl dispatch dpms off";
-            on-resume = "hyprctl dispatch dpms on && brightnessctl -r";
+            on-resume = "hyprctl dispatch dpms on && ${pkgs.brightnessctl}/bin/brightnessctl -r";
           }
 
           # suspend pc after 30min
