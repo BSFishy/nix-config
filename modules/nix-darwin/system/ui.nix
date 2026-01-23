@@ -1,4 +1,9 @@
-{ inputs, pkgs, ... }:
+{
+  inputs,
+  pkgs,
+  system,
+  ...
+}:
 
 {
   system.defaults = {
@@ -27,7 +32,7 @@
     serviceConfig = {
       Label = "com.user.mofi";
       ProgramArguments = [
-        "${inputs.mofi.packages.${pkgs.system}.default}/Applications/mofi.app/Contents/MacOS/mofi"
+        "${inputs.mofi.packages.${system}.default}/Applications/mofi.app/Contents/MacOS/mofi"
       ];
       RunAtLoad = true;
       KeepAlive = true;
