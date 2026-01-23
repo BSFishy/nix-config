@@ -44,6 +44,12 @@
         darwin.follows = "nix-darwin";
       };
     };
+
+    # custom macos rofi
+    mofi = {
+      url = "github:BSFishy/mofi";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

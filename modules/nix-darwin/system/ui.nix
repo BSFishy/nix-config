@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ inputs, pkgs, ... }:
 
 {
   system.defaults = {
@@ -22,6 +22,17 @@
   fonts.packages = [
     pkgs.nerd-fonts.jetbrains-mono
   ];
+
+  launchd.user.agents.mofi = {
+    serviceConfig = {
+      Label = "com.user.mofi";
+      ProgramArguments = [
+        "${inputs.mofi.packages.${pkgs.system}.default}/Applications/mofi.app/Contents/MacOS/mofi"
+      ];
+      RunAtLoad = true;
+      KeepAlive = true;
+    };
+  };
 
   services.sketchybar = {
     enable = true;

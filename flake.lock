@@ -65,6 +65,26 @@
         "type": "github"
       }
     },
+    "mofi": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1769196473,
+        "narHash": "sha256-fRMvSkJDPh4yaRZ1mVFau+x1PZOMo8myvxP0hu23pUY=",
+        "owner": "BSFishy",
+        "repo": "mofi",
+        "rev": "9beffafcf81271b3ecab599de48da5ad2e6dde1f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "BSFishy",
+        "repo": "mofi",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -143,6 +163,7 @@
         "agenix": "agenix",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
+        "mofi": "mofi",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nixos-hardware": "nixos-hardware",
