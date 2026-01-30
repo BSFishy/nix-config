@@ -18,11 +18,18 @@ let
   # add sessionizer
   sessionizer = pkgs.writeShellScriptBin "tmux-sessionizer" (builtins.readFile ./tmux-sessionizer.sh);
 
+  # add pruner
+  pruner = pkgs.writeShellScriptBin "tmux-pruner" (builtins.readFile ./tmux-pruner.sh);
+
   # patched tmux-resurrect plugin
   tmux-resurrect = import ./tmux-resurrect.nix { inherit pkgs; };
 in
 {
-  home.packages = [ sessionizer ] ++ packages;
+  home.packages = [
+    sessionizer
+    pruner
+  ]
+  ++ packages;
 
   programs.tmux = {
     enable = true;
