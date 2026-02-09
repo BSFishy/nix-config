@@ -58,23 +58,23 @@ in
         '';
       }
 
-      # save and restore all sessions
-      {
-        plugin = tmux-resurrect;
-        extraConfig = ''
-          set -g @resurrect-processes '"~nvim->nvim"'
-          set -g @resurrect-strategy-nvim 'session'
-          set -g @resurrect-capture-pane-contents 'on'
-        '';
-      }
-
-      # continuously save sessions and automatically restore them
-      {
-        plugin = pkgs.tmuxPlugins.continuum;
-        extraConfig = ''
-          set -g @continuum-restore 'on'
-        '';
-      }
+      # # save and restore all sessions
+      # {
+      #   plugin = tmux-resurrect;
+      #   extraConfig = ''
+      #     set -g @resurrect-processes '"~nvim->nvim"'
+      #     set -g @resurrect-strategy-nvim 'session'
+      #     set -g @resurrect-capture-pane-contents 'on'
+      #   '';
+      # }
+      #
+      # # continuously save sessions and automatically restore them
+      # {
+      #   plugin = pkgs.tmuxPlugins.continuum;
+      #   extraConfig = ''
+      #     set -g @continuum-restore 'on'
+      #   '';
+      # }
     ];
 
     extraConfig = ''
