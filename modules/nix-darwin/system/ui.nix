@@ -58,11 +58,21 @@
 
       sketchybar --bar position=top height=32 blur_radius=30 color=0xa0282828
 
+      # BATTERY
+
+      sketchybar --add item battery right \
+        --set battery \
+        update_freq=120 \
+        script="${./plugins/battery.sh}" \
+        icon.padding_right=5 \
+        --subscribe battery system_woke power_source_change
+
       # CLOCK
 
       sketchybar --add item clock right \
         --set clock \
         update_freq=1 \
+        background.padding_right=10 \
         icon= \
         icon.color=0xffd79921 \
         icon.padding_right=5 \
