@@ -41,6 +41,9 @@ in
     }
   ]
   ++ pkgs.lib.optionals graphical [
+    # ags shell
+    inputs.ags.homeManagerModules.default
+
     # standard graphical modules
     ../modules/home-manager/graphical
   ]

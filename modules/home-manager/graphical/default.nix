@@ -19,6 +19,9 @@
 
     # Configure hyprland
     ./hyprland.nix
+
+    # Install ags shell
+    ./ags.nix
   ];
 
   config = {

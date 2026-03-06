@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 set -euo pipefail
 
 case "${1:-}" in
@@ -7,8 +5,7 @@ case "${1:-}" in
   printf "Sleep\nLogout\nReboot\nShutdown\n"
   ;;
 "Sleep")
-  # TODO: add hyprlock
-  hyprlock &
+  loginctl lock-session
   sleep 0.3
   systemctl suspend
   ;;
