@@ -1,1 +1,0 @@
-command script import $(zig env | jq -r '.lib_dir')/ziglldb.py
