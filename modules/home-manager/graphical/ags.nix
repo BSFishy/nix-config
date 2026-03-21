@@ -1,14 +1,19 @@
-{ inputs, pkgs, ... }:
+{ inputs, lib, pkgs, ... }:
 
+let
+  isLinux = pkgs.stdenv.hostPlatform.isLinux;
+in
 {
-  programs.ags = {
-    enable = true;
+  config = lib.mkIf isLinux {
+    programs.ags = {
+      enable = true;
 
-    configDir = ./ags;
+      configDir = ./ags;
 
-    extraPackages = [
-      inputs.astal.packages.${pkgs.stdenv.system}.battery
-      inputs.astal.packages.${pkgs.stdenv.system}.powerprofiles
-    ];
+      extraPackages = [
+        inputs.astal.packages.${pkgs.stdenv.system}.battery
+        inputs.astal.packages.${pkgs.stdenv.system}.powerprofiles
+      ];
+    };
   };
 }
