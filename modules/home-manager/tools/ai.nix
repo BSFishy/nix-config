@@ -1,50 +1,36 @@
-_:
+{ lib, work, ... }:
 
 {
-  programs = {
-    codex = {
-      enable = true;
-      settings = {
-        check_for_update_on_startup = false;
+  programs.opencode = {
+    enable = true;
+    rules = builtins.readFile ./AGENTS.md;
+    settings = {
+      theme = "gruvbox";
+      autoshare = false;
+      autoupdate = false;
 
-        features = {
-          web_search_request = true;
-          tui2 = true;
-        };
-
-        projects."*".trust_level = "trusted";
-      };
-    };
-
-    opencode = {
-      enable = true;
-      rules = builtins.readFile ./AGENTS.md;
-      settings = {
-        theme = "gruvbox";
-        autoshare = false;
-        autoupdate = false;
-
-        permissions = {
-          bash = {
-            "head*" = "allow";
-            "tail*" = "allow";
-            "grep*" = "allow";
-            "rg*" = "allow";
-            "ls*" = "allow";
-            "git diff*" = "allow";
-            "git log*" = "allow";
-            "find*" = "allow";
-            "wc*" = "allow";
-            "cat*" = "allow";
-            "echo*" = "allow";
-            "sort*" = "allow";
-          };
+      permission = {
+        bash = {
+          "head*" = "allow";
+          "tail*" = "allow";
+          "grep*" = "allow";
+          "rg*" = "allow";
+          "ls*" = "allow";
+          "git diff*" = "allow";
+          "git log*" = "allow";
+          "find*" = "allow";
+          "wc*" = "allow";
+          "cat*" = "allow";
+          "echo*" = "allow";
+          "sort*" = "allow";
         };
       };
-    };
+    } // lib.optionalAttrs (!work) {
+      plugin = [
+        "opencode-openai-codex-auth"
+      ];
 
-    claude-code = {
-      enable = true;
+      provider = (builtins.fromJSON (builtins.readFile ./opencode-modern.json)).provider;
     };
   };
 }
