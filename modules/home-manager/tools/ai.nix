@@ -18,10 +18,28 @@ _:
 
     opencode = {
       enable = true;
+      rules = builtins.readFile ./AGENTS.md;
       settings = {
         theme = "gruvbox";
         autoshare = false;
         autoupdate = false;
+
+        permissions = {
+          bash = {
+            "head*" = "allow";
+            "tail*" = "allow";
+            "grep*" = "allow";
+            "rg*" = "allow";
+            "ls*" = "allow";
+            "git diff*" = "allow";
+            "git log*" = "allow";
+            "find*" = "allow";
+            "wc*" = "allow";
+            "cat*" = "allow";
+            "echo*" = "allow";
+            "sort*" = "allow";
+          };
+        };
       };
     };
 
