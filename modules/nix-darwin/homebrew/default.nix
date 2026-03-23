@@ -7,7 +7,6 @@ _:
     global = {
       autoUpdate = false;
       brewfile = true;
-      lockfiles = true;
     };
 
     onActivation = {
