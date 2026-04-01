@@ -56,6 +56,7 @@
             "ls*" = "allow";
             "git diff*" = "allow";
             "git log*" = "allow";
+            "git status*" = "allow";
             "find*" = "allow";
             "wc*" = "allow";
             "cat*" = "allow";
