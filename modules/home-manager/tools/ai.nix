@@ -73,7 +73,7 @@
 
         provider = (builtins.fromJSON (builtins.readFile ./opencode-modern.json)).provider;
       } // lib.optionalAttrs work {
-        plugins = [
+        plugin = [
           "opencode-wakelock"
         ];
       };
