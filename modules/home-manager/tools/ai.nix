@@ -57,6 +57,7 @@
             "git diff*" = "allow";
             "git log*" = "allow";
             "git status*" = "allow";
+            "git branch --show-current" = "allow";
             "find*" = "allow";
             "wc*" = "allow";
             "cat*" = "allow";
@@ -71,6 +72,10 @@
         ];
 
         provider = (builtins.fromJSON (builtins.readFile ./opencode-modern.json)).provider;
+      } // lib.optionalAttrs work {
+        plugins = [
+          "opencode-wakelock"
+        ];
       };
     };
   };
