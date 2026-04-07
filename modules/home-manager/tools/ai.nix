@@ -69,10 +69,15 @@
             "grep*" = "allow";
             "rg*" = "allow";
             "ls*" = "allow";
+
             "git diff*" = "allow";
             "git log*" = "allow";
             "git status*" = "allow";
             "git branch --show-current" = "allow";
+
+            "glab mr view" = "allow";
+            "glab mr diff" = "allow";
+
             "find*" = "allow";
             "wc*" = "allow";
             "cat*" = "allow";
