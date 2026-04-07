@@ -30,8 +30,12 @@ in
           "eDP-1,preferred,auto,1"
         ];
 
-        windowrulev2 = [
-          "workspace 9, class:^(com\\.mitchellh\\.ghostty)$"
+        windowrule = [
+          {
+            name = "move-ghostty";
+            "match:class" = "^(com\\.mitchellh\\.ghostty)$";
+            workspace = 9;
+          }
         ];
 
         workspace = [
