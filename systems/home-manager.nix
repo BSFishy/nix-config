@@ -37,6 +37,7 @@ in
           work
           system
           ;
+        flakePkgs = inputs.self.packages.${system};
       };
     }
   ]

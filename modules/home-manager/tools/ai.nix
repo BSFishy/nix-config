@@ -1,4 +1,11 @@
-{ config, lib, pkgs, work, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  work,
+  flakePkgs,
+  ...
+}:
 
 {
   age.secrets.github-mcp-pat.file = ../../../secrets/github-mcp-pat.age;
@@ -16,7 +23,15 @@
         };
         "nixos" = {
           command = "nix";
-          args = [ "run" "github:utensils/mcp-nixos" "--" ];
+          args = [
+            "run"
+            "github:utensils/mcp-nixos"
+            "--"
+          ];
+        };
+        "mempalace" = {
+          command = "${flakePkgs.mempalace}/bin/mempalace-mcp";
+          args = [ ];
         };
       };
     };
@@ -65,14 +80,15 @@
             "sort*" = "allow";
           };
         };
-      } // lib.optionalAttrs (!work) {
+      }
+      // lib.optionalAttrs (!work) {
         plugin = [
           "opencode-openai-codex-auth"
-          "opencode-agent-memory"
         ];
 
         provider = (builtins.fromJSON (builtins.readFile ./opencode-modern.json)).provider;
-      } // lib.optionalAttrs work {
+      }
+      // lib.optionalAttrs work {
         plugin = [
           "opencode-wakelock"
         ];
@@ -80,5 +96,10 @@
     };
   };
 
-  xdg.configFile."opencode/agent-memory.json".source = ./agent-memory.json;
+  home.packages = [
+    flakePkgs.mempalace
+  ];
+
+  xdg.configFile."opencode/plugins/mempalace.js".source = ./opencode-plugins/mempalace.js;
+  programs.git.ignores = [ "/entities.json" "/mempalace.yaml" ];
 }

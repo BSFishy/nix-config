@@ -228,6 +228,8 @@
         };
 
         packages = rec {
+          mempalace = pkgs.callPackage ./pkgs/mempalace.nix { };
+
           setup = pkgs.buildGoModule {
             pname = "setup";
             version = "0.1.0";
