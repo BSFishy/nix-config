@@ -63,6 +63,11 @@
       url = "github:aylur/astal";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -228,8 +233,6 @@
         };
 
         packages = rec {
-          mempalace = pkgs.callPackage ./pkgs/mempalace.nix { };
-
           setup = pkgs.buildGoModule {
             pname = "setup";
             version = "0.1.0";

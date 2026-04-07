@@ -2,14 +2,15 @@ import fs from "fs";
 import path from "path";
 
 const SAVE_INTERVAL = Number.parseInt(
-  process.env.MEMPALACE_SAVE_INTERVAL || "15",
+  process.env.MEMORY_SAVE_INTERVAL || "5",
   10,
 );
 
 const HOME = process.env.HOME || ".";
-const STATE_DIR = process.env.MEMPALACE_HOOK_STATE_DIR
-  || path.join(HOME, ".mempalace", "hook_state");
+const STATE_DIR = process.env.MEMORY_HOOK_STATE_DIR
+  || path.join(HOME, ".opencode", "memory_hook_state");
 const STATE_FILE = path.join(STATE_DIR, "opencode.json");
+const TOOL_PREFIX = process.env.MEMORY_TOOL_PREFIX || "qmd_";
 
 const AUTO_SAVE_REASON =
   "AUTO-SAVE checkpoint. Save key topics, decisions, quotes, and code from this session to your memory system. Organize into appropriate categories. Use verbatim quotes where possible. Continue conversation after saving.";
@@ -93,10 +94,10 @@ function maybeScheduleSave(sessionID) {
 }
 
 function instructionFor(reason) {
-  return `## MemPalace Save Required\n${reason}\n\nUse mempalace tools (mempalace_*). Confirm once the save is done.`;
+  return `## QMD Notebook Checkpoint\n${reason}\n\nDecide if the conversation so far is noteworthy for long-term context. If yes, write or update notes in the QMD notebook using tools with prefix ${TOOL_PREFIX} (for example: qmd_write_note, qmd_append_note). If nothing is noteworthy, respond with a short confirmation that no note was needed.`;
 }
 
-export const MemPalaceHooks = async ({ client }) => {
+export const MemoryHooks = async ({ client }) => {
   loadState();
 
   return {
@@ -128,7 +129,7 @@ export const MemPalaceHooks = async ({ client }) => {
     },
 
     "tool.execute.after": async (input) => {
-      if (input.tool?.startsWith("mempalace_")) {
+      if (input.tool?.startsWith(TOOL_PREFIX)) {
         markSaveComplete(input.sessionID);
       }
     },

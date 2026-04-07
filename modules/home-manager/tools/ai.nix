@@ -4,6 +4,7 @@
   pkgs,
   work,
   flakePkgs,
+  llmPkgs,
   ...
 }:
 
@@ -29,9 +30,9 @@
             "--"
           ];
         };
-        "mempalace" = {
-          command = "${flakePkgs.mempalace}/bin/mempalace-mcp";
-          args = [ ];
+        "qmd" = {
+          command = "${llmPkgs.qmd}/bin/qmd";
+          args = [ "mcp" ];
         };
       };
     };
@@ -102,9 +103,9 @@
   };
 
   home.packages = [
-    flakePkgs.mempalace
+    llmPkgs.qmd
   ];
 
-  xdg.configFile."opencode/plugins/mempalace.js".source = ./opencode-plugins/mempalace.js;
-  programs.git.ignores = [ "/entities.json" "/mempalace.yaml" ];
+  xdg.configFile."opencode/tools/qmd-notes.js".source = ./opencode-tools/qmd-notes.js;
+  xdg.configFile."opencode/plugins/memory.js".source = ./opencode-plugins/memory.js;
 }

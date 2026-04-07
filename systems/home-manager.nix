@@ -38,6 +38,7 @@ in
           system
           ;
         flakePkgs = inputs.self.packages.${system};
+        llmPkgs = inputs.llm-agents.packages.${system};
       };
     }
   ]
