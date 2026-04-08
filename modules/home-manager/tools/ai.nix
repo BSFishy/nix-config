@@ -41,8 +41,10 @@
       enable = true;
       enableMcpIntegration = true;
       rules = builtins.readFile ./AGENTS.md;
+
+      tui.theme = "gruvbox";
+
       settings = {
-        theme = "gruvbox";
         autoshare = false;
         autoupdate = false;
 
@@ -99,6 +101,12 @@
           "opencode-wakelock"
         ];
       };
+
+      tools.qmd-notes =
+        builtins.replaceStrings
+          [ "@opencode-ai/plugin" ]
+          [ "${config.xdg.configHome}/opencode/node_modules/@opencode-ai/plugin/dist/index.js" ]
+          (builtins.readFile ./opencode-tools/qmd-notes.js);
     };
   };
 
@@ -106,6 +114,5 @@
     llmPkgs.qmd
   ];
 
-  xdg.configFile."opencode/tools/qmd-notes.js".source = ./opencode-tools/qmd-notes.js;
   xdg.configFile."opencode/plugins/memory.js".source = ./opencode-plugins/memory.js;
 }
