@@ -65,12 +65,12 @@
 
           edit = {
             "*" = "ask";
-            "~/notebook" = "allow";
+            "~/notebook/**" = "allow";
           };
 
           external_directory = {
             "*" = "ask";
-            "~/notebook" = "allow";
+            "~/notebook/**" = "allow";
           };
 
           bash = {
