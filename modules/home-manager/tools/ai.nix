@@ -50,7 +50,6 @@
 
         permission = {
           read = "allow";
-          edit = "ask";
           glob = "allow";
           grep = "allow";
           list = "allow";
@@ -62,8 +61,17 @@
           webfetch = "ask";
           websearch = "ask";
           codesearch = "ask";
-          external_directory = "ask";
           doom_loop = "ask";
+
+          edit = {
+            "*" = "ask";
+            "~/notebook" = "allow";
+          };
+
+          external_directory = {
+            "*" = "ask";
+            "~/notebook" = "allow";
+          };
 
           bash = {
             "*" = "ask";
