@@ -71,6 +71,7 @@
           external_directory = {
             "*" = "ask";
             "~/notebook/**" = "allow";
+            "~/projects/**" = "allow";
           };
 
           bash = {
@@ -94,6 +95,7 @@
             "cat*" = "allow";
             "echo*" = "allow";
             "sort*" = "allow";
+            "uniq*" = "allow";
           };
         };
       }
