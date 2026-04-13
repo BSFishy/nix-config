@@ -8,6 +8,14 @@
   ...
 }:
 
+let
+  tf2-pyro-pack = pkgs.fetchFromGitHub {
+    owner = "thebreadcat";
+    repo = "tf2-pyro-pack";
+    rev = "ef318365121da7c4ba870c8419437d681430a9d0";
+    hash = "sha256-R30ri29DnolWWLvt1m6deX40ZLQ4+eDTNPRuzK+iVWA=";
+  };
+in
 {
   age.secrets.github-mcp-pat.file = ../../../secrets/github-mcp-pat.age;
   programs.zsh.initContent = ''
@@ -125,4 +133,7 @@
   ];
 
   xdg.configFile."opencode/plugins/memory.js".source = ./opencode-plugins/memory.js;
+  xdg.configFile."opencode/plugins/openpeon.js".text =
+    builtins.replaceStrings [ "__OPENPEON_PACK_PATH__" ] [ "${tf2-pyro-pack}" ]
+      (builtins.readFile ./opencode-plugins/openpeon.js);
 }
