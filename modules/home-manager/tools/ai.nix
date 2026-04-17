@@ -80,6 +80,7 @@ in
             "*" = "ask";
             "~/notebook/**" = "allow";
             "~/projects/**" = "allow";
+            "~/Projects/**" = "allow";
           };
 
           bash = {
