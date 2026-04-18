@@ -81,6 +81,9 @@ in
       # Set statusbar redraw interval to every second
       set -g status-interval 1
 
+      # Enable CSI-u / extended keyboard reporting for modified keys
+      set -g extended-keys on
+
       # Do not exit the server if there are no active sessions
       set -g exit-empty off
 

@@ -7,7 +7,7 @@
 
 {
   imports = [
-    ./ai.nix
+    ./ai
     ./shell.nix
   ];
 
