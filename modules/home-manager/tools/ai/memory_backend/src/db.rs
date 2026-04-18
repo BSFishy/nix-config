@@ -21,6 +21,35 @@ pub struct Stats {
     pub database_path: String,
 }
 
+#[derive(Debug, Clone)]
+pub struct SearchHit {
+    pub id: i64,
+    pub source: String,
+    pub created_at: String,
+    pub session_key: String,
+    pub session_file: Option<String>,
+    pub cwd: Option<String>,
+    pub git_branch: Option<String>,
+    pub leaf_id: Option<String>,
+    pub content: String,
+    pub metadata: Option<Value>,
+    pub score: f32,
+}
+
+struct CandidateMemory {
+    id: i64,
+    source: String,
+    created_at: String,
+    session_key: String,
+    session_file: Option<String>,
+    cwd: Option<String>,
+    git_branch: Option<String>,
+    leaf_id: Option<String>,
+    content: String,
+    metadata: Option<Value>,
+    embedding: Vec<f32>,
+}
+
 impl Database {
     pub fn open(database_path: &Path) -> Result<Self, BackendError> {
         if let Some(parent) = database_path.parent() {
@@ -64,6 +93,52 @@ impl Database {
             by_source,
             database_path: self.database_path.clone(),
         })
+    }
+
+    pub fn search(
+        &self,
+        query_embedding: &[f32],
+        top_k: usize,
+        threshold: Option<f32>,
+        cwd: Option<&str>,
+    ) -> Result<Vec<SearchHit>, BackendError> {
+        if query_embedding.is_empty() || top_k == 0 {
+            return Ok(Vec::new());
+        }
+
+        let candidates = self.load_candidates(cwd)?;
+        let mut hits = candidates
+            .into_iter()
+            .filter_map(|candidate| {
+                let score = cosine_similarity(query_embedding, &candidate.embedding)?;
+                if let Some(threshold) = threshold {
+                    if score < threshold {
+                        return None;
+                    }
+                }
+
+                Some(SearchHit {
+                    id: candidate.id,
+                    source: candidate.source,
+                    created_at: candidate.created_at,
+                    session_key: candidate.session_key,
+                    session_file: candidate.session_file,
+                    cwd: candidate.cwd,
+                    git_branch: candidate.git_branch,
+                    leaf_id: candidate.leaf_id,
+                    content: candidate.content,
+                    metadata: candidate.metadata,
+                    score,
+                })
+            })
+            .collect::<Vec<_>>();
+
+        hits.sort_by(|left, right| right.score.total_cmp(&left.score));
+        if hits.len() > top_k {
+            hits.truncate(top_k);
+        }
+
+        Ok(hits)
     }
 
     pub fn save_payload(
@@ -156,6 +231,38 @@ impl Database {
         Ok(SaveSummary { inserted, skipped })
     }
 
+    fn load_candidates(&self, cwd: Option<&str>) -> Result<Vec<CandidateMemory>, BackendError> {
+        let sql = if cwd.is_some() {
+            "
+            SELECT id, source, created_at, session_key, session_file, cwd, git_branch, leaf_id, content, metadata, embedding
+            FROM memories
+            WHERE embedding_status = 'ready'
+              AND embedding IS NOT NULL
+              AND cwd = ?1
+            "
+        } else {
+            "
+            SELECT id, source, created_at, session_key, session_file, cwd, git_branch, leaf_id, content, metadata, embedding
+            FROM memories
+            WHERE embedding_status = 'ready'
+              AND embedding IS NOT NULL
+            "
+        };
+
+        let mut statement = self.connection.prepare(sql)?;
+        let rows = if let Some(cwd) = cwd {
+            statement.query_map([cwd], row_to_candidate)?
+        } else {
+            statement.query_map([], row_to_candidate)?
+        };
+
+        let mut candidates = Vec::new();
+        for row in rows {
+            candidates.push(row?);
+        }
+        Ok(candidates)
+    }
+
     fn initialize_schema(&self) -> Result<(), BackendError> {
         self.connection.execute_batch(
             "
@@ -180,12 +287,77 @@ impl Database {
             CREATE INDEX IF NOT EXISTS idx_memories_session_key ON memories(session_key);
             CREATE INDEX IF NOT EXISTS idx_memories_created_at ON memories(created_at);
             CREATE INDEX IF NOT EXISTS idx_memories_source ON memories(source);
+            CREATE INDEX IF NOT EXISTS idx_memories_cwd ON memories(cwd);
+            CREATE INDEX IF NOT EXISTS idx_memories_embedding_status ON memories(embedding_status);
             CREATE UNIQUE INDEX IF NOT EXISTS idx_memories_dedupe
               ON memories(session_key, source, created_at, chunk_index, content);
             ",
         )?;
         Ok(())
     }
+}
+
+fn row_to_candidate(row: &rusqlite::Row<'_>) -> Result<CandidateMemory, rusqlite::Error> {
+    let metadata_text = row.get::<_, Option<String>>(9)?;
+    let metadata = metadata_text
+        .as_deref()
+        .map(serde_json::from_str::<Value>)
+        .transpose()
+        .map_err(|error| rusqlite::Error::FromSqlConversionFailure(9, rusqlite::types::Type::Text, Box::new(error)))?;
+
+    let embedding_blob = row.get::<_, Vec<u8>>(10)?;
+    let embedding = blob_to_f32_vec(&embedding_blob)
+        .map_err(|error| rusqlite::Error::FromSqlConversionFailure(10, rusqlite::types::Type::Blob, Box::new(error)))?;
+
+    Ok(CandidateMemory {
+        id: row.get(0)?,
+        source: row.get(1)?,
+        created_at: row.get(2)?,
+        session_key: row.get(3)?,
+        session_file: row.get(4)?,
+        cwd: row.get(5)?,
+        git_branch: row.get(6)?,
+        leaf_id: row.get(7)?,
+        content: row.get(8)?,
+        metadata,
+        embedding,
+    })
+}
+
+fn cosine_similarity(left: &[f32], right: &[f32]) -> Option<f32> {
+    if left.is_empty() || right.is_empty() || left.len() != right.len() {
+        return None;
+    }
+
+    let mut dot = 0.0_f32;
+    let mut left_norm = 0.0_f32;
+    let mut right_norm = 0.0_f32;
+
+    for (l, r) in left.iter().zip(right.iter()) {
+        dot += l * r;
+        left_norm += l * l;
+        right_norm += r * r;
+    }
+
+    if left_norm == 0.0 || right_norm == 0.0 {
+        return None;
+    }
+
+    Some(dot / (left_norm.sqrt() * right_norm.sqrt()))
+}
+
+fn blob_to_f32_vec(bytes: &[u8]) -> Result<Vec<f32>, BackendError> {
+    if bytes.len() % std::mem::size_of::<f32>() != 0 {
+        return Err(BackendError::Embedding(
+            "embedding blob length was not a multiple of 4 bytes".to_string(),
+        ));
+    }
+
+    let mut values = Vec::with_capacity(bytes.len() / std::mem::size_of::<f32>());
+    for chunk in bytes.chunks_exact(std::mem::size_of::<f32>()) {
+        values.push(f32::from_le_bytes([chunk[0], chunk[1], chunk[2], chunk[3]]));
+    }
+    Ok(values)
 }
 
 fn f32_vec_to_blob(values: &[f32]) -> Vec<u8> {

@@ -8,9 +8,61 @@ import type { MemoryChunk, MemorySource } from "./types";
 const backend = new MemoryBackendClient();
 let healthChecked = false;
 
+const MEMORY_INJECTION_TOP_K = 5;
+const MEMORY_INJECTION_THRESHOLD = 0.35;
+const MEMORY_INJECTION_CHAR_BUDGET = 4000;
+
 export default function memoryExtension(pi: ExtensionAPI) {
   pi.on("session_start", async (_event, ctx) => {
     await ensureBackendAvailable(ctx);
+  });
+
+  pi.on("before_agent_start", async (event, ctx) => {
+    if (!(await ensureBackendAvailable(ctx))) return;
+
+    try {
+      const hits = await backend.search({
+        query: event.prompt,
+        topK: MEMORY_INJECTION_TOP_K,
+        threshold: MEMORY_INJECTION_THRESHOLD,
+        cwd: process.cwd(),
+      });
+
+      if (hits.length === 0) {
+        return;
+      }
+
+      const injected = fitHitsToBudget(hits, MEMORY_INJECTION_CHAR_BUDGET);
+      if (injected.length === 0) {
+        return;
+      }
+
+      notify(
+        ctx,
+        `Injecting ${injected.length} memory hit${injected.length === 1 ? "" : "s"} (${injected
+          .map((hit) => `${hit.source}:${hit.score.toFixed(3)}`)
+          .join(", ")})`,
+        "info",
+      );
+
+      const memoryBlock = injected
+        .map((hit, index) => {
+          const snippet = hit.content.trim();
+          return `[${index + 1}] score=${hit.score.toFixed(3)} source=${hit.source} created_at=${hit.createdAt}\n${snippet}`;
+        })
+        .join("\n\n---\n\n");
+
+      return {
+        systemPrompt:
+          `${event.systemPrompt}\n\n## Relevant Context from Past Sessions\n` +
+          `The following are excerpts from previous Pi sessions that may be relevant to the current request. ` +
+          `Use them as hints, but still verify repository facts against actual files, commands, and docs before making claims.\n\n` +
+          memoryBlock,
+      };
+    } catch (error) {
+      notify(ctx, `Memory injection failed: ${getErrorMessage(error)}`, "warning");
+      return;
+    }
   });
 
   pi.on("session_before_compact", async (event, ctx) => {
@@ -95,6 +147,43 @@ export default function memoryExtension(pi: ExtensionAPI) {
       });
 
       notify(ctx, `Saved ${inserted} memory chunk${inserted === 1 ? "" : "s"}.`, "info");
+    },
+  });
+
+  pi.registerCommand("memory-search", {
+    description: "Search the Pi memory backend: /memory-search <query>",
+    handler: async (args, ctx) => {
+      if (!(await ensureBackendAvailable(ctx))) return;
+
+      const query = args.trim();
+      if (!query) {
+        notify(ctx, "Usage: /memory-search <query>", "warning");
+        return;
+      }
+
+      try {
+        const hits = await backend.search({
+          query,
+          topK: 5,
+          cwd: process.cwd(),
+        });
+
+        if (hits.length === 0) {
+          notify(ctx, `No memory hits for: ${query}`, "info");
+          return;
+        }
+
+        const preview = hits
+          .map((hit, index) => {
+            const snippet = hit.content.replace(/\s+/g, " ").trim().slice(0, 160);
+            return `${index + 1}. score=${hit.score.toFixed(3)} source=${hit.source} @ ${hit.createdAt}\n${snippet}`;
+          })
+          .join("\n\n");
+
+        notify(ctx, `Memory hits for: ${query}\n\n${preview}`, "info");
+      } catch (error) {
+        notify(ctx, `Memory search failed: ${getErrorMessage(error)}`, "error");
+      }
     },
   });
 }
@@ -198,6 +287,30 @@ function formatSourceCounts(counts: Record<string, number>): string {
   const entries = Object.entries(counts);
   if (entries.length === 0) return "no sources yet";
   return entries.map(([ source, count ]) => `${source}: ${count}`).join(", ");
+}
+
+function fitHitsToBudget<T extends { content: string }>(hits: T[], maxChars: number): T[] {
+  const fitted: T[] = [];
+  let used = 0;
+
+  for (const hit of hits) {
+    const cost = hit.content.length;
+    if (fitted.length > 0 && used + cost > maxChars) {
+      break;
+    }
+    if (cost > maxChars && fitted.length === 0) {
+      fitted.push({
+        ...hit,
+        content: hit.content.slice(0, maxChars),
+      });
+      break;
+    }
+
+    fitted.push(hit);
+    used += cost;
+  }
+
+  return fitted;
 }
 
 function notify(ctx: ExtensionContext, message: string, level: "info" | "warning" | "error"): void {

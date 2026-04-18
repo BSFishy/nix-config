@@ -3,8 +3,10 @@ import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import type {
   MemoryBackendRequest,
   MemoryBackendResponse,
+  MemorySearchHit,
   MemoryStats,
   SaveMemoryPayload,
+  SearchMemoryPayload,
 } from "./types";
 
 const CONFIGURED_BACKEND_PATH = process.env.PI_MEMORY_BACKEND || "__PI_MEMORY_BACKEND__";
@@ -65,6 +67,21 @@ export class MemoryBackendClient {
     }
 
     return result;
+  }
+
+  async search(payload: SearchMemoryPayload): Promise<MemorySearchHit[]> {
+    // @ts-ignore: get a clue man
+    const response = await this.request({ type: "search", payload });
+    if (!response.ok) {
+      throw new Error(response.error);
+    }
+
+    const result = response.result;
+    if (!isSearchResult(result)) {
+      throw new Error("Memory backend returned an unexpected search result");
+    }
+
+    return result.hits;
   }
 
   async dispose(): Promise<void> {
@@ -262,4 +279,8 @@ function isMemoryStats(value: unknown): value is MemoryStats {
     && "bySource" in value
     && "databasePath" in value
   );
+}
+
+function isSearchResult(value: unknown): value is { hits: MemorySearchHit[] } {
+  return typeof value === "object" && value !== null && "hits" in value && Array.isArray((value as { hits: unknown }).hits);
 }

@@ -3,10 +3,10 @@ mod db;
 mod embedder;
 mod error;
 
-use std::io::{self, BufRead, Write};
+use std::{collections::BTreeMap, io::{self, BufRead, Write}};
 
 use config::Config;
-use db::{Database, SaveSummary, Stats};
+use db::{Database, SaveSummary, SearchHit, Stats};
 use embedder::Embedder;
 use error::BackendError;
 use serde::{Deserialize, Serialize};
@@ -21,6 +21,8 @@ enum Request {
     Stats { id: String },
     #[serde(rename = "save")]
     Save { id: String, payload: SavePayload },
+    #[serde(rename = "search")]
+    Search { id: String, payload: SearchPayload },
 }
 
 #[derive(Debug, Deserialize)]
@@ -40,6 +42,15 @@ struct SavePayload {
 }
 
 #[derive(Debug, Deserialize)]
+struct SearchPayload {
+    query: String,
+    #[serde(rename = "topK")]
+    top_k: Option<usize>,
+    threshold: Option<f32>,
+    cwd: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
 struct MemoryChunk {
     content: String,
     #[serde(rename = "createdAt")]
@@ -52,7 +63,7 @@ struct StatsResult {
     #[serde(rename = "totalMemories")]
     total_memories: u64,
     #[serde(rename = "bySource")]
-    by_source: std::collections::BTreeMap<String, u64>,
+    by_source: BTreeMap<String, u64>,
     #[serde(rename = "databasePath")]
     database_path: String,
 }
@@ -69,11 +80,37 @@ struct HealthResult {
 }
 
 #[derive(Debug, Serialize)]
+struct SearchResult {
+    hits: Vec<SearchHitResult>,
+}
+
+#[derive(Debug, Serialize)]
+struct SearchHitResult {
+    id: i64,
+    source: String,
+    #[serde(rename = "createdAt")]
+    created_at: String,
+    #[serde(rename = "sessionKey")]
+    session_key: String,
+    #[serde(rename = "sessionFile")]
+    session_file: Option<String>,
+    cwd: Option<String>,
+    #[serde(rename = "gitBranch")]
+    git_branch: Option<String>,
+    #[serde(rename = "leafId")]
+    leaf_id: Option<String>,
+    content: String,
+    metadata: Option<Value>,
+    score: f32,
+}
+
+#[derive(Debug, Serialize)]
 #[serde(untagged)]
 enum SuccessResult {
     Health(HealthResult),
     Stats(StatsResult),
     Save(SaveResult),
+    Search(SearchResult),
 }
 
 #[derive(Debug, Serialize)]
@@ -158,6 +195,18 @@ impl BackendState {
                     error: error.to_string(),
                 },
             },
+            Request::Search { id, payload } => match self.handle_search(payload) {
+                Ok(hits) => Response::Success {
+                    id,
+                    result: SuccessResult::Search(SearchResult {
+                        hits: hits.into_iter().map(Into::into).collect(),
+                    }),
+                },
+                Err(error) => Response::Error {
+                    id,
+                    error: error.to_string(),
+                },
+            },
         }
     }
 
@@ -169,6 +218,16 @@ impl BackendState {
 
         self.database
             .save_payload(&payload, self.embedder.model_name(), &embeddings)
+    }
+
+    fn handle_search(&mut self, payload: SearchPayload) -> Result<Vec<SearchHit>, BackendError> {
+        let Some(query_embedding) = self.embedder.embed(&payload.query)? else {
+            return Ok(Vec::new());
+        };
+
+        let top_k = payload.top_k.unwrap_or(5).max(1);
+        self.database
+            .search(&query_embedding, top_k, payload.threshold, payload.cwd.as_deref())
     }
 }
 
@@ -187,6 +246,24 @@ impl From<SaveSummary> for SaveResult {
         Self {
             inserted: value.inserted,
             skipped: value.skipped,
+        }
+    }
+}
+
+impl From<SearchHit> for SearchHitResult {
+    fn from(value: SearchHit) -> Self {
+        Self {
+            id: value.id,
+            source: value.source,
+            created_at: value.created_at,
+            session_key: value.session_key,
+            session_file: value.session_file,
+            cwd: value.cwd,
+            git_branch: value.git_branch,
+            leaf_id: value.leaf_id,
+            content: value.content,
+            metadata: value.metadata,
+            score: value.score,
         }
     }
 }
