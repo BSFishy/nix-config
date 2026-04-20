@@ -162,16 +162,12 @@ impl Database {
                     SELECT id
                     FROM memories
                     WHERE session_key = ?1
-                      AND source = ?2
-                      AND created_at = ?3
-                      AND chunk_index = ?4
-                      AND content = ?5
+                      AND chunk_index = ?2
+                      AND content = ?3
                     LIMIT 1
                     ",
                     params![
                         payload.session_key,
-                        payload.source,
-                        chunk.created_at,
                         chunk_index as i64,
                         chunk.content,
                     ],
@@ -289,6 +285,8 @@ impl Database {
             CREATE INDEX IF NOT EXISTS idx_memories_source ON memories(source);
             CREATE INDEX IF NOT EXISTS idx_memories_cwd ON memories(cwd);
             CREATE INDEX IF NOT EXISTS idx_memories_embedding_status ON memories(embedding_status);
+            CREATE INDEX IF NOT EXISTS idx_memories_session_chunk_content
+              ON memories(session_key, chunk_index, content);
             CREATE UNIQUE INDEX IF NOT EXISTS idx_memories_dedupe
               ON memories(session_key, source, created_at, chunk_index, content);
             ",

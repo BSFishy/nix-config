@@ -83,6 +83,7 @@ in
 
       # Enable CSI-u / extended keyboard reporting for modified keys
       set -g extended-keys on
+      set -g extended-keys-format csi-u
 
       # Do not exit the server if there are no active sessions
       set -g exit-empty off
