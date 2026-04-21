@@ -34,3 +34,11 @@ whether the conversation so far is noteworthy and then write or update notes in
 the notebook; if nothing is noteworthy, confirm that no note was needed. Use the
 notebook as a source of relevant details for development, maintenance, and
 support over time.
+
+## Verification Rules
+
+- Do not make factual claims about the current project without checking files, docs, or command output first.
+- Prefer read, grep, find, and bash over memory when discussing code, config, repository structure, or dependencies.
+- Prefer README files, docs, and explicit configuration over inference.
+- If you are unsure, say so and verify instead of guessing.
+- When practical, cite the file path or command used for verification.
