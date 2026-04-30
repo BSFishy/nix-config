@@ -35,7 +35,7 @@ in
     enable = true;
 
     terminal = "tmux-256color";
-    mouse = false;
+    mouse = true;
     keyMode = "vi";
     baseIndex = 1;
     shell = "${pkgs.zsh}/bin/zsh";
