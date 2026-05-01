@@ -18,4 +18,6 @@
 
     inputs.agenix.packages.${system}.agenix
   ];
+
+  programs.mise.enable = true;
 }
