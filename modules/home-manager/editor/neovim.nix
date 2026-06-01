@@ -23,6 +23,7 @@ in
     pkgs.ruff
     pkgs.ast-grep
     pkgs.rubyPackages.solargraph
+    pkgs.nil
 
     # Mason dependencies
     pkgs.curl

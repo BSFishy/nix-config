@@ -15,6 +15,7 @@
     pkgs.go
     pkgs.lazydocker
     pkgs.vault
+    pkgs.zotero
 
     inputs.agenix.packages.${system}.agenix
   ];
