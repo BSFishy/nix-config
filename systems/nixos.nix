@@ -26,6 +26,9 @@ in
       # basic universal configurations
       ../modules/nixos/basic
 
+      # custom package overlay
+      { nixpkgs.overlays = [ (import ../overlays) ]; }
+
       # agenix
       agenix.nixosModules.default
 

@@ -15,6 +15,9 @@ in
     ../modules/nix-darwin/homebrew
     ../modules/nix-darwin/system
 
+    # custom package overlay
+    { nixpkgs.overlays = [ (import ../overlays) ]; }
+
     # agenix
     agenix.darwinModules.default
 

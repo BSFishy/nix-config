@@ -8,6 +8,7 @@
 {
   imports = [
     ./ai
+    ./codiff.nix
     ./shell.nix
   ];
 
