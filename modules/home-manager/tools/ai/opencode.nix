@@ -36,15 +36,11 @@ in
         lsp = "allow";
         todoread = "allow";
         todowrite = "allow";
-        webfetch = "ask";
-        websearch = "ask";
-        codesearch = "ask";
+        webfetch = "allow";
+        websearch = "allow";
+        codesearch = "allow";
         doom_loop = "ask";
-
-        edit = {
-          "*" = "ask";
-          "~/notebook/**" = "allow";
-        };
+        edit = "allow";
 
         external_directory = {
           "*" = "ask";
@@ -54,27 +50,10 @@ in
         };
 
         bash = {
-          "*" = "ask";
-          "head*" = "allow";
-          "tail*" = "allow";
-          "grep*" = "allow";
-          "rg*" = "allow";
-          "ls*" = "allow";
-
-          "git diff*" = "allow";
-          "git log*" = "allow";
-          "git status*" = "allow";
-          "git branch --show-current" = "allow";
-
-          "glab mr view" = "allow";
-          "glab mr diff" = "allow";
-
-          "find*" = "allow";
-          "wc*" = "allow";
-          "cat*" = "allow";
-          "echo*" = "allow";
-          "sort*" = "allow";
-          "uniq*" = "allow";
+          "*" = "allow";
+          "rm*" = "ask";
+          "git push*" = "ask";
+          "git commit*" = "ask";
         };
       };
     }
