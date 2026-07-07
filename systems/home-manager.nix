@@ -10,15 +10,11 @@
 let
   pkgs = inputs.nixpkgs;
   agenix = inputs.agenix;
-  overlay = import ../overlays;
 in
 {
-  pkgs = (pkgs.legacyPackages.${system}).extend overlay;
+  pkgs = pkgs.legacyPackages.${system};
 
   modules = [
-    # codiff module definition (provides programs.codiff options)
-    ../hm-modules/codiff.nix
-
     # standard modules
     ../modules/home-manager/basic
     ../modules/home-manager/editor

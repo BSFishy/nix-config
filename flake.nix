@@ -201,12 +201,6 @@
       };
     in
     {
-      # custom package overlay
-      overlays.default = import ./overlays;
-
-      # home-manager modules
-      homeManagerModules.codiff = import ./hm-modules/codiff.nix;
-
       # nixos configurations
       nixosConfigurations = {
         orion-02 = nixpkgs.lib.nixosSystem orion-02-nixos;
@@ -239,8 +233,6 @@
         };
 
         packages = rec {
-          codiff = pkgs.callPackage ./packages/codiff.nix { };
-
           setup = pkgs.buildGoModule {
             pname = "setup";
             version = "0.1.0";
