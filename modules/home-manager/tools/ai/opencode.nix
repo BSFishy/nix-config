@@ -47,6 +47,7 @@ in
           "~/notebook/**" = "allow";
           "~/projects/**" = "allow";
           "~/Projects/**" = "allow";
+          "~/.cargo/registry/**" = "allow";
         };
 
         bash = {
