@@ -78,6 +78,7 @@ in
         (builtins.readFile ../opencode-tools/qmd-notes.js);
   };
 
+  xdg.configFile."opencode/skills/documentation".source = ./skills/documentation;
   xdg.configFile."opencode/plugins/memory.js".source = ../opencode-plugins/memory.js;
   xdg.configFile."opencode/plugins/openpeon.js".text =
     builtins.replaceStrings [ "__OPENPEON_PACK_PATH__" ] [ "${tf2-pyro-pack}" ]
