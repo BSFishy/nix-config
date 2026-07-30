@@ -144,7 +144,10 @@
         outer = {
           left = 8;
           bottom = 8;
-          top = 8;
+          top = [
+            { "monitor.built-in" = 8; }
+            40
+          ];
           right = 8;
         };
       };
