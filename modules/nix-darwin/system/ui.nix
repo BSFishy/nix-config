@@ -145,7 +145,7 @@
           left = 8;
           bottom = 8;
           top = [
-            { "monitor.built-in" = 8; }
+            { monitor.built-in = 8; }
             40
           ];
           right = 8;
