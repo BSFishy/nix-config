@@ -111,6 +111,15 @@ in
       unbind -T root MouseDragEnd1Pane
       bind -T copy-mode-vi MouseDragEnd1Pane send -X stop-selection
 
+      # Disable right-click tmux context menus so accidental clicks cannot kill
+      # panes/windows or trigger other destructive actions.
+      unbind -T root MouseDown3Pane
+      unbind -T root MouseDown3Status
+      unbind -T root MouseDown3StatusLeft
+      unbind -T root M-MouseDown3Pane
+      unbind -T root M-MouseDown3Status
+      unbind -T root M-MouseDown3StatusLeft
+
       ####################################
       # Sensible options
 
