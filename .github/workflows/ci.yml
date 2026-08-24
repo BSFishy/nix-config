@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  fmt:
+    name: Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: Check formatting
+        run: nix fmt -- --ci
+
+  check:
+    name: Flake Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - name: Run flake check
+        run: |
+          OUTPUT=$(nix --option abort-on-warn true --option warn-dirty false \
+            flake check --all-systems 2>&1)
+          EXIT_CODE=$?
+          echo "$OUTPUT"
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "::error::nix flake check failed"
+            exit 1
+          fi
+          if echo "$OUTPUT" | grep -qE "^(warning|evaluation warning):"; then
+            echo "::error::nix flake check produced warnings"
+            exit 1
+          fi
