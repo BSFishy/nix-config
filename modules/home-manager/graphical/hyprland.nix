@@ -12,6 +12,7 @@ in
   config = lib.mkIf isLinux {
     wayland.windowManager.hyprland = {
       enable = true;
+      configType = "hyprlang";
       settings = {
         env = [
           "HYPRCURSOR_THEME,Adwaita"

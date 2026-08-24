@@ -4,7 +4,10 @@
   inputs = {
     # universal flakes
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # flake utils
     flake-utils.url = "github:numtide/flake-utils";
@@ -220,7 +223,7 @@
         work-linux = home-manager.lib.homeManagerConfiguration work-linux-home-configuration;
       };
     }
-    // flake-utils.lib.eachDefaultSystem (
+    // flake-utils.lib.eachSystem [ "x86_64-linux" "aarch64-darwin" ] (
       system:
       let
         pkgs = import nixpkgs { inherit system; };

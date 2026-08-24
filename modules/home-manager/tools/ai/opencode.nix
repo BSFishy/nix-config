@@ -18,7 +18,7 @@ in
   programs.opencode = {
     enable = true;
     enableMcpIntegration = true;
-    rules = builtins.readFile ../AGENTS.md;
+    context = builtins.readFile ../AGENTS.md;
 
     tui.theme = "gruvbox";
 
