@@ -226,6 +226,8 @@
         pkgs = import nixpkgs { inherit system; };
       in
       {
+        formatter = pkgs.nixfmt-tree;
+
         devShells.default = pkgs.mkShell {
           buildInputs = [
             pkgs.go

@@ -30,6 +30,10 @@ in
   config = lib.mkIf isLinux {
     targets.genericLinux.nixGL.defaultWrapper = lib.mkDefault "mesa";
 
-    home.packages = [ pkgs.obs-studio pkgs.chatterino7 pkgs.ungoogled-chromium ];
+    home.packages = [
+      pkgs.obs-studio
+      pkgs.chatterino7
+      pkgs.ungoogled-chromium
+    ];
   };
 }

@@ -45,19 +45,22 @@ let
     };
   };
 
-  memoryExtension = pkgs.runCommand "pi-memory-extension-0.1.0" {
-    nativeBuildInputs = [ pkgs.gnused ];
-    meta = {
-      description = "Pi memory extension client for an external memory backend";
-      platforms = lib.platforms.unix;
-    };
-  } ''
-    mkdir -p $out/memory
-    cp -r ${./extensions/memory}/. $out/memory/
+  memoryExtension =
+    pkgs.runCommand "pi-memory-extension-0.1.0"
+      {
+        nativeBuildInputs = [ pkgs.gnused ];
+        meta = {
+          description = "Pi memory extension client for an external memory backend";
+          platforms = lib.platforms.unix;
+        };
+      }
+      ''
+        mkdir -p $out/memory
+        cp -r ${./extensions/memory}/. $out/memory/
 
-    substituteInPlace $out/memory/backend.ts \
-      --replace-fail '__PI_MEMORY_BACKEND__' '${memoryBackend}/bin/pi-memory-backend'
-  '';
+        substituteInPlace $out/memory/backend.ts \
+          --replace-fail '__PI_MEMORY_BACKEND__' '${memoryBackend}/bin/pi-memory-backend'
+      '';
 in
 {
   home.file.".pi/agent/extensions/verification.ts".source = ./extensions/verification.ts;
