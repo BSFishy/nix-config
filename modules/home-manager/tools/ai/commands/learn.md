@@ -43,6 +43,9 @@ Review everything that happened in this session — instructions the user gave,
 corrections they made, preferences they expressed, patterns that emerged,
 decisions that were reached, and workflows that worked well (or didn't).
 
+Do not propose candidate insights that were already implemented during this
+session; mention them only in the session summary.
+
 Classify each candidate insight into one of four categories:
 
 ### 1. Rules
