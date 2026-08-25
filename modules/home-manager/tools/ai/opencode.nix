@@ -64,11 +64,6 @@ in
       ];
 
       provider = (builtins.fromJSON (builtins.readFile ../opencode-modern.json)).provider;
-    }
-    // lib.optionalAttrs work {
-      plugin = [
-        "opencode-wakelock"
-      ];
     };
 
     tools.qmd-notes =
@@ -79,6 +74,7 @@ in
   };
 
   xdg.configFile."opencode/skills/documentation".source = ./skills/documentation;
+  xdg.configFile."opencode/commands/learn.md".source = ./commands/learn.md;
   xdg.configFile."opencode/plugins/memory.js".source = ../opencode-plugins/memory.js;
   xdg.configFile."opencode/plugins/openpeon.js".text =
     builtins.replaceStrings [ "__OPENPEON_PACK_PATH__" ] [ "${tf2-pyro-pack}" ]
