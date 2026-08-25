@@ -7,6 +7,18 @@ let
     builtins.replaceStrings [ "rofi-power" "rofi" ] [ "${./rofi-power.sh}" "${pkgs.rofi}/bin/rofi" ]
       (builtins.readFile ./rofi.sh);
   rofi = pkgs.writeShellScriptBin "rofi" rofi-source;
+
+  hypr-monitor-setup = pkgs.writeShellScriptBin "hypr-monitor-setup" ''
+    set -eu
+
+    monitors="$(${pkgs.hyprland}/bin/hyprctl monitors all)"
+
+    if printf '%s\n' "$monitors" | ${pkgs.gnugrep}/bin/grep -q '^Monitor DP-3 '; then
+      ${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 9 DP-3
+    elif printf '%s\n' "$monitors" | ${pkgs.gnugrep}/bin/grep -q '^Monitor DP-11 '; then
+      ${pkgs.hyprland}/bin/hyprctl dispatch moveworkspacetomonitor 9 DP-11
+    fi
+  '';
 in
 {
   config = lib.mkIf isLinux {
@@ -29,6 +41,12 @@ in
 
         monitor = [
           "eDP-1,preferred,auto,1"
+          "DP-11,preferred,auto-right,1"
+          "DP-3,preferred,auto-up,1"
+        ];
+
+        "exec-once" = [
+          "${hypr-monitor-setup}/bin/hypr-monitor-setup"
         ];
 
         windowrule = [
@@ -40,7 +58,7 @@ in
         ];
 
         workspace = [
-          "9, monitor:DP-11, default:true"
+          "9, default:true"
         ];
 
         "$mainMod" = "CTRL";
