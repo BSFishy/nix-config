@@ -65,17 +65,10 @@ in
 
       provider = (builtins.fromJSON (builtins.readFile ../opencode-modern.json)).provider;
     };
-
-    tools.qmd-notes =
-      builtins.replaceStrings
-        [ "@opencode-ai/plugin" ]
-        [ "${config.xdg.configHome}/opencode/node_modules/@opencode-ai/plugin/dist/index.js" ]
-        (builtins.readFile ../opencode-tools/qmd-notes.js);
   };
 
   xdg.configFile."opencode/skills/documentation".source = ./skills/documentation;
   xdg.configFile."opencode/commands/learn.md".source = ./commands/learn.md;
-  xdg.configFile."opencode/plugins/memory.js".source = ../opencode-plugins/memory.js;
   xdg.configFile."opencode/plugins/docs.js".source = ../opencode-plugins/docs.js;
   xdg.configFile."opencode/plugins/openpeon.js".text =
     builtins.replaceStrings [ "__OPENPEON_PACK_PATH__" ] [ "${tf2-pyro-pack}" ]
