@@ -68,6 +68,8 @@ in
   };
 
   xdg.configFile."opencode/skills/documentation".source = ./skills/documentation;
+  xdg.configFile."opencode/skills/command-not-found".source = ./skills/command-not-found;
+  xdg.configFile."opencode/commands/catalog.md".source = ./commands/catalog.md;
   xdg.configFile."opencode/commands/learn.md".source = ./commands/learn.md;
   xdg.configFile."opencode/plugins/docs.js".source = ../opencode-plugins/docs.js;
   xdg.configFile."opencode/plugins/openpeon.js".text =

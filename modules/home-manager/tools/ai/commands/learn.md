@@ -111,26 +111,28 @@ Group related proposals together by category.
 
 ## Self-improvement
 
-After handling proposals, review this `/learn` command itself. Consider:
+Before asking the user to approve any proposals, review this `/learn` command
+itself. Consider:
 
 - Did the session surface a pattern that `/learn` should look for but doesn't?
 - Is there a step in this workflow that felt clunky or incomplete?
 - Could the output format be improved?
 
-Present self-improvement suggestions in the same propose-then-confirm style.
-The source file for this command lives in the system config repository at:
+Include self-improvement suggestions with the regular proposals and present them
+in the same format. The source file for this command lives in the system config
+repository at:
 `remote/modules/home-manager/tools/ai/commands/learn.md`
 
 ## Process
 
 1. Summarize the session briefly (3-5 bullet points of key moments).
-2. Present all proposals grouped by category.
-3. Ask the user which proposals to accept (they may edit, merge, or reject).
+2. Present all regular and self-improvement proposals grouped by category.
+3. Ask the user which proposals to accept in one confirmation covering every
+   proposed edit. Do not edit anything before receiving that confirmation.
 4. For nix-managed files: locate the system config repo (ask if unknown, save
-   to memory for next time). Edit the source files there. Show diffs.
-5. For project docs: edit directly in the project's `docs/` directory.
-6. Present any self-improvement proposals for this command.
-7. If the user accepts, apply those too.
-8. If any nix-managed files were changed, remind the user to rebuild.
+   to memory for next time). Edit the accepted source files there. Show diffs.
+5. For project docs: edit accepted changes directly in the project's `docs/`
+   directory.
+6. If any nix-managed files were changed, remind the user to rebuild.
 
 $ARGUMENTS
