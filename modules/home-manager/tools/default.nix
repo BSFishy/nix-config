@@ -14,6 +14,7 @@
   home.packages = [
     pkgs.go
     pkgs.lazydocker
+    pkgs.jq
     pkgs.vault
     pkgs.zotero
 
