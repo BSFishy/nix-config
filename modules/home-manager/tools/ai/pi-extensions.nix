@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+_:
 
 {
   home.file.".pi/agent/extensions/verification.ts".source = ./extensions/verification.ts;
