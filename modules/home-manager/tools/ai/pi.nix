@@ -16,5 +16,6 @@
 
   home.file.".pi/agent/prompts/catalog.md".source = ./commands/catalog.md;
   home.file.".pi/agent/prompts/learn.md".source = ./commands/learn.md;
+  home.file.".pi/agent/prompts/rebase-base.md".source = ./commands/rebase-base.md;
   home.file.".pi/agent/prompts/ship.md".source = ./commands/ship.md;
 }

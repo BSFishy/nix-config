@@ -13,12 +13,16 @@ declaratively in a nix home-manager repository. All deployed config files are
 read-only symlinks — you must edit the **source files** in the repository, not
 the deployed copies.
 
-Before making any changes to nix-managed files, you need to know where the
-repository lives on this machine. To find it:
+Before proposing or changing any nix-managed artifacts, you need to know where
+the repository lives on this machine. To find it:
 
 1. Check your long-term memory / notes for a previously saved path.
 2. If not found, **ask the user** where their nix config repo is.
 3. Once you have the path, save it to your long-term memory for future sessions.
+
+After locating it, inspect the relevant source files before drafting proposals.
+Use the deployed configuration only as a fallback for discovery; the source
+repository determines whether a proposal is new, redundant, or already covered.
 
 The repository has this structure (relative to its root):
 
@@ -128,14 +132,15 @@ repository at:
 
 ## Process
 
-1. Summarize the session briefly (3-5 bullet points of key moments).
-2. Present all regular and self-improvement proposals grouped by category.
-3. Ask the user which proposals to accept in one confirmation covering every
+1. Locate the system config repo (ask if unknown, save it to memory for next
+   time) and inspect relevant existing source artifacts for overlap.
+2. Summarize the session briefly (3-5 bullet points of key moments).
+3. Present all regular and self-improvement proposals grouped by category.
+4. Ask the user which proposals to accept in one confirmation covering every
    proposed edit. Do not edit anything before receiving that confirmation.
-4. For nix-managed files: locate the system config repo (ask if unknown, save
-   to memory for next time). Edit the accepted source files there. Show diffs.
-5. For project docs: edit accepted changes directly in the project's `docs/`
+5. For nix-managed files, edit the accepted source files and show diffs.
+6. For project docs, edit accepted changes directly in the project's `docs/`
    directory.
-6. If any nix-managed files were changed, remind the user to rebuild.
+7. If any nix-managed files were changed, remind the user to rebuild.
 
 $ARGUMENTS

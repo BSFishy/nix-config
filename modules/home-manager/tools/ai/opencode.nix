@@ -73,6 +73,7 @@ in
   xdg.configFile."opencode/skills/fetch-project".source = ./skills/fetch-project;
   xdg.configFile."opencode/commands/catalog.md".source = ./commands/catalog.md;
   xdg.configFile."opencode/commands/learn.md".source = ./commands/learn.md;
+  xdg.configFile."opencode/commands/rebase-base.md".source = ./commands/rebase-base.md;
   xdg.configFile."opencode/commands/ship.md".source = ./commands/ship.md;
   xdg.configFile."opencode/plugins/docs.js".source = ../opencode-plugins/docs.js;
   xdg.configFile."opencode/plugins/openpeon.js".text =
