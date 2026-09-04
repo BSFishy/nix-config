@@ -238,6 +238,8 @@
         };
 
         packages = rec {
+          open-code-review = pkgs.callPackage ./pkgs/open-code-review { };
+
           setup = pkgs.buildGoModule {
             pname = "setup";
             version = "0.1.0";

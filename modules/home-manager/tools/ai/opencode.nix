@@ -71,6 +71,7 @@ in
   xdg.configFile."opencode/skills/command-not-found".source = ./skills/command-not-found;
   xdg.configFile."opencode/skills/ship".source = ./skills/ship;
   xdg.configFile."opencode/skills/fetch-project".source = ./skills/fetch-project;
+  xdg.configFile."opencode/skills/open-code-review-delegate".source = ./skills/open-code-review-delegate;
   xdg.configFile."opencode/commands/catalog.md".source = ./commands/catalog.md;
   xdg.configFile."opencode/commands/learn.md".source = ./commands/learn.md;
   xdg.configFile."opencode/commands/rebase-base.md".source = ./commands/rebase-base.md;

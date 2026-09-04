@@ -2,6 +2,7 @@
   config,
   pkgs,
   llmPkgs,
+  flakePkgs,
   ...
 }:
 
@@ -41,5 +42,6 @@
 
   home.packages = [
     llmPkgs.qmd
+    flakePkgs.open-code-review
   ];
 }
