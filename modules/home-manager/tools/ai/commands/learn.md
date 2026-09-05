@@ -14,26 +14,29 @@ read-only symlinks — you must edit the **source files** in the repository, not
 the deployed copies.
 
 Before proposing or changing any nix-managed artifacts, you need to know where
-the repository lives on this machine. To find it:
-
-1. Check your long-term memory / notes for a previously saved path.
-2. If not found, **ask the user** where their nix config repo is.
-3. Once you have the path, save it to your long-term memory for future sessions.
+the repository lives on this machine. If the path is not clear from the session,
+ask the user where their nix config repo is.
 
 After locating it, inspect the relevant source files before drafting proposals.
 Use the deployed configuration only as a fallback for discovery; the source
 repository determines whether a proposal is new, redundant, or already covered.
 
-The repository has this structure (relative to its root):
+The personal config repo stores these files directly under `modules/`. The work
+config repo stores the same tree in a `remote/` submodule. Check which layout is
+present before constructing paths. If the expected layout is absent, search the
+repo for analogous `AGENTS.md`, `commands`, `skills`, plugin, and nix wiring
+paths before asking again or failing.
 
-| Artifact | Relative path in repo |
-|---|---|
-| Global rules (AGENTS.md) | `remote/modules/home-manager/tools/AGENTS.md` |
-| Work-specific rules | `work-rules.md` (in repo root) |
-| Commands | `remote/modules/home-manager/tools/ai/commands/<name>.md` |
-| Skills (global) | `remote/modules/home-manager/tools/ai/skills/<name>/SKILL.md` |
-| Plugins | `remote/modules/home-manager/tools/opencode-plugins/<name>.js` |
-| Nix wiring | `remote/modules/home-manager/tools/ai/opencode.nix` |
+Typical repository structures, relative to the repo root:
+
+| Artifact | Personal path | Work path |
+|---|---|---|
+| Global rules (AGENTS.md) | `modules/home-manager/tools/AGENTS.md` | `remote/modules/home-manager/tools/AGENTS.md` |
+| Work-specific rules | - | `work-rules.md` |
+| Commands | `modules/home-manager/tools/ai/commands/<name>.md` | `remote/modules/home-manager/tools/ai/commands/<name>.md` |
+| Skills (global) | `modules/home-manager/tools/ai/skills/<name>/SKILL.md` | `remote/modules/home-manager/tools/ai/skills/<name>/SKILL.md` |
+| Plugins | `modules/home-manager/tools/opencode-plugins/<name>.js` | `remote/modules/home-manager/tools/opencode-plugins/<name>.js` |
+| Nix wiring | `modules/home-manager/tools/ai/opencode.nix` | `remote/modules/home-manager/tools/ai/opencode.nix` |
 
 Project-scoped docs are NOT nix-managed — they live in the project repo itself
 at `docs/<name>.md` and can be edited directly.
@@ -127,13 +130,12 @@ itself. Consider:
 
 Include self-improvement suggestions with the regular proposals and present them
 in the same format. The source file for this command lives in the system config
-repository at:
-`remote/modules/home-manager/tools/ai/commands/learn.md`
+repository at the command path for the detected personal or work layout.
 
 ## Process
 
-1. Locate the system config repo (ask if unknown, save it to memory for next
-   time) and inspect relevant existing source artifacts for overlap.
+1. Locate the system config repo and inspect relevant existing source artifacts
+   for overlap.
 2. Summarize the session briefly (3-5 bullet points of key moments).
 3. Present all regular and self-improvement proposals grouped by category.
 4. Ask the user which proposals to accept in one confirmation covering every

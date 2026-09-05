@@ -33,3 +33,8 @@ not mix and match writing styles in your response to the user.
 - Prefer README files, docs, and explicit configuration over inference.
 - If you are unsure, say so and verify instead of guessing.
 - When practical, cite the file path or command used for verification.
+
+## Stateful Data Safety
+
+- Before modifying or recovering irreplaceable stateful data, stop or freeze writers, preserve byte-for-byte copies of the current state, and operate from copies whenever possible.
+- When backup or restore correctness matters, verify both transport integrity and application-level structure instead of relying only on command success.

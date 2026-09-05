@@ -14,6 +14,7 @@
   home.file.".pi/agent/skills/ship".source = ./skills/ship;
   home.file.".pi/agent/skills/fetch-project".source = ./skills/fetch-project;
   home.file.".pi/agent/skills/open-code-review-delegate".source = ./skills/open-code-review-delegate;
+  home.file.".pi/agent/skills/stateful-k8s-recovery".source = ./skills/stateful-k8s-recovery;
 
   home.file.".pi/agent/prompts/catalog.md".source = ./commands/catalog.md;
   home.file.".pi/agent/prompts/learn.md".source = ./commands/learn.md;
