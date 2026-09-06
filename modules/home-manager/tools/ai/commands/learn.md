@@ -20,6 +20,9 @@ ask the user where their nix config repo is.
 After locating it, inspect the relevant source files before drafting proposals.
 Use the deployed configuration only as a fallback for discovery; the source
 repository determines whether a proposal is new, redundant, or already covered.
+If the invoked `/learn` prompt differs from the nix-managed source you read,
+treat the deployed prompt as stale and remind the user to rebuild home-manager
+before relying on deployed command behavior.
 
 The personal config repo stores these files directly under `modules/`. The work
 config repo stores the same tree in a `remote/` submodule. Check which layout is
