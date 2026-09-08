@@ -5,6 +5,9 @@
 - Prefer README files, docs, and explicit configuration over inference.
 - If you are unsure, say so and verify instead of guessing.
 - When practical, cite the file path or command used for verification.
+- Use the project's declared task runner for operations that depend on project-loaded
+  credentials, environment, or lifecycle conventions. Inspect its recipes before
+  replacing it with an ad-hoc command or direct provider API call.
 
 ## Stateful Data Safety
 

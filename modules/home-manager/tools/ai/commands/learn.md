@@ -43,7 +43,9 @@ Typical repository structures, relative to the repo root:
 
 Project-scoped docs are NOT nix-managed — they live in the project repo itself
 at `docs/<name>.md` and can be edited directly. Inspect relevant existing
-project docs before proposing a project-doc change.
+project docs before proposing a project-doc change. When a repository-root
+`todo.md` exists, inspect it as a status tracker rather than a durable doc;
+ask whether accepted tracker updates should remain untracked or be committed.
 
 After editing any nix-managed source file, remind the user they need to rebuild
 home-manager to deploy the changes.
@@ -98,18 +100,19 @@ description: Short description of when this doc is relevant
 Content here.
 ```
 
-### 4. Skills (global, cross-project)
+### 4. Skills
 
-Knowledge or workflows that transcend any single project. Skills are
-nix-managed and available globally across all machines. Examples: how to
-stage/commit/push changes, how to write good PR descriptions, how to debug
-a k8s pod, how to run a database migration.
+A project-specific workflow belongs in `.agents/skills/<name>/SKILL.md` in
+that project. A global, cross-project workflow belongs in the nix-managed skills
+tree and is available on every machine. Examples include staging/committing,
+writing PR descriptions, debugging a Kubernetes pod, and database migrations.
 
-A skill is appropriate when the knowledge applies regardless of which project
-the user is working in.
-
-**Note:** new skills require wiring in the nix config to be deployed. If you
-propose a new skill, include the nix wiring change that would be needed.
+A global skill is appropriate only when the knowledge applies regardless of
+which project the user is working in. New global skills require wiring in both
+`modules/home-manager/tools/ai/pi.nix` and
+`modules/home-manager/tools/ai/opencode.nix`; include both changes in the
+proposal. Project skills use Pi's project discovery and do not require global
+Nix wiring.
 
 ## Proposal format
 
@@ -139,7 +142,7 @@ repository at the command path for the detected personal or work layout.
 ## Process
 
 1. Locate the system config repo and inspect relevant existing source artifacts
-   for overlap.
+   for overlap. Inspect a repository-root `todo.md` when present.
 2. Summarize the session briefly (3-5 bullet points of key moments).
 3. When the session includes an outage, failed deployment, or stateful recovery,
    identify the verified failure chain and consider a project runbook proposal
@@ -149,7 +152,7 @@ repository at the command path for the detected personal or work layout.
    proposed edit. Do not edit anything before receiving that confirmation.
 6. For nix-managed files, edit the accepted source files and show diffs.
 7. For project docs, edit accepted changes directly in the project's `docs/`
-   directory.
+   directory. For accepted tracker updates, follow the user's retention choice.
 8. If any nix-managed files were changed, remind the user to rebuild.
 
 $ARGUMENTS
