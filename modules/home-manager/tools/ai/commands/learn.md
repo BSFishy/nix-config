@@ -42,7 +42,8 @@ Typical repository structures, relative to the repo root:
 | Nix wiring | `modules/home-manager/tools/ai/opencode.nix` | `remote/modules/home-manager/tools/ai/opencode.nix` |
 
 Project-scoped docs are NOT nix-managed — they live in the project repo itself
-at `docs/<name>.md` and can be edited directly.
+at `docs/<name>.md` and can be edited directly. Inspect relevant existing
+project docs before proposing a project-doc change.
 
 After editing any nix-managed source file, remind the user they need to rebuild
 home-manager to deploy the changes.
@@ -140,12 +141,15 @@ repository at the command path for the detected personal or work layout.
 1. Locate the system config repo and inspect relevant existing source artifacts
    for overlap.
 2. Summarize the session briefly (3-5 bullet points of key moments).
-3. Present all regular and self-improvement proposals grouped by category.
-4. Ask the user which proposals to accept in one confirmation covering every
+3. When the session includes an outage, failed deployment, or stateful recovery,
+   identify the verified failure chain and consider a project runbook proposal
+   covering safe diagnosis, recovery, and prevention.
+4. Present all regular and self-improvement proposals grouped by category.
+5. Ask the user which proposals to accept in one confirmation covering every
    proposed edit. Do not edit anything before receiving that confirmation.
-5. For nix-managed files, edit the accepted source files and show diffs.
-6. For project docs, edit accepted changes directly in the project's `docs/`
+6. For nix-managed files, edit the accepted source files and show diffs.
+7. For project docs, edit accepted changes directly in the project's `docs/`
    directory.
-7. If any nix-managed files were changed, remind the user to rebuild.
+8. If any nix-managed files were changed, remind the user to rebuild.
 
 $ARGUMENTS

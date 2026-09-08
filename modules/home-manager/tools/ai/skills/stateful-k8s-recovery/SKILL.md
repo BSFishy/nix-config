@@ -53,6 +53,30 @@ verified steps over convenience.
 7. Test restores into a scratch PVC before touching production.
 8. Restart the writer only after the recovery operation is complete.
 
+## CSI and FUSE mount failures
+
+A node-local CSI mount service can own FUSE processes for application PVCs.
+Restarting that service disconnects its active FUSE mounts; applications with
+open files cannot safely continue after a `transport endpoint is not connected`
+error.
+
+1. Identify the PVC, its `VolumeAttachment`, the node with the staging mount,
+   and every pod publishing the volume.
+2. Freeze all writers and confirm no publish paths remain before changing a
+   disconnected staging mount.
+3. Preserve data through the workload's backup or recovery procedure when
+   application writes may have been buffered at the time of failure.
+4. Let CSI unpublish and unstage the volume after consumers stop. If it remains
+   stuck, inspect the node's staging mount and unmount only the confirmed,
+   disconnected FUSE mount; never delete a staging directory to force cleanup.
+5. Delete a stale `VolumeAttachment` only after confirming that no pod or
+   process uses the volume and normal detach has failed.
+6. Reattach through CSI, restart the workload, and verify filesystem access,
+   application health, and a durable application-level write or save.
+
+Treat maintenance of a node-local mount service as storage maintenance: quiesce
+all of that node's PVC consumers before restarting the service.
+
 ## Transfer guidance
 
 - Avoid trusting long `kubectl exec ... > file` streams without checksum
