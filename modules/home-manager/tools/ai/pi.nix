@@ -69,7 +69,12 @@ in
   };
 
   config = {
-    programs.pi.settings.tuiMode = "fullscreen";
+    programs.pi.settings = {
+      defaultProvider = lib.mkDefault "openai-codex";
+      defaultModel = lib.mkDefault "gpt-5.6-terra";
+      defaultThinkingLevel = lib.mkDefault "medium";
+      tuiMode = "fullscreen";
+    };
 
     programs.pi.settings.defaultTools = [
       "read"
