@@ -266,6 +266,9 @@ focus_attention() {
     tmux_cmd switch-client "${client_args[@]}" -t "$session_id"
     tmux_cmd select-window -t "$window_id"
     tmux_cmd select-pane -t "$pane"
+    if [[ "$OS_NAME" == Darwin ]]; then
+      /usr/bin/open -a Ghostty >/dev/null 2>&1 || true
+    fi
     return 0
   fi
 
@@ -331,7 +334,6 @@ notify_attention() {
           --title "$title" \
           --message "$message" \
           --group "pi-attention-$pane" \
-          --sender com.mitchellh.ghostty \
           --actions Open \
           --close-label Dismiss) || exit 0
         if [[ "$action" == '@CONTENTCLICKED' || "$action" == Open ]]; then

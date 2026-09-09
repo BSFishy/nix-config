@@ -127,8 +127,8 @@ for ((attempt = 0; attempt < 100; attempt++)); do
   [[ "$actual_target" == "$pane_two" ]] && break
   sleep 0.1
 done
-grep -Fx -- '--sender' "$notifier_log" >/dev/null
-grep -Fx -- 'com.mitchellh.ghostty' "$notifier_log" >/dev/null
+grep -Fx -- '--actions' "$notifier_log" >/dev/null
+grep -Fx -- 'Open' "$notifier_log" >/dev/null
 assert_equal "$pane_two" "$actual_target" 'macOS notification click focuses its pane'
 
 rm -f "$notifier_log"

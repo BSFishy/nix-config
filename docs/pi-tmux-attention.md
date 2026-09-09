@@ -235,7 +235,7 @@ The picker refreshes its input each time it opens. If the selected pane disappea
 
 ### System notifications
 
-On macOS, Alerter posts a notification as Ghostty and reports content or `Open` action clicks; the waiting helper process then runs `pi-attention focus`. On Linux, `notify-send` requests a freedesktop default action and runs the same focus command when the notification daemon reports a click. Linux action support varies by desktop and notification daemon.
+On macOS, Alerter posts a notification and reports content or `Open` action clicks; the waiting helper process then runs `pi-attention focus` and activates Ghostty. On Linux, `notify-send` requests a freedesktop default action and runs the same focus command when the notification daemon reports a click. Linux action support varies by desktop and notification daemon.
 
 Notification text includes the Pi label and tmux session/window location. Titles are:
 
