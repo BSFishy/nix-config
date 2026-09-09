@@ -10,6 +10,7 @@ Usage:
   pi-attention register [--pane PANE] [--session-id ID] [--session-file PATH]
                         [--project NAME] [--label LABEL] [--owner-pid PID]
   pi-attention set waiting|unread [PANE]
+  pi-attention transition waiting|unread waiting|unread [PANE]
   pi-attention read [PANE]
   pi-attention unregister [PANE]
   pi-attention count
@@ -126,18 +127,37 @@ register_pane() {
   set_pane_option "$pane" @pi_updated_at "$(date +%s)"
 }
 
+validate_attention_state() {
+  case "$1" in
+    waiting|unread) ;;
+    *) fail 'attention state must be waiting or unread' ;;
+  esac
+}
+
 set_attention() {
   local state=${1:-}
   local pane
 
-  case "$state" in
-    waiting|unread) ;;
-    *) fail 'attention state must be waiting or unread' ;;
-  esac
-
+  validate_attention_state "$state"
   pane=$(require_pane "${2:-}")
   set_pane_option "$pane" @pi_attention "$state"
   set_pane_option "$pane" @pi_updated_at "$(date +%s)"
+}
+
+transition_attention() {
+  local previous=${1:-}
+  local next=${2:-}
+  local pane
+  local current
+
+  validate_attention_state "$previous"
+  validate_attention_state "$next"
+  pane=$(require_pane "${3:-}")
+  current=$(tmux_cmd show-options -pqv -t "$pane" @pi_attention)
+
+  if [[ "$current" == "$previous" ]]; then
+    set_attention "$next" "$pane"
+  fi
 }
 
 read_attention() {
@@ -191,6 +211,7 @@ fi
 case "$command" in
   register) register_pane "$@" ;;
   set) set_attention "$@" ;;
+  transition) transition_attention "$@" ;;
   read) read_attention "$@" ;;
   unregister) unregister_pane "$@" ;;
   count) count_attention "$@" ;;

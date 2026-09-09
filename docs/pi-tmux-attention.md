@@ -167,6 +167,7 @@ Proposed interface:
 ```text
 pi-attention register [metadata]
 pi-attention set waiting|unread
+pi-attention transition waiting|unread waiting|unread [pane-id]
 pi-attention read [pane-id]
 pi-attention unregister [pane-id]
 pi-attention count
@@ -282,6 +283,7 @@ modules/home-manager/tools/ai/pi.nix
 modules/home-manager/tools/ai/pi-attention.sh
 modules/home-manager/tools/ai/pi-attention-test.sh
 modules/home-manager/tools/ai/pi-attention.ts
+modules/home-manager/tools/ai/pi-attention-extension-test.sh
 ```
 
 `pi.nix` builds the helper through a derivation that runs the isolated tmux integration test before exposing the executable. Nix caching means the test runs when the helper or test changes rather than on every activation.
@@ -306,14 +308,14 @@ The final filenames may change, but the extension and helper remain separate com
 - [x] Move the helper, test, and specification into the public Home Manager configuration.
 - [x] Verify the public package derivation runs the integration test successfully.
 - [ ] Update and activate consuming flakes after publishing the public change.
-- [ ] Add a global Pi extension.
-- [ ] Register pane/session metadata on Pi startup.
-- [ ] Mark the pane unread on `agent_settled`.
-- [ ] Mark the pane waiting on `ui_prompt_start`.
-- [ ] Convert waiting to unread on `ui_prompt_end`.
-- [ ] Clear attention on user-originated prompt submission.
-- [ ] Preserve state through extension reload and Pi session replacement.
-- [ ] Clear metadata on clean Pi exit.
+- [x] Add a global Pi extension.
+- [x] Register pane/session metadata on Pi startup.
+- [x] Mark the pane unread on `agent_settled`.
+- [x] Mark the pane waiting on `ui_prompt_start`.
+- [x] Convert waiting to unread on `ui_prompt_end`.
+- [x] Clear attention on user-originated prompt submission.
+- [x] Preserve state through extension reload and Pi session replacement.
+- [x] Clear metadata on clean Pi exit.
 
 ### Phase 2: tmux interface
 

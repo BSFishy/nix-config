@@ -16,6 +16,17 @@ let
       TMUX_BIN=${pkgs.tmux}/bin/tmux \
       ${pkgs.bash}/bin/bash ${./pi-attention-test.sh}
 
+    mkdir -p "$TMPDIR/pi-home"
+    HOME="$TMPDIR/pi-home" ${llmPkgs.pi}/bin/pi \
+      --extension ${./pi-attention.ts} \
+      --list-models > /dev/null
+
+    PATH=${piAttentionUnchecked}/bin:$PATH \
+      PI_BIN=${llmPkgs.pi}/bin/pi \
+      PI_EXTENSION=${./pi-attention.ts} \
+      TMUX_BIN=${pkgs.tmux}/bin/tmux \
+      ${pkgs.bash}/bin/bash ${./pi-attention-extension-test.sh}
+
     mkdir -p "$out/bin"
     ln -s ${piAttentionUnchecked}/bin/pi-attention "$out/bin/pi-attention"
   '';
@@ -48,6 +59,7 @@ in
     ];
 
     home.file.".pi/agent/AGENTS.md".source = ../AGENTS.md;
+    home.file.".pi/agent/extensions/pi-attention.ts".source = ./pi-attention.ts;
 
     home.file.".pi/agent/skills/documentation".source = ./skills/documentation;
     home.file.".pi/agent/skills/command-not-found".source = ./skills/command-not-found;

@@ -57,6 +57,9 @@ assert_equal '1' "$(run_attention count)" 'unread pane increments count'
 
 run_attention set waiting "$pane_two"
 assert_equal '2' "$(run_attention count)" 'waiting pane increments count'
+run_attention transition waiting unread "$pane_two"
+assert_equal 'unread' "$("$TMUX_BIN" -S "$SOCKET" show-options -pqv -t "$pane_two" @pi_attention)" 'matching transition updates state'
+run_attention set waiting "$pane_two"
 
 list_output=$(run_attention list)
 list_count=$(printf '%s\n' "$list_output" | wc -l | tr -d ' ')
@@ -71,6 +74,8 @@ assert_equal '1' "$(printf '%s\n' "$list_output" | awk -F '\t' '$1 == "waiting" 
 
 run_attention read "$pane_one"
 assert_equal '1' "$(run_attention count)" 'read clears only the target pane'
+run_attention transition waiting unread "$pane_one"
+assert_equal '' "$("$TMUX_BIN" -S "$SOCKET" show-options -pqv -t "$pane_one" @pi_attention)" 'transition preserves a nonmatching state'
 
 run_attention unregister "$pane_two"
 assert_equal '0' "$(run_attention count)" 'unregister removes attention state'
