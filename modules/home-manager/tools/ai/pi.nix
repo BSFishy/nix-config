@@ -2,9 +2,24 @@
   config,
   lib,
   llmPkgs,
+  pkgs,
   ...
 }:
 
+let
+  piAttentionUnchecked = pkgs.writeShellScriptBin "pi-attention" (
+    builtins.readFile ./pi-attention.sh
+  );
+  piAttention = pkgs.runCommand "pi-attention" { nativeBuildInputs = [ pkgs.tmux ]; } ''
+    export HOME="$TMPDIR"
+    PI_ATTENTION=${piAttentionUnchecked}/bin/pi-attention \
+      TMUX_BIN=${pkgs.tmux}/bin/tmux \
+      ${pkgs.bash}/bin/bash ${./pi-attention-test.sh}
+
+    mkdir -p "$out/bin"
+    ln -s ${piAttentionUnchecked}/bin/pi-attention "$out/bin/pi-attention"
+  '';
+in
 {
   options.programs.pi.settings = lib.mkOption {
     type = lib.types.attrsOf lib.types.anything;
@@ -29,6 +44,7 @@
 
     home.packages = [
       llmPkgs.pi
+      piAttention
     ];
 
     home.file.".pi/agent/AGENTS.md".source = ../AGENTS.md;
