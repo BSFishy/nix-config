@@ -5,6 +5,10 @@
 - Prefer README files, docs, and explicit configuration over inference.
 - If you are unsure, say so and verify instead of guessing.
 - When practical, cite the file path or command used for verification.
+- For user-visible behavior, verify the rendered or interactive outcome when practical.
+  Treat backend acceptance, API records, and logs as intermediate evidence rather
+  than proof of what the user saw; ask the user to confirm outcomes the agent cannot
+  observe directly.
 - Use the project's declared task runner for operations that depend on project-loaded
   credentials, environment, or lifecycle conventions. Inspect its recipes before
   replacing it with an ad-hoc command or direct provider API call.

@@ -12,7 +12,10 @@ and is personal. If ownership is ambiguous or appears organizational, ask before
 changing Git state.
 
 Inspect the current branch, upstream, status, complete staged and unstaged
-diffs, untracked files, and recent commit history. Stage only the files relevant
+diffs, untracked files, and recent commit history. Confirm that `HEAD` is attached
+to a branch before committing. In a detached checkout, preserve the changes and ask
+whether to transfer them to an attached worktree or push an explicit ref; do not
+create a detached commit implicitly. Stage only the files relevant
 to the current change. Never discard, overwrite, or include unrelated changes.
 Before committing, review the final staged diff and verify that it contains no
 secrets.

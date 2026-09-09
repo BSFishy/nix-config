@@ -146,7 +146,10 @@ repository at the command path for the detected personal or work layout.
 2. When the session exposes an omission in an established workflow, inspect the
    rule, command, or skill that governed it. Prefer improving that workflow
    artifact over adding a broad rule.
-3. Summarize the session briefly (3-5 bullet points of key moments).
+3. Inspect Git status in the project root and any nested repositories. Summarize
+   the session briefly (3-5 bullet points of key moments), then report outstanding
+   repository state and distinguish user-approved deferred changes from unexplained
+   leftovers.
 4. When the session includes an outage, failed deployment, or stateful recovery,
    identify the verified failure chain and consider a project runbook proposal
    covering safe diagnosis, recovery, and prevention.
