@@ -298,6 +298,7 @@
         "nix-index-database": "nix-index-database",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
+        "treehouse": "treehouse",
         "zen-flake": "zen-flake"
       }
     },
@@ -364,6 +365,26 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "treehouse": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1788952934,
+        "narHash": "sha256-hPS7ZuYqPOu9SjWeMyg2T4eTCjsUMg7RNEckoi1/RTE=",
+        "owner": "kunchenguid",
+        "repo": "treehouse",
+        "rev": "6b0ec5027e0dfbf061434e4faf06cca4ea107eb3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kunchenguid",
+        "repo": "treehouse",
         "type": "github"
       }
     },

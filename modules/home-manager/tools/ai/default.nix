@@ -3,6 +3,8 @@
   pkgs,
   llmPkgs,
   flakePkgs,
+  inputs,
+  system,
   ...
 }:
 
@@ -43,5 +45,6 @@
   home.packages = [
     llmPkgs.qmd
     flakePkgs.open-code-review
+    inputs.treehouse.packages.${system}.default
   ];
 }
