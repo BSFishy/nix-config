@@ -13,6 +13,8 @@
   };
 
   config = {
+    programs.pi.settings.tuiMode = "fullscreen";
+
     programs.pi.settings.defaultTools = [
       "read"
       "bash"
