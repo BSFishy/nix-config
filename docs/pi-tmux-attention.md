@@ -44,7 +44,7 @@ The design relies on capabilities already present in the configured tools:
 - Pi 0.85.1 exposes `agent_settled`, `ui_prompt_start`, `ui_prompt_end`, `input`, `session_start`, and `session_shutdown` extension events.
 - tmux 3.7c supports pane user options, status commands, popups, filtered `choose-tree` views, and direct session/window/pane selection.
 - fzf 0.74.3 is installed and is already used by the tmux sessionizer.
-- `terminal-notifier` supports macOS notification click commands and application activation.
+- Alerter supports modern macOS notifications and reports content or action clicks.
 - `notify-send` supports freedesktop notification actions on compatible Linux desktops.
 - The tmux status bar refreshes once per second.
 - tmux is configured with `exit-empty off`, so its server remains available between attached clients.
@@ -235,7 +235,7 @@ The picker refreshes its input each time it opens. If the selected pane disappea
 
 ### System notifications
 
-On macOS, `terminal-notifier` posts Notification Center notifications with an execution action for `pi-attention focus` and activates Ghostty when clicked. On Linux, `notify-send` requests a freedesktop default action and runs the same focus command when the notification daemon reports a click. Linux action support varies by desktop and notification daemon.
+On macOS, Alerter posts a notification as Ghostty and reports content or `Open` action clicks; the waiting helper process then runs `pi-attention focus`. On Linux, `notify-send` requests a freedesktop default action and runs the same focus command when the notification daemon reports a click. Linux action support varies by desktop and notification daemon.
 
 Notification text includes the Pi label and tmux session/window location. Titles are:
 

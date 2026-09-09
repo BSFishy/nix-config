@@ -117,19 +117,25 @@ fake_notifier="$SOCKET_DIR/notifier"
   printf '#!%s\n' "${BASH:-/bin/bash}"
   cat <<'EOF'
 printf '%s\n' "$@" > "$NOTIFIER_LOG"
+printf '%s\n' "$NOTIFIER_RESULT"
 EOF
 } > "$fake_notifier"
 chmod +x "$fake_notifier"
-PI_ATTENTION_OS=Darwin TERMINAL_NOTIFIER_BIN="$fake_notifier" NOTIFIER_LOG="$notifier_log" run_attention notify unread "$pane_one"
-grep -Fx -- '-activate' "$notifier_log" >/dev/null
+PI_ATTENTION_OS=Darwin ALERTER_BIN="$fake_notifier" NOTIFIER_LOG="$notifier_log" NOTIFIER_RESULT='@CONTENTCLICKED' run_attention notify unread "$pane_two"
+for ((attempt = 0; attempt < 100; attempt++)); do
+  actual_target=$("$TMUX_BIN" -S "$SOCKET" display-message -p -c "$client" '#{pane_id}')
+  [[ "$actual_target" == "$pane_two" ]] && break
+  sleep 0.1
+done
+grep -Fx -- '--sender' "$notifier_log" >/dev/null
 grep -Fx -- 'com.mitchellh.ghostty' "$notifier_log" >/dev/null
-grep -F -- "focus $pane_one" "$notifier_log" >/dev/null
-printf 'ok - macOS notification includes activation and focus actions\n'
+assert_equal "$pane_two" "$actual_target" 'macOS notification click focuses its pane'
 
 rm -f "$notifier_log"
-PI_ATTENTION_OS=Linux NOTIFY_SEND_BIN="$fake_notifier" NOTIFIER_LOG="$notifier_log" run_attention notify waiting "$pane_two"
+PI_ATTENTION_OS=Linux NOTIFY_SEND_BIN="$fake_notifier" NOTIFIER_LOG="$notifier_log" NOTIFIER_RESULT=default run_attention notify waiting "$pane_one"
 for ((attempt = 0; attempt < 100; attempt++)); do
-  [[ -s "$notifier_log" ]] && break
+  actual_target=$("$TMUX_BIN" -S "$SOCKET" display-message -p -c "$client" '#{pane_id}')
+  [[ "$actual_target" == "$pane_one" ]] && break
   sleep 0.1
 done
 [[ -s "$notifier_log" ]] || {
@@ -138,7 +144,7 @@ done
 }
 grep -Fx -- '--action' "$notifier_log" >/dev/null
 grep -Fx -- 'default=Open' "$notifier_log" >/dev/null
-printf 'ok - Linux notification includes an open action\n'
+assert_equal "$pane_one" "$actual_target" 'Linux notification click focuses its pane'
 
 kill "$control_pid" 2>/dev/null || true
 exec 9>&-

@@ -6,7 +6,7 @@ TMUX_SOCKET=${PI_ATTENTION_TMUX_SOCKET:-}
 TMUX_CLIENT=${PI_ATTENTION_TMUX_CLIENT:-}
 FZF_BIN=${FZF_BIN:-fzf}
 OS_NAME=${PI_ATTENTION_OS:-$(uname -s)}
-TERMINAL_NOTIFIER_BIN=${TERMINAL_NOTIFIER_BIN:-terminal-notifier}
+ALERTER_BIN=${ALERTER_BIN:-alerter}
 NOTIFY_SEND_BIN=${NOTIFY_SEND_BIN:-notify-send}
 
 usage() {
@@ -305,7 +305,7 @@ notify_attention() {
   local metadata
   local project label location
   local title message
-  local self focus_command
+  local self
 
   validate_attention_state "$state"
   pane=$(require_pane "${2:-}")
@@ -326,13 +326,18 @@ notify_attention() {
 
   case "$OS_NAME" in
     Darwin)
-      printf -v focus_command '%q focus %q' "$self" "$pane"
-      "$TERMINAL_NOTIFIER_BIN" \
-        -title "$title" \
-        -message "$message" \
-        -group "pi-attention-$pane" \
-        -activate com.mitchellh.ghostty \
-        -execute "$focus_command" >/dev/null 2>&1 || true
+      (
+        action=$("$ALERTER_BIN" \
+          --title "$title" \
+          --message "$message" \
+          --group "pi-attention-$pane" \
+          --sender com.mitchellh.ghostty \
+          --actions Open \
+          --close-label Dismiss) || exit 0
+        if [[ "$action" == '@CONTENTCLICKED' || "$action" == Open ]]; then
+          "$self" focus "$pane"
+        fi
+      ) </dev/null >/dev/null 2>&1 &
       ;;
     Linux)
       (

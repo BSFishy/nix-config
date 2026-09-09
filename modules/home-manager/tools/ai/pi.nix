@@ -10,8 +10,17 @@ let
   piAttentionUnchecked = pkgs.writeShellScriptBin "pi-attention" (
     builtins.readFile ./pi-attention.sh
   );
-  notificationPackage =
-    if pkgs.stdenv.hostPlatform.isDarwin then pkgs.terminal-notifier else pkgs.libnotify;
+  alerter = pkgs.runCommand "alerter-26.5" { nativeBuildInputs = [ pkgs.unzip ]; } ''
+    mkdir -p "$out/bin"
+    unzip -j ${
+      pkgs.fetchurl {
+        url = "https://github.com/vjeantet/alerter/releases/download/v26.5/alerter-26.5.zip";
+        hash = "sha256-EfY83cm7P4VU7Zt2JjKhIM+nvuBePAnWVzSCPgnSTxA=";
+      }
+    } alerter -d "$out/bin"
+    chmod +x "$out/bin/alerter"
+  '';
+  notificationPackage = if pkgs.stdenv.hostPlatform.isDarwin then alerter else pkgs.libnotify;
   piAttentionRuntimePath = lib.makeBinPath [
     pkgs.coreutils
     pkgs.fzf
