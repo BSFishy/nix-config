@@ -155,7 +155,10 @@ repository at the command path for the detected personal or work layout.
    leftovers.
 4. When the session includes an outage, failed deployment, or stateful recovery,
    identify the verified failure chain and consider a project runbook proposal
-   covering safe diagnosis, recovery, and prevention.
+   covering safe diagnosis, recovery, and prevention. Check whether current
+   validation disproves a durable document's incident-specific assertion, such
+   as a hard-coded affected path, and propose correcting it rather than only
+   appending new guidance.
 5. Present all regular and self-improvement proposals grouped by category.
 6. Ask the user which proposals to accept in one confirmation covering every
    proposed edit. Do not edit anything before receiving that confirmation.

@@ -53,6 +53,15 @@ verified steps over convenience.
 7. Test restores into a scratch PVC before touching production.
 8. Restart the writer only after the recovery operation is complete.
 
+## Probe restarts
+
+A successful restart only verifies the data the application loads during
+startup. Before restarting a frozen writer to investigate suspected corruption,
+preserve the current state in a separate timestamped copy and verify its
+contents with checksums. Run read-only structural scans first, then treat the
+restart as incomplete validation until the affected data is loaded or scanned
+at the application layer.
+
 ## CSI and FUSE mount failures
 
 A node-local CSI mount service can own FUSE processes for application PVCs.
