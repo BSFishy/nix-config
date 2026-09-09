@@ -1,0 +1,19 @@
+modules/home-manager/tools/ai/pi.nix
+  s_38edbdc15ce43a::t_da0a5e194b8838 5,9-22,47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "896e43650db7d72dcc773d7243103198fc08265a",
+  "prompts": {},
+  "sessions": {
+    "s_38edbdc15ce43a": {
+      "agent_id": {
+        "tool": "pi",
+        "id": "01a0869c-c973-70ab-886a-a42ef415a112",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Matt Provost <mprovost@cloudflare.com>"
+    }
+  }
+}
