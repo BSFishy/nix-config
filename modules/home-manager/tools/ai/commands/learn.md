@@ -143,16 +143,19 @@ repository at the command path for the detected personal or work layout.
 
 1. Locate the system config repo and inspect relevant existing source artifacts
    for overlap. Inspect a repository-root `todo.md` when present.
-2. Summarize the session briefly (3-5 bullet points of key moments).
-3. When the session includes an outage, failed deployment, or stateful recovery,
+2. When the session exposes an omission in an established workflow, inspect the
+   rule, command, or skill that governed it. Prefer improving that workflow
+   artifact over adding a broad rule.
+3. Summarize the session briefly (3-5 bullet points of key moments).
+4. When the session includes an outage, failed deployment, or stateful recovery,
    identify the verified failure chain and consider a project runbook proposal
    covering safe diagnosis, recovery, and prevention.
-4. Present all regular and self-improvement proposals grouped by category.
-5. Ask the user which proposals to accept in one confirmation covering every
+5. Present all regular and self-improvement proposals grouped by category.
+6. Ask the user which proposals to accept in one confirmation covering every
    proposed edit. Do not edit anything before receiving that confirmation.
-6. For nix-managed files, edit the accepted source files and show diffs.
-7. For project docs, edit accepted changes directly in the project's `docs/`
+7. For nix-managed files, edit the accepted source files and show diffs.
+8. For project docs, edit accepted changes directly in the project's `docs/`
    directory. For accepted tracker updates, follow the user's retention choice.
-8. If any nix-managed files were changed, remind the user to rebuild.
+9. If any nix-managed files were changed, remind the user to rebuild.
 
 $ARGUMENTS

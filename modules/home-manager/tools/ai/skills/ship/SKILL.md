@@ -17,6 +17,15 @@ to the current change. Never discard, overwrite, or include unrelated changes.
 Before committing, review the final staged diff and verify that it contains no
 secrets.
 
+When shipping across nested or dependent repositories, map the relationship
+before the first commit. For submodules, commit and push the inner repository
+before updating the tracked pointer in the containing repository. If a
+containing flake consumes the changed repository as an input, update its
+relevant lock entry after the upstream revision is available. Before reporting
+completion, verify every requested repository is clean, synchronized with its
+upstream, and references the shipped revisions through both tracked pointers
+and dependency locks.
+
 Keep the current branch and create a conventional commit whose type and optional
 scope match the staged diff. Push the current branch, configuring upstream
 tracking only when it is absent.
