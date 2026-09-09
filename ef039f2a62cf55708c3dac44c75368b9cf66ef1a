@@ -1,0 +1,19 @@
+modules/home-manager/tools/ai/skills/documentation/SKILL.md
+  s_dd19be6b213513::t_89c70bceb32771 1-221
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "ef039f2a62cf55708c3dac44c75368b9cf66ef1a",
+  "prompts": {},
+  "sessions": {
+    "s_dd19be6b213513": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_0c833aa73ffe6NubMzwcTpnsuh",
+        "model": "unknown"
+      },
+      "human_author": "Matt Provost <mprovost@cloudflare.com>"
+    }
+  }
+}
