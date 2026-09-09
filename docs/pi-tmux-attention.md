@@ -2,7 +2,7 @@
 
 **Status:** Work in progress
 
-**Target platform:** macOS with Pi running inside tmux
+**Target platform:** macOS and Linux with Pi running inside tmux
 
 **Last reviewed:** 2026-09-09
 
@@ -14,7 +14,7 @@ The first implementation stores attention state in tmux pane user options. Pane-
 
 ## Goals
 
-- Send a macOS notification when Pi:
+- Send a system notification when Pi:
   - settles after processing a prompt; or
   - opens a blocking user-facing prompt, such as an approval request.
 - Track attention independently for every tmux pane running Pi.
@@ -44,7 +44,8 @@ The design relies on capabilities already present in the configured tools:
 - Pi 0.85.1 exposes `agent_settled`, `ui_prompt_start`, `ui_prompt_end`, `input`, `session_start`, and `session_shutdown` extension events.
 - tmux 3.7c supports pane user options, status commands, popups, filtered `choose-tree` views, and direct session/window/pane selection.
 - fzf 0.74.3 is installed and is already used by the tmux sessionizer.
-- `/usr/bin/osascript` can post macOS notifications.
+- `terminal-notifier` supports macOS notification click commands and application activation.
+- `notify-send` supports freedesktop notification actions on compatible Linux desktops.
 - The tmux status bar refreshes once per second.
 - tmux is configured with `exit-empty off`, so its server remains available between attached clients.
 
@@ -174,7 +175,8 @@ pi-attention count
 pi-attention status
 pi-attention list
 pi-attention pick
-pi-attention notify waiting|unread [metadata]
+pi-attention focus [pane-id]
+pi-attention notify waiting|unread [pane-id]
 ```
 
 Behavioral contracts:
@@ -184,8 +186,9 @@ Behavioral contracts:
 - `status` prints nothing for zero items and a compact icon plus count otherwise.
 - `list` emits only valid live entries and sorts `waiting` before `unread`.
 - `pick` makes no attention-state mutation.
+- `focus` switches the most recently active client to the exact target session, window, and pane without marking it read.
 - Notification failures return success to Pi after recording diagnostic output when practical.
-- All user-controlled display strings are sanitized before shell or AppleScript use.
+- All user-controlled display strings are passed as command arguments rather than evaluated as shell source.
 
 ### Status-bar integration
 
@@ -230,18 +233,16 @@ Selection performs these operations in order:
 
 The picker refreshes its input each time it opens. If the selected pane disappears before navigation, it exits with a non-destructive tmux message.
 
-### macOS notifications
+### System notifications
 
-The initial implementation uses `osascript` and Notification Center. Notification text includes enough location information to find the item in the picker, such as project and tmux session/window.
+On macOS, `terminal-notifier` posts Notification Center notifications with an execution action for `pi-attention focus` and activates Ghostty when clicked. On Linux, `notify-send` requests a freedesktop default action and runs the same focus command when the notification daemon reports a click. Linux action support varies by desktop and notification daemon.
 
-Candidate titles:
+Notification text includes the Pi label and tmux session/window location. Titles are:
 
 - `Pi needs input`
 - `Pi finished`
 
-Notification delivery is advisory. tmux pane state remains authoritative when notifications are disabled, suppressed by Focus mode, or rejected by macOS permissions.
-
-Click-to-focus is deferred. It may be added later with a notification tool that supports activation commands.
+Notification delivery is advisory. tmux pane state remains authoritative when notifications are unsupported, disabled, suppressed by Focus mode or Do Not Disturb, or rejected by system permissions. A notification click never marks the pane read.
 
 ## Bindings
 
@@ -256,7 +257,7 @@ The existing `prefix + ;` project sessionizer remains unchanged.
 
 ## Failure and stale-state handling
 
-- A Pi process outside tmux still emits macOS notifications when possible but does not appear in the tmux inbox.
+- A Pi process outside tmux does not participate in the pane inbox or its target-aware notifications.
 - A failed tmux command does not interrupt Pi.
 - A failed notification does not alter attention state.
 - Clean Pi shutdown unregisters its pane metadata.
@@ -268,7 +269,7 @@ The existing `prefix + ;` project sessionizer remains unchanged.
 ## Security considerations
 
 - Project paths, Pi labels, and session names are untrusted display data.
-- AppleScript arguments must not be assembled through unescaped source interpolation.
+- Notification display text must be passed as arguments and never evaluated as shell source.
 - tmux formats and fzf fields must not be evaluated as shell fragments.
 - The picker passes validated tmux IDs to navigation commands.
 - Session file paths are metadata only and are not shown by default because they may expose sensitive directory names.
@@ -325,13 +326,14 @@ The final filenames may change, but the extension and helper remain separate com
 - [x] Add the explicit mark-read binding.
 - [x] Ensure picker navigation does not mark entries read.
 
-### Phase 3: macOS notifications
+### Phase 3: system notifications
 
-- [ ] Add completion notifications.
-- [ ] Add needs-input notifications.
-- [ ] Escape notification content safely.
+- [x] Add completion notifications.
+- [x] Add needs-input notifications.
+- [x] Pass notification content safely as arguments.
+- [x] Add click-to-focus actions for macOS and compatible Linux desktops.
 - [ ] Confirm behavior with macOS notification permissions and Focus mode.
-- [ ] Ensure notification failures never block or fail Pi event handlers.
+- [x] Ensure notification failures never block or fail Pi event handlers.
 
 ### Phase 4: resilience and polish
 
@@ -371,13 +373,13 @@ The final filenames may change, but the extension and helper remain separate com
 The initial feature is complete when:
 
 - Every tmux pane running Pi has independent attention state.
-- Settled and waiting agents produce macOS notifications.
+- Settled and waiting agents produce system notifications.
 - The status bar reports the number of panes needing attention.
 - A hotkey opens a cross-session picker of exact agent panes.
 - Enter navigates to the selected pane without marking it read.
 - Submitting another prompt or invoking the explicit binding marks the current item read.
 - Clean shutdown and destroyed panes do not leave stale visible entries.
-- Pi operation is unaffected when tmux or macOS notification delivery is unavailable.
+- Pi operation is unaffected when tmux or system notification delivery is unavailable.
 
 ## Open questions
 
@@ -385,5 +387,4 @@ The initial feature is complete when:
 2. Should `ui_prompt_end` remain `unread`, as specified, or become read because the user necessarily interacted with the prompt?
 3. Should a fresh Pi startup clear existing pane attention immediately, or preserve unread state if the previous process crashed and a new Pi starts in the same pane?
 4. Should the picker show all registered Pi panes behind an fzf toggle, or only panes needing attention?
-5. Should notification click-to-focus be implemented later with `terminal-notifier` or another macOS-native tool?
-6. Should normal slash commands that do not start an agent turn count as user acknowledgement?
+5. Should normal slash commands that do not start an agent turn count as user acknowledgement?

@@ -65,6 +65,7 @@ export default function piAttentionExtension(pi: ExtensionAPI) {
 
   pi.on("ui_prompt_start", async () => {
     await enqueue(["set", "waiting", pane!]);
+    await enqueue(["notify", "waiting", pane!]);
   });
 
   pi.on("ui_prompt_end", async () => {
@@ -73,6 +74,7 @@ export default function piAttentionExtension(pi: ExtensionAPI) {
 
   pi.on("agent_settled", async () => {
     await enqueue(["set", "unread", pane!]);
+    await enqueue(["notify", "unread", pane!]);
   });
 
   pi.on("session_shutdown", async (event) => {

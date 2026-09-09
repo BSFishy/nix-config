@@ -10,26 +10,44 @@ let
   piAttentionUnchecked = pkgs.writeShellScriptBin "pi-attention" (
     builtins.readFile ./pi-attention.sh
   );
-  piAttention = pkgs.runCommand "pi-attention" { nativeBuildInputs = [ pkgs.tmux ]; } ''
-    export HOME="$TMPDIR"
-    PI_ATTENTION=${piAttentionUnchecked}/bin/pi-attention \
-      TMUX_BIN=${pkgs.tmux}/bin/tmux \
-      ${pkgs.bash}/bin/bash ${./pi-attention-test.sh}
+  notificationPackage =
+    if pkgs.stdenv.hostPlatform.isDarwin then pkgs.terminal-notifier else pkgs.libnotify;
+  piAttentionRuntimePath = lib.makeBinPath [
+    pkgs.coreutils
+    pkgs.fzf
+    pkgs.gawk
+    pkgs.tmux
+    notificationPackage
+  ];
+  piAttention =
+    pkgs.runCommand "pi-attention"
+      {
+        nativeBuildInputs = [
+          pkgs.makeWrapper
+          pkgs.tmux
+        ];
+      }
+      ''
+        export HOME="$TMPDIR"
+        PI_ATTENTION=${piAttentionUnchecked}/bin/pi-attention \
+          TMUX_BIN=${pkgs.tmux}/bin/tmux \
+          ${pkgs.bash}/bin/bash ${./pi-attention-test.sh}
 
-    mkdir -p "$TMPDIR/pi-home"
-    HOME="$TMPDIR/pi-home" ${llmPkgs.pi}/bin/pi \
-      --extension ${./pi-attention.ts} \
-      --list-models > /dev/null
+        mkdir -p "$TMPDIR/pi-home"
+        HOME="$TMPDIR/pi-home" ${llmPkgs.pi}/bin/pi \
+          --extension ${./pi-attention.ts} \
+          --list-models > /dev/null
 
-    PATH=${piAttentionUnchecked}/bin:$PATH \
-      PI_BIN=${llmPkgs.pi}/bin/pi \
-      PI_EXTENSION=${./pi-attention.ts} \
-      TMUX_BIN=${pkgs.tmux}/bin/tmux \
-      ${pkgs.bash}/bin/bash ${./pi-attention-extension-test.sh}
+        PATH=${piAttentionUnchecked}/bin:$PATH \
+          PI_BIN=${llmPkgs.pi}/bin/pi \
+          PI_EXTENSION=${./pi-attention.ts} \
+          TMUX_BIN=${pkgs.tmux}/bin/tmux \
+          ${pkgs.bash}/bin/bash ${./pi-attention-extension-test.sh}
 
-    mkdir -p "$out/bin"
-    ln -s ${piAttentionUnchecked}/bin/pi-attention "$out/bin/pi-attention"
-  '';
+        mkdir -p "$out/bin"
+        makeWrapper ${piAttentionUnchecked}/bin/pi-attention "$out/bin/pi-attention" \
+          --prefix PATH : ${piAttentionRuntimePath}
+      '';
 in
 {
   options.programs.pi.settings = lib.mkOption {

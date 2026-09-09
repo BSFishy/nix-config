@@ -5,6 +5,9 @@ TMUX_BIN=${TMUX_BIN:-tmux}
 TMUX_SOCKET=${PI_ATTENTION_TMUX_SOCKET:-}
 TMUX_CLIENT=${PI_ATTENTION_TMUX_CLIENT:-}
 FZF_BIN=${FZF_BIN:-fzf}
+OS_NAME=${PI_ATTENTION_OS:-$(uname -s)}
+TERMINAL_NOTIFIER_BIN=${TERMINAL_NOTIFIER_BIN:-terminal-notifier}
+NOTIFY_SEND_BIN=${NOTIFY_SEND_BIN:-notify-send}
 
 usage() {
   cat <<'EOF'
@@ -19,6 +22,8 @@ Usage:
   pi-attention status
   pi-attention list
   pi-attention pick
+  pi-attention focus PANE
+  pi-attention notify waiting|unread [PANE]
 EOF
 }
 
@@ -215,11 +220,64 @@ list_attention() {
     | LC_ALL=C sort -t "$(printf '\t')" -k1,1r -k2,2
 }
 
+most_recent_client() {
+  local separator='__PI_ATTENTION__'
+  tmux_cmd list-clients -F "#{client_activity}${separator}#{client_name}" 2>/dev/null \
+    | LC_ALL=C sort -nr \
+    | awk -F "$separator" 'NR == 1 { print $2; exit }'
+}
+
+launch_terminal() {
+  local session_id=$1
+
+  case "$OS_NAME" in
+    Darwin)
+      /usr/bin/open -na Ghostty.app --args -e "$TMUX_BIN" attach-session -t "$session_id" >/dev/null 2>&1 || true
+      ;;
+    Linux)
+      if command -v ghostty >/dev/null 2>&1; then
+        nohup ghostty -e "$TMUX_BIN" attach-session -t "$session_id" </dev/null >/dev/null 2>&1 &
+      fi
+      ;;
+  esac
+}
+
+focus_attention() {
+  local pane
+  local separator='__PI_ATTENTION__'
+  local target
+  local window_id session_id
+  local client=${2:-$TMUX_CLIENT}
+  local -a client_args=()
+
+  pane=$(require_pane "${1:-}")
+  [[ "$pane" =~ ^%[0-9]+$ ]] || fail 'focus requires a valid pane ID'
+  target=$(tmux_cmd display-message -p -t "$pane" "#{window_id}${separator}#{session_id}") || fail "pane no longer exists: $pane"
+  window_id=$(printf '%s\n' "$target" | awk -F "$separator" '{ print $1 }')
+  session_id=$(printf '%s\n' "$target" | awk -F "$separator" '{ print $2 }')
+  [[ "$window_id" =~ ^@[0-9]+$ ]] || fail 'tmux returned an invalid window ID'
+  [[ "$session_id" =~ ^\$[0-9]+$ ]] || fail 'tmux returned an invalid session ID'
+
+  if [[ -z "$client" ]]; then
+    client=$(most_recent_client)
+  fi
+  if [[ -n "$client" ]]; then
+    client_args=(-c "$client")
+    tmux_cmd switch-client "${client_args[@]}" -t "$session_id"
+    tmux_cmd select-window -t "$window_id"
+    tmux_cmd select-pane -t "$pane"
+    return 0
+  fi
+
+  tmux_cmd select-window -t "$window_id"
+  tmux_cmd select-pane -t "$pane"
+  launch_terminal "$session_id"
+}
+
 pick_attention() {
   local entries
   local selection
-  local pane_id window_id session_id
-  local -a client_args=()
+  local pane_id
 
   entries=$(list_attention)
   if [[ -z "$entries" ]]; then
@@ -237,18 +295,57 @@ pick_attention() {
   [[ -n "$selection" ]] || return 0
 
   pane_id=$(printf '%s\n' "$selection" | awk -F '\t' '{ print $5 }')
-  window_id=$(printf '%s\n' "$selection" | awk -F '\t' '{ print $6 }')
-  session_id=$(printf '%s\n' "$selection" | awk -F '\t' '{ print $7 }')
-  [[ "$pane_id" =~ ^%[0-9]+$ ]] || fail 'picker returned an invalid pane ID'
-  [[ "$window_id" =~ ^@[0-9]+$ ]] || fail 'picker returned an invalid window ID'
-  [[ "$session_id" =~ ^\$[0-9]+$ ]] || fail 'picker returned an invalid session ID'
+  focus_attention "$pane_id"
+}
 
-  if [[ -n "$TMUX_CLIENT" ]]; then
-    client_args=(-c "$TMUX_CLIENT")
+notify_attention() {
+  local state=${1:-}
+  local pane
+  local separator='__PI_ATTENTION__'
+  local metadata
+  local project label location
+  local title message
+  local self focus_command
+
+  validate_attention_state "$state"
+  pane=$(require_pane "${2:-}")
+  [[ "$pane" =~ ^%[0-9]+$ ]] || fail 'notify requires a valid pane ID'
+  metadata=$(tmux_cmd display-message -p -t "$pane" "#{@pi_project}${separator}#{@pi_label}${separator}#{session_name}:#{window_index}.#{pane_index}") || return 0
+  project=$(printf '%s\n' "$metadata" | awk -F "$separator" '{ print $1 }')
+  label=$(printf '%s\n' "$metadata" | awk -F "$separator" '{ print $2 }')
+  location=$(printf '%s\n' "$metadata" | awk -F "$separator" '{ print $3 }')
+  [[ -n "$label" ]] || label=$project
+  message="$label · $location"
+  self=$(command -v pi-attention 2>/dev/null || printf '%s' "$0")
+
+  if [[ "$state" == waiting ]]; then
+    title='Pi needs input'
+  else
+    title='Pi finished'
   fi
-  tmux_cmd switch-client "${client_args[@]}" -t "$session_id"
-  tmux_cmd select-window -t "$window_id"
-  tmux_cmd select-pane -t "$pane_id"
+
+  case "$OS_NAME" in
+    Darwin)
+      printf -v focus_command '%q focus %q' "$self" "$pane"
+      "$TERMINAL_NOTIFIER_BIN" \
+        -title "$title" \
+        -message "$message" \
+        -group "pi-attention-$pane" \
+        -activate com.mitchellh.ghostty \
+        -execute "$focus_command" >/dev/null 2>&1 || true
+      ;;
+    Linux)
+      (
+        action=$("$NOTIFY_SEND_BIN" \
+          --app-name Pi \
+          --action default=Open \
+          "$title" "$message") || exit 0
+        if [[ "$action" == default ]]; then
+          "$self" focus "$pane"
+        fi
+      ) </dev/null >/dev/null 2>&1 &
+      ;;
+  esac
 }
 
 command=${1:-}
@@ -266,6 +363,8 @@ case "$command" in
   status) status_attention "$@" ;;
   list) list_attention "$@" ;;
   pick) pick_attention "$@" ;;
+  focus) focus_attention "$@" ;;
+  notify) notify_attention "$@" ;;
   -h|--help|help) usage ;;
   '') usage; exit 1 ;;
   *) fail "unknown command: $command" ;;

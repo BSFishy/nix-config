@@ -106,6 +106,40 @@ expected_target=$("$TMUX_BIN" -S "$SOCKET" display-message -p -t "$pane_two" '#{
 actual_target=$("$TMUX_BIN" -S "$SOCKET" display-message -p -c "$client" '#{session_id} #{window_id} #{pane_id}')
 assert_equal "$expected_target" "$actual_target" 'picker focuses the selected session, window, and pane'
 assert_equal 'waiting' "$("$TMUX_BIN" -S "$SOCKET" show-options -pqv -t "$pane_two" @pi_attention)" 'picker preserves attention state'
+PI_ATTENTION_TMUX_CLIENT='' run_attention focus "$pane_one"
+expected_target=$("$TMUX_BIN" -S "$SOCKET" display-message -p -t "$pane_one" '#{session_id} #{window_id} #{pane_id}')
+actual_target=$("$TMUX_BIN" -S "$SOCKET" display-message -p -c "$client" '#{session_id} #{window_id} #{pane_id}')
+assert_equal "$expected_target" "$actual_target" 'focus selects the target on the most recent client'
+
+notifier_log="$SOCKET_DIR/notifier-log"
+fake_notifier="$SOCKET_DIR/notifier"
+{
+  printf '#!%s\n' "${BASH:-/bin/bash}"
+  cat <<'EOF'
+printf '%s\n' "$@" > "$NOTIFIER_LOG"
+EOF
+} > "$fake_notifier"
+chmod +x "$fake_notifier"
+PI_ATTENTION_OS=Darwin TERMINAL_NOTIFIER_BIN="$fake_notifier" NOTIFIER_LOG="$notifier_log" run_attention notify unread "$pane_one"
+grep -Fx -- '-activate' "$notifier_log" >/dev/null
+grep -Fx -- 'com.mitchellh.ghostty' "$notifier_log" >/dev/null
+grep -F -- "focus $pane_one" "$notifier_log" >/dev/null
+printf 'ok - macOS notification includes activation and focus actions\n'
+
+rm -f "$notifier_log"
+PI_ATTENTION_OS=Linux NOTIFY_SEND_BIN="$fake_notifier" NOTIFIER_LOG="$notifier_log" run_attention notify waiting "$pane_two"
+for ((attempt = 0; attempt < 100; attempt++)); do
+  [[ -s "$notifier_log" ]] && break
+  sleep 0.1
+done
+[[ -s "$notifier_log" ]] || {
+  printf 'not ok - Linux notification command did not run\n' >&2
+  exit 1
+}
+grep -Fx -- '--action' "$notifier_log" >/dev/null
+grep -Fx -- 'default=Open' "$notifier_log" >/dev/null
+printf 'ok - Linux notification includes an open action\n'
+
 kill "$control_pid" 2>/dev/null || true
 exec 9>&-
 
