@@ -21,13 +21,16 @@ let
     chmod +x "$out/bin/alerter"
   '';
   notificationPackage = if pkgs.stdenv.hostPlatform.isDarwin then alerter else pkgs.libnotify;
-  piAttentionRuntimePath = lib.makeBinPath [
-    pkgs.coreutils
-    pkgs.fzf
-    pkgs.gawk
-    pkgs.tmux
-    notificationPackage
-  ];
+  piAttentionRuntimePath = lib.makeBinPath (
+    [
+      pkgs.coreutils
+      pkgs.fzf
+      pkgs.gawk
+      pkgs.tmux
+      notificationPackage
+    ]
+    ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.glib ]
+  );
   piAttention =
     pkgs.runCommand "pi-attention"
       {

@@ -116,8 +116,17 @@ fake_notifier="$SOCKET_DIR/notifier"
 {
   printf '#!%s\n' "${BASH:-/bin/bash}"
   cat <<'EOF'
-printf '%s\n' "$@" > "$NOTIFIER_LOG"
-printf '%s\n' "$NOTIFIER_RESULT"
+printf '%s\n' "$@" >> "$NOTIFIER_LOG"
+case " ${*} " in
+  *' --list '*) printf 'pending\n' ;;
+  *' --remove '*) ;;
+  *)
+    if [[ " ${*} " == *' --id-fd=3 '* ]]; then
+      printf '42\n' >&3
+    fi
+    printf '%s\n' "$NOTIFIER_RESULT"
+    ;;
+esac
 EOF
 } > "$fake_notifier"
 chmod +x "$fake_notifier"
@@ -130,6 +139,10 @@ done
 grep -Fx -- '--actions' "$notifier_log" >/dev/null
 grep -Fx -- 'Open' "$notifier_log" >/dev/null
 assert_equal "$pane_two" "$actual_target" 'macOS notification click focuses its pane'
+PI_ATTENTION_OS=Darwin ALERTER_BIN="$fake_notifier" NOTIFIER_LOG="$notifier_log" NOTIFIER_RESULT='' run_attention read "$pane_two"
+grep -Fx -- '--remove' "$notifier_log" >/dev/null
+assert_equal '1' "$(run_attention count)" 'reading a macOS notification clears its attention state'
+run_attention set waiting "$pane_two"
 
 rm -f "$notifier_log"
 PI_ATTENTION_OS=Linux NOTIFY_SEND_BIN="$fake_notifier" NOTIFIER_LOG="$notifier_log" NOTIFIER_RESULT=default run_attention notify waiting "$pane_one"
@@ -144,7 +157,23 @@ done
 }
 grep -Fx -- '--action' "$notifier_log" >/dev/null
 grep -Fx -- 'default=Open' "$notifier_log" >/dev/null
+assert_equal '42' "$("$TMUX_BIN" -S "$SOCKET" show-options -pqv -t "$pane_one" @pi_notification_id)" 'Linux notification ID is recorded'
 assert_equal "$pane_one" "$actual_target" 'Linux notification click focuses its pane'
+
+fake_gdbus="$SOCKET_DIR/gdbus"
+{
+  printf '#!%s\n' "${BASH:-/bin/bash}"
+  cat <<'EOF'
+printf '%s\n' "$@" > "$GDBUS_LOG"
+EOF
+} > "$fake_gdbus"
+chmod +x "$fake_gdbus"
+gdbus_log="$SOCKET_DIR/gdbus-log"
+PI_ATTENTION_OS=Linux GDBUS_BIN="$fake_gdbus" GDBUS_LOG="$gdbus_log" run_attention read "$pane_one"
+grep -Fx -- 'org.freedesktop.Notifications.CloseNotification' "$gdbus_log" >/dev/null
+grep -Fx -- '42' "$gdbus_log" >/dev/null
+assert_equal '' "$("$TMUX_BIN" -S "$SOCKET" show-options -pqv -t "$pane_one" @pi_notification_id)" 'reading clears the Linux notification ID'
+run_attention set unread "$pane_one"
 
 kill "$control_pid" 2>/dev/null || true
 exec 9>&-

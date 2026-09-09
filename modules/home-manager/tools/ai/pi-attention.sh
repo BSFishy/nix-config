@@ -8,6 +8,7 @@ FZF_BIN=${FZF_BIN:-fzf}
 OS_NAME=${PI_ATTENTION_OS:-$(uname -s)}
 ALERTER_BIN=${ALERTER_BIN:-alerter}
 NOTIFY_SEND_BIN=${NOTIFY_SEND_BIN:-notify-send}
+GDBUS_BIN=${GDBUS_BIN:-gdbus}
 
 usage() {
   cat <<'EOF'
@@ -17,6 +18,7 @@ Usage:
   pi-attention set waiting|unread [PANE]
   pi-attention transition waiting|unread waiting|unread [PANE]
   pi-attention read [PANE]
+  pi-attention dismiss [PANE]
   pi-attention unregister [PANE]
   pi-attention count
   pi-attention status
@@ -169,9 +171,34 @@ transition_attention() {
   fi
 }
 
+dismiss_notification() {
+  local pane
+  local notification_id
+  pane=$(require_pane "${1:-}")
+
+  case "$OS_NAME" in
+    Darwin)
+      "$ALERTER_BIN" --remove "pi-attention-$pane" >/dev/null 2>&1 || true
+      ;;
+    Linux)
+      notification_id=$(tmux_cmd show-options -pqv -t "$pane" @pi_notification_id 2>/dev/null || true)
+      if [[ "$notification_id" =~ ^[0-9]+$ ]]; then
+        "$GDBUS_BIN" call \
+          --session \
+          --dest org.freedesktop.Notifications \
+          --object-path /org/freedesktop/Notifications \
+          --method org.freedesktop.Notifications.CloseNotification \
+          "$notification_id" >/dev/null 2>&1 || true
+      fi
+      unset_pane_option "$pane" @pi_notification_id
+      ;;
+  esac
+}
+
 read_attention() {
   local pane
   pane=$(require_pane "${1:-}")
+  dismiss_notification "$pane"
   unset_pane_option "$pane" @pi_attention
   set_pane_option "$pane" @pi_updated_at "$(date +%s)"
 }
@@ -181,8 +208,10 @@ unregister_pane() {
   local option
   pane=$(require_pane "${1:-}")
 
+  dismiss_notification "$pane"
   for option in \
     @pi_attention \
+    @pi_notification_id \
     @pi_session_id \
     @pi_session_file \
     @pi_project \
@@ -321,6 +350,7 @@ notify_attention() {
   local project label location
   local title message
   local self
+  local notification_id_file notification_id
 
   validate_attention_state "$state"
   pane=$(require_pane "${2:-}")
@@ -352,17 +382,35 @@ notify_attention() {
           "$self" focus "$pane"
         fi
       ) </dev/null >/dev/null 2>&1 &
+
+      for ((attempt = 0; attempt < 20; attempt++)); do
+        [[ -n "$("$ALERTER_BIN" --list "pi-attention-$pane" 2>/dev/null)" ]] && break
+        sleep 0.05
+      done
       ;;
     Linux)
+      notification_id_file=$(mktemp "${TMPDIR:-/tmp}/pi-attention-notification.XXXXXX")
       (
         action=$("$NOTIFY_SEND_BIN" \
           --app-name Pi \
+          --id-fd=3 \
           --action default=Open \
-          "$title" "$message") || exit 0
+          "$title" "$message" 3>"$notification_id_file") || exit 0
         if [[ "$action" == default ]]; then
           "$self" focus "$pane"
         fi
       ) </dev/null >/dev/null 2>&1 &
+
+      notification_id=''
+      for ((attempt = 0; attempt < 20; attempt++)); do
+        notification_id=$(head -n 1 "$notification_id_file" 2>/dev/null || true)
+        [[ "$notification_id" =~ ^[0-9]+$ ]] && break
+        sleep 0.05
+      done
+      rm -f "$notification_id_file"
+      if [[ "$notification_id" =~ ^[0-9]+$ ]]; then
+        set_pane_option "$pane" @pi_notification_id "$notification_id"
+      fi
       ;;
   esac
 }
@@ -377,6 +425,7 @@ case "$command" in
   set) set_attention "$@" ;;
   transition) transition_attention "$@" ;;
   read) read_attention "$@" ;;
+  dismiss) dismiss_notification "$@" ;;
   unregister) unregister_pane "$@" ;;
   count) count_attention "$@" ;;
   status) status_attention "$@" ;;

@@ -46,10 +46,8 @@ export default function piAttentionExtension(pi: ExtensionAPI) {
     ]);
   }
 
-  pi.on("session_start", async (event, ctx) => {
-    if (event.reason === "startup") {
-      await enqueue(["read", pane!]);
-    }
+  pi.on("session_start", async (_event, ctx) => {
+    await enqueue(["read", pane!]);
     await register(ctx);
   });
 
@@ -61,6 +59,10 @@ export default function piAttentionExtension(pi: ExtensionAPI) {
     if (event.source !== "extension") {
       await enqueue(["read", pane!]);
     }
+  });
+
+  pi.on("agent_start", async () => {
+    await enqueue(["read", pane!]);
   });
 
   pi.on("ui_prompt_start", async () => {
