@@ -120,6 +120,7 @@
 
       # FINISHED
 
+      sketchybar --reorder clock date battery pi_attention
       sketchybar --update
       echo "sketchybar config loaded..."
     '';
