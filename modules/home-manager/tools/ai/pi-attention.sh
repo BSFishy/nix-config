@@ -277,27 +277,39 @@ focus_attention() {
   launch_terminal "$session_id"
 }
 
+format_picker_entries() {
+  awk -F '\t' '
+    NF == 8 {
+      printf "%-7.7s  %-20.20s  %-24.24s  %-36.36s  %-24.24s\t%s\t%s\t%s\n", \
+        $1, $2, $3, $4, $8, $5, $6, $7
+    }
+  '
+}
+
 pick_attention() {
   local entries
   local selection
   local pane_id
+  local header
 
-  entries=$(list_attention)
+  entries=$(list_attention | format_picker_entries)
   if [[ -z "$entries" ]]; then
     tmux_cmd display-message 'No Pi agents need attention'
     return 0
   fi
 
+  printf -v header '%-7s  %-20s  %-24s  %-36s  %-24s' \
+    state 'tmux target' project label window
   selection=$(printf '%s\n' "$entries" | "$FZF_BIN" \
     --delimiter "$(printf '\t')" \
-    --with-nth '1,2,3,4,8' \
+    --with-nth 1 \
     --no-multi \
     --reverse \
     --prompt 'Pi attention> ' \
-    --header 'state  tmux target  project  label  window') || return 0
+    --header "$header") || return 0
   [[ -n "$selection" ]] || return 0
 
-  pane_id=$(printf '%s\n' "$selection" | awk -F '\t' '{ print $5 }')
+  pane_id=$(printf '%s\n' "$selection" | awk -F '\t' '{ print $2 }')
   focus_attention "$pane_id"
 }
 
