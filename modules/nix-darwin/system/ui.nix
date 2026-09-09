@@ -67,6 +67,19 @@
         icon.padding_right=5 \
         --subscribe battery system_woke power_source_change
 
+      # PI ATTENTION
+
+      sketchybar --add item pi_attention right \
+        --set pi_attention \
+        drawing=off \
+        updates=on \
+        update_freq=1 \
+        background.padding_right=10 \
+        icon=󰚩 \
+        icon.color=0xffd3869b \
+        icon.padding_right=5 \
+        script="${./plugins/pi-attention.sh}"
+
       # CLOCK
 
       sketchybar --add item clock right \
