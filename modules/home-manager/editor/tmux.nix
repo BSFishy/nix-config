@@ -28,6 +28,7 @@ let
     runtimeInputs = [
       pkgs.fzf
       pkgs.jq
+      pkgs.tmux
       inputs.treehouse.packages.${system}.default
     ];
     text = builtins.readFile ./tmux-treehouse.sh;
@@ -108,7 +109,7 @@ in
       bind-key -N "Open sessionizer" \; display-popup -E "${sessionizer}/bin/tmux-sessionizer"
       bind-key -N "Open sessionizer" C-\; display-popup -E "${sessionizer}/bin/tmux-sessionizer"
 
-      bind-key -N "Open Treehouse shell" T display-popup -d '#{pane_current_path}' -w 90% -h 80% -E "${treehousePopup}/bin/tmux-treehouse"
+      bind-key -N "Open Treehouse shell" T display-popup -d '#{pane_current_path}' -E "${treehousePopup}/bin/tmux-treehouse"
 
       bind-key -N "Open Pi attention inbox" A display-popup -E "${config.home.profileDirectory}/bin/pi-attention pick"
       bind-key -N "Mark Pi pane read" U run-shell "${config.home.profileDirectory}/bin/pi-attention read '#{pane_id}'"

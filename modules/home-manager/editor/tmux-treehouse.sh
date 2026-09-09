@@ -15,12 +15,15 @@ selection=$(
 ) || exit 0
 
 action=${selection%%$'\t'*}
+treehouse_bin=$(command -v treehouse)
 
 case "$action" in
   new)
-    exec treehouse get
+    printf -v command '%q ' "$treehouse_bin" get
     ;;
   existing:*)
-    exec treehouse enter "${action#existing:}"
+    printf -v command '%q ' "$treehouse_bin" enter "${action#existing:}"
     ;;
 esac
+
+tmux new-window -c "$PWD" "$command"
