@@ -51,12 +51,17 @@ run_attention register --pane "$pane_two" --session-id session-two --project 'pr
 run_attention register --pane "$pane_three" --session-id session-three --project 'project three' --owner-pid "$$"
 
 assert_equal '0' "$(run_attention count)" 'registered panes start without attention'
+assert_equal '' "$(run_attention status)" 'empty inbox has no status text'
 
 run_attention set unread "$pane_one"
 assert_equal '1' "$(run_attention count)" 'unread pane increments count'
+assert_equal '󰚩 1 ' "$(run_attention status)" 'status displays one attention pane'
+run_attention set unread "$pane_one"
+assert_equal '1' "$(run_attention count)" 'repeated events in one pane retain one count'
 
 run_attention set waiting "$pane_two"
 assert_equal '2' "$(run_attention count)" 'waiting pane increments count'
+assert_equal '󰚩 2 ' "$(run_attention status)" 'status aggregates waiting and unread panes'
 run_attention transition waiting unread "$pane_two"
 assert_equal 'unread' "$("$TMUX_BIN" -S "$SOCKET" show-options -pqv -t "$pane_two" @pi_attention)" 'matching transition updates state'
 run_attention set waiting "$pane_two"

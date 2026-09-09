@@ -14,6 +14,7 @@ Usage:
   pi-attention read [PANE]
   pi-attention unregister [PANE]
   pi-attention count
+  pi-attention status
   pi-attention list
 EOF
 }
@@ -190,6 +191,14 @@ count_attention() {
     | awk '$0 == "waiting" || $0 == "unread" { count++ } END { print count + 0 }'
 }
 
+status_attention() {
+  local count
+  count=$(count_attention 2>/dev/null) || return 0
+  if ((count > 0)); then
+    printf '󰚩 %s ' "$count"
+  fi
+}
+
 list_attention() {
   local separator='__PI_ATTENTION__'
   local filter
@@ -215,6 +224,7 @@ case "$command" in
   read) read_attention "$@" ;;
   unregister) unregister_pane "$@" ;;
   count) count_attention "$@" ;;
+  status) status_attention "$@" ;;
   list) list_attention "$@" ;;
   -h|--help|help) usage ;;
   '') usage; exit 1 ;;

@@ -195,7 +195,7 @@ The Gruvbox right status gains a command segment similar to:
 #(pi-attention status)
 ```
 
-The status output is intentionally compact. Candidate rendering:
+The status output is intentionally compact. Rendering:
 
 ```text
 󰚩 3
@@ -319,7 +319,7 @@ The final filenames may change, but the extension and helper remain separate com
 
 ### Phase 2: tmux interface
 
-- [ ] Add the aggregate status-bar indicator.
+- [x] Add the aggregate status-bar indicator.
 - [ ] Add the fzf attention picker.
 - [ ] Navigate to exact sessions, windows, and panes.
 - [ ] Add the explicit mark-read binding.
@@ -384,7 +384,7 @@ The initial feature is complete when:
 1. Should macOS notifications be suppressed when the target pane is already the active pane of an attached client?
 2. Should `ui_prompt_end` remain `unread`, as specified, or become read because the user necessarily interacted with the prompt?
 3. Should a fresh Pi startup clear existing pane attention immediately, or preserve unread state if the previous process crashed and a new Pi starts in the same pane?
-4. Which exact status icon and tmux keybindings should be used?
+4. Which exact tmux keybindings should be used?
 5. Should the picker show all registered Pi panes behind an fzf toggle, or only panes needing attention?
 6. Should notification click-to-focus be implemented later with `terminal-notifier` or another macOS-native tool?
 7. Should normal slash commands that do not start an agent turn count as user acknowledgement?
