@@ -77,6 +77,38 @@ assert_equal 'waiting' "$(printf '%s\n' "$list_output" | awk -F '\t' 'NR == 1 { 
 assert_equal '1' "$(printf '%s\n' "$list_output" | awk -F '\t' '$1 == "unread" { count++ } END { print count + 0 }')" 'list includes unread state'
 assert_equal '1' "$(printf '%s\n' "$list_output" | awk -F '\t' '$1 == "waiting" { count++ } END { print count + 0 }')" 'list includes waiting state'
 
+fake_fzf="$SOCKET_DIR/fzf"
+{
+  printf '#!%s\n' "${BASH:-/bin/bash}"
+  cat <<'EOF'
+IFS= read -r selection
+printf '%s\n' "$selection"
+EOF
+} > "$fake_fzf"
+chmod +x "$fake_fzf"
+control_input="$SOCKET_DIR/control-input"
+mkfifo "$control_input"
+exec 9<> "$control_input"
+"$TMUX_BIN" -S "$SOCKET" -C attach-session -t beta <&9 > "$SOCKET_DIR/control-output" 2>&1 &
+control_pid=$!
+client=''
+for ((attempt = 0; attempt < 100; attempt++)); do
+  client=$("$TMUX_BIN" -S "$SOCKET" list-clients -F '#{client_name}' | head -n 1)
+  [[ -n "$client" ]] && break
+  sleep 0.1
+done
+[[ -n "$client" ]] || {
+  printf 'not ok - control client did not attach\n' >&2
+  exit 1
+}
+FZF_BIN="$fake_fzf" PI_ATTENTION_TMUX_CLIENT="$client" run_attention pick
+expected_target=$("$TMUX_BIN" -S "$SOCKET" display-message -p -t "$pane_two" '#{session_id} #{window_id} #{pane_id}')
+actual_target=$("$TMUX_BIN" -S "$SOCKET" display-message -p -c "$client" '#{session_id} #{window_id} #{pane_id}')
+assert_equal "$expected_target" "$actual_target" 'picker focuses the selected session, window, and pane'
+assert_equal 'waiting' "$("$TMUX_BIN" -S "$SOCKET" show-options -pqv -t "$pane_two" @pi_attention)" 'picker preserves attention state'
+kill "$control_pid" 2>/dev/null || true
+exec 9>&-
+
 run_attention read "$pane_one"
 assert_equal '1' "$(run_attention count)" 'read clears only the target pane'
 run_attention transition waiting unread "$pane_one"

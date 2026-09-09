@@ -95,6 +95,9 @@ in
       bind-key -N "Open sessionizer" \; display-popup -E "${sessionizer}/bin/tmux-sessionizer"
       bind-key -N "Open sessionizer" C-\; display-popup -E "${sessionizer}/bin/tmux-sessionizer"
 
+      bind-key -N "Open Pi attention inbox" A display-popup -E "${config.home.profileDirectory}/bin/pi-attention pick"
+      bind-key -N "Mark Pi pane read" U run-shell "${config.home.profileDirectory}/bin/pi-attention read '#{pane_id}'"
+
       # Vi-like bindings for copy mode
       bind-key -T copy-mode-vi v send -X begin-selection
 

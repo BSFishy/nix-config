@@ -245,9 +245,9 @@ Click-to-focus is deferred. It may be added later with a notification tool that 
 
 ## Bindings
 
-Exact keys remain configurable during implementation. The intended commands are:
+The tmux interface uses these bindings:
 
-| Action | Candidate binding | Command |
+| Action | Binding | Command |
 |---|---|---|
 | Open attention picker | `prefix + A` | `display-popup -E 'pi-attention pick'` |
 | Mark current pane read | `prefix + U` | `run-shell 'pi-attention read "#{pane_id}"'` |
@@ -320,10 +320,10 @@ The final filenames may change, but the extension and helper remain separate com
 ### Phase 2: tmux interface
 
 - [x] Add the aggregate status-bar indicator.
-- [ ] Add the fzf attention picker.
-- [ ] Navigate to exact sessions, windows, and panes.
-- [ ] Add the explicit mark-read binding.
-- [ ] Ensure picker navigation does not mark entries read.
+- [x] Add the fzf attention picker.
+- [x] Navigate to exact sessions, windows, and panes.
+- [x] Add the explicit mark-read binding.
+- [x] Ensure picker navigation does not mark entries read.
 
 ### Phase 3: macOS notifications
 
@@ -384,7 +384,6 @@ The initial feature is complete when:
 1. Should macOS notifications be suppressed when the target pane is already the active pane of an attached client?
 2. Should `ui_prompt_end` remain `unread`, as specified, or become read because the user necessarily interacted with the prompt?
 3. Should a fresh Pi startup clear existing pane attention immediately, or preserve unread state if the previous process crashed and a new Pi starts in the same pane?
-4. Which exact tmux keybindings should be used?
-5. Should the picker show all registered Pi panes behind an fzf toggle, or only panes needing attention?
-6. Should notification click-to-focus be implemented later with `terminal-notifier` or another macOS-native tool?
-7. Should normal slash commands that do not start an agent turn count as user acknowledgement?
+4. Should the picker show all registered Pi panes behind an fzf toggle, or only panes needing attention?
+5. Should notification click-to-focus be implemented later with `terminal-notifier` or another macOS-native tool?
+6. Should normal slash commands that do not start an agent turn count as user acknowledgement?

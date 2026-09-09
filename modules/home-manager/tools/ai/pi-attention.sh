@@ -3,6 +3,8 @@ set -euo pipefail
 
 TMUX_BIN=${TMUX_BIN:-tmux}
 TMUX_SOCKET=${PI_ATTENTION_TMUX_SOCKET:-}
+TMUX_CLIENT=${PI_ATTENTION_TMUX_CLIENT:-}
+FZF_BIN=${FZF_BIN:-fzf}
 
 usage() {
   cat <<'EOF'
@@ -16,6 +18,7 @@ Usage:
   pi-attention count
   pi-attention status
   pi-attention list
+  pi-attention pick
 EOF
 }
 
@@ -205,11 +208,47 @@ list_attention() {
   local format
 
   filter='#{||:#{==:#{@pi_attention},waiting},#{==:#{@pi_attention},unread}}'
-  format="#{@pi_attention}${separator}#{session_name}:#{window_index}.#{pane_index}${separator}#{@pi_project}${separator}#{@pi_label}${separator}#{pane_id}${separator}#{window_id}${separator}#{window_name}"
+  format="#{@pi_attention}${separator}#{session_name}:#{window_index}.#{pane_index}${separator}#{@pi_project}${separator}#{@pi_label}${separator}#{pane_id}${separator}#{window_id}${separator}#{session_id}${separator}#{window_name}"
 
   tmux_cmd list-panes -a -f "$filter" -F "$format" 2>/dev/null \
-    | awk -F "$separator" 'BEGIN { OFS="\t" } NF == 7 { print $1, $2, $3, $4, $5, $6, $7 }' \
+    | awk -F "$separator" 'BEGIN { OFS="\t" } NF == 8 { print $1, $2, $3, $4, $5, $6, $7, $8 }' \
     | LC_ALL=C sort -t "$(printf '\t')" -k1,1r -k2,2
+}
+
+pick_attention() {
+  local entries
+  local selection
+  local pane_id window_id session_id
+  local -a client_args=()
+
+  entries=$(list_attention)
+  if [[ -z "$entries" ]]; then
+    tmux_cmd display-message 'No Pi agents need attention'
+    return 0
+  fi
+
+  selection=$(printf '%s\n' "$entries" | "$FZF_BIN" \
+    --delimiter "$(printf '\t')" \
+    --with-nth '1,2,3,4,8' \
+    --no-multi \
+    --reverse \
+    --prompt 'Pi attention> ' \
+    --header 'state  tmux target  project  label  window') || return 0
+  [[ -n "$selection" ]] || return 0
+
+  pane_id=$(printf '%s\n' "$selection" | awk -F '\t' '{ print $5 }')
+  window_id=$(printf '%s\n' "$selection" | awk -F '\t' '{ print $6 }')
+  session_id=$(printf '%s\n' "$selection" | awk -F '\t' '{ print $7 }')
+  [[ "$pane_id" =~ ^%[0-9]+$ ]] || fail 'picker returned an invalid pane ID'
+  [[ "$window_id" =~ ^@[0-9]+$ ]] || fail 'picker returned an invalid window ID'
+  [[ "$session_id" =~ ^\$[0-9]+$ ]] || fail 'picker returned an invalid session ID'
+
+  if [[ -n "$TMUX_CLIENT" ]]; then
+    client_args=(-c "$TMUX_CLIENT")
+  fi
+  tmux_cmd switch-client "${client_args[@]}" -t "$session_id"
+  tmux_cmd select-window -t "$window_id"
+  tmux_cmd select-pane -t "$pane_id"
 }
 
 command=${1:-}
@@ -226,6 +265,7 @@ case "$command" in
   count) count_attention "$@" ;;
   status) status_attention "$@" ;;
   list) list_attention "$@" ;;
+  pick) pick_attention "$@" ;;
   -h|--help|help) usage ;;
   '') usage; exit 1 ;;
   *) fail "unknown command: $command" ;;
