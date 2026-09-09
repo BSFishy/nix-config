@@ -1,20 +1,45 @@
-{ llmPkgs, ... }:
+{
+  config,
+  lib,
+  llmPkgs,
+  ...
+}:
 
 {
-  home.packages = [
-    llmPkgs.pi
-  ];
+  options.programs.pi.settings = lib.mkOption {
+    type = lib.types.attrsOf lib.types.anything;
+    default = { };
+    description = "Settings written to Pi's global settings file.";
+  };
 
-  home.file.".pi/agent/AGENTS.md".source = ../AGENTS.md;
+  config = {
+    programs.pi.settings.defaultTools = [
+      "read"
+      "bash"
+      "edit"
+      "write"
+      "grep"
+      "find"
+      "ls"
+    ];
 
-  home.file.".pi/agent/skills/documentation".source = ./skills/documentation;
-  home.file.".pi/agent/skills/command-not-found".source = ./skills/command-not-found;
-  home.file.".pi/agent/skills/ship".source = ./skills/ship;
-  home.file.".pi/agent/skills/fetch-project".source = ./skills/fetch-project;
-  home.file.".pi/agent/skills/open-code-review-delegate".source = ./skills/open-code-review-delegate;
-  home.file.".pi/agent/skills/stateful-k8s-recovery".source = ./skills/stateful-k8s-recovery;
+    home.file.".pi/agent/settings.json".text = builtins.toJSON config.programs.pi.settings;
 
-  home.file.".pi/agent/prompts/catalog.md".source = ./commands/catalog.md;
-  home.file.".pi/agent/prompts/learn.md".source = ./commands/learn.md;
-  home.file.".pi/agent/prompts/rebase-base.md".source = ./commands/rebase-base.md;
+    home.packages = [
+      llmPkgs.pi
+    ];
+
+    home.file.".pi/agent/AGENTS.md".source = ../AGENTS.md;
+
+    home.file.".pi/agent/skills/documentation".source = ./skills/documentation;
+    home.file.".pi/agent/skills/command-not-found".source = ./skills/command-not-found;
+    home.file.".pi/agent/skills/ship".source = ./skills/ship;
+    home.file.".pi/agent/skills/fetch-project".source = ./skills/fetch-project;
+    home.file.".pi/agent/skills/open-code-review-delegate".source = ./skills/open-code-review-delegate;
+    home.file.".pi/agent/skills/stateful-k8s-recovery".source = ./skills/stateful-k8s-recovery;
+
+    home.file.".pi/agent/prompts/catalog.md".source = ./commands/catalog.md;
+    home.file.".pi/agent/prompts/learn.md".source = ./commands/learn.md;
+    home.file.".pi/agent/prompts/rebase-base.md".source = ./commands/rebase-base.md;
+  };
 }
