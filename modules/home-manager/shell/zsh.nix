@@ -71,6 +71,7 @@
 
     shellAliases = {
       cat = "${pkgs.bat}/bin/bat";
+      grmu = "git ls-files --others --exclude-standard -z | xargs -0 rm -f";
       ls = "${pkgs.lsd}/bin/lsd";
     };
   };
