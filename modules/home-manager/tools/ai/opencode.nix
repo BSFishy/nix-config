@@ -74,6 +74,7 @@ in
   xdg.configFile."opencode/skills/open-code-review-delegate".source =
     ./skills/open-code-review-delegate;
   xdg.configFile."opencode/skills/stateful-k8s-recovery".source = ./skills/stateful-k8s-recovery;
+  xdg.configFile."opencode/skills/web-search".source = ./skills/web-search;
   xdg.configFile."opencode/commands/catalog.md".source = ./commands/catalog.md;
   xdg.configFile."opencode/commands/learn.md".source = ./commands/learn.md;
   xdg.configFile."opencode/commands/rebase-base.md".source = ./commands/rebase-base.md;

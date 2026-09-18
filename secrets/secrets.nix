@@ -7,5 +7,9 @@ in
     matt
     work
   ];
+  "hister-access-token.age".publicKeys = [
+    matt
+    work
+  ];
   "k3s-token.age".publicKeys = [ matt ];
 }

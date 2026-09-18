@@ -8,6 +8,7 @@
 {
   imports = [
     ./ai
+    ./hister.nix
     ./shell.nix
   ];
 
