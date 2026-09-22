@@ -71,8 +71,8 @@ in
   config = {
     programs.pi.settings = {
       defaultProvider = lib.mkDefault "openai-codex";
-      defaultModel = lib.mkDefault "gpt-5.6-terra";
-      defaultThinkingLevel = lib.mkDefault "medium";
+      defaultModel = lib.mkDefault "gpt-6-luna";
+      defaultThinkingLevel = lib.mkDefault "max";
       tuiMode = "fullscreen";
     };
 
