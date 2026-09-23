@@ -100,6 +100,7 @@ in
     home.file.".pi/agent/skills/command-not-found".source = ./skills/command-not-found;
     home.file.".pi/agent/skills/ship".source = ./skills/ship;
     home.file.".pi/agent/skills/fetch-project".source = ./skills/fetch-project;
+    home.file.".pi/agent/skills/dependency-validation".source = ./skills/dependency-validation;
     home.file.".pi/agent/skills/open-code-review-delegate".source = ./skills/open-code-review-delegate;
     home.file.".pi/agent/skills/stateful-k8s-recovery".source = ./skills/stateful-k8s-recovery;
     home.file.".pi/agent/skills/web-search".source = ./skills/web-search;
