@@ -1,0 +1,72 @@
+diff --git a/dwl.c b/dwl.c
+--- a/dwl.c
++++ b/dwl.c
+@@ -1730,6 +1730,53 @@
+ 	wlr_session_lock_v1_send_locked(session_lock);
+ }
+ 
++static int
++assignworkspace(Client *c)
++{
++	Client *w;
++	uint32_t used = 0;
++	int i, pid;
++	const char *appid = client_get_appid(c);
++
++	if (strstr(appid, "zen")) {
++		c->tags = 1u;
++		return 1;
++	}
++	if (strstr(appid, "com.mitchellh.ghostty")) {
++		c->tags = 1u << 8;
++		return 1;
++	}
++	if (strstr(appid, "rofi") || strstr(appid, "Rofi")) {
++		c->tags = c->mon->tagset[c->mon->seltags];
++		c->isfloating = 1;
++		return 1;
++	}
++	if (c->isfloating) {
++		c->tags = c->mon->tagset[c->mon->seltags];
++		return 1;
++	}
++
++	wl_list_for_each(w, &clients, link)
++		if (w != c && w->mon == c->mon)
++			used |= w->tags;
++	for (i = 1; i < TAGCOUNT - 1; i++) {
++		if (!(used & (1u << i))) {
++			c->tags = 1u << i;
++			return 1;
++		}
++	}
++
++#ifdef XWAYLAND
++	if (client_is_x11(c))
++		pid = c->surface.xwayland->pid;
++	else
++#endif
++		wl_client_get_credentials(c->surface.xdg->client->client, &pid, NULL, NULL);
++	if (pid > 0)
++		kill(pid, SIGTERM);
++	return 0;
++}
++
+ void
+ mapnotify(struct wl_listener *listener, void *data)
+ {
+@@ -1788,6 +1826,14 @@ mapnotify(struct wl_listener *listener, void *data)
+ 		c->isfloating = 1;
+ 		setmon(c, p->mon, p->tags);
+ 	} else {
+ 		applyrules(c);
++		if (!assignworkspace(c))
++			return;
++		c->mon->tagset[c->mon->seltags] = c->tags;
++		if (c->isfullscreen)
++			setfullscreen(c, 1);
++		else
++			arrange(c->mon);
++		focusclient(c, 1);
+ 	}
+ 	printstatus();

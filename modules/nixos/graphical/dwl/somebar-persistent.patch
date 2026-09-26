@@ -1,0 +1,151 @@
+diff --git a/src/bar.cpp b/src/bar.cpp
+index 710c47b..6753de8 100644
+--- a/src/bar.cpp
++++ b/src/bar.cpp
+@@ -1,6 +1,7 @@
+ // somebar - dwl barbar
+ // See LICENSE file for copyright and license details.
+ 
++#include <cstring>
+ #include <wayland-client-protocol.h>
+ #include <pango/pangocairo.h>
+ #include "bar.hpp"
+@@ -107,31 +108,46 @@ bool Bar::visible() const
+ 
+ void Bar::show(wl_output* output)
+ {
+-	if (visible()) {
+-		return;
+-	}
+-	_surface.reset(wl_compositor_create_surface(compositor));
+-	_layerSurface.reset(zwlr_layer_shell_v1_get_layer_surface(wlrLayerShell,
+-		_surface.get(), output, ZWLR_LAYER_SHELL_V1_LAYER_BOTTOM, "net.tapesoftware.Somebar"));
+-	zwlr_layer_surface_v1_add_listener(_layerSurface.get(), &_layerSurfaceListener, this);
+-	auto anchor = topbar ? ZWLR_LAYER_SURFACE_V1_ANCHOR_TOP : ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM;
+-	zwlr_layer_surface_v1_set_anchor(_layerSurface.get(),
+-		anchor | ZWLR_LAYER_SURFACE_V1_ANCHOR_LEFT | ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT);
++	if (!visible()) {
++		_surface.reset(wl_compositor_create_surface(compositor));
++		_layerSurface.reset(zwlr_layer_shell_v1_get_layer_surface(wlrLayerShell,
++			_surface.get(), output, ZWLR_LAYER_SHELL_V1_LAYER_TOP, "net.tapesoftware.Somebar"));
++		zwlr_layer_surface_v1_add_listener(_layerSurface.get(), &_layerSurfaceListener, this);
++		auto anchor = topbar ? ZWLR_LAYER_SURFACE_V1_ANCHOR_TOP : ZWLR_LAYER_SURFACE_V1_ANCHOR_BOTTOM;
++		zwlr_layer_surface_v1_set_anchor(_layerSurface.get(),
++			anchor | ZWLR_LAYER_SURFACE_V1_ANCHOR_LEFT | ZWLR_LAYER_SURFACE_V1_ANCHOR_RIGHT);
+ 
+-	auto barSize = barfont.height + paddingY * 2;
+-	zwlr_layer_surface_v1_set_size(_layerSurface.get(), 0, barSize);
+-	zwlr_layer_surface_v1_set_exclusive_zone(_layerSurface.get(), barSize);
+-	wl_surface_commit(_surface.get());
++		auto barSize = barfont.height + paddingY * 2;
++		zwlr_layer_surface_v1_set_size(_layerSurface.get(), 0, barSize);
++		zwlr_layer_surface_v1_set_exclusive_zone(_layerSurface.get(), barSize);
++		wl_surface_commit(_surface.get());
++	}
++	if (!_shown) {
++		_shown = true;
++		invalidate();
++	}
+ }
+ 
+ void Bar::hide()
+ {
+-	if (!visible()) {
++	if (!visible() || !_shown) {
++		return;
++	}
++	_shown = false;
++	clear();
++}
++
++void Bar::clear()
++{
++	if (!_bufs) {
+ 		return;
+ 	}
+-	_layerSurface.reset();
+-	_surface.reset();
+-	_bufs.reset();
++	std::memset(_bufs->data(), 0, size_t(_bufs->stride) * _bufs->height);
++	wl_surface_attach(_surface.get(), _bufs->buffer(), 0, 0);
++	wl_surface_damage(_surface.get(), 0, 0, _bufs->width, _bufs->height);
++	wl_surface_commit(_surface.get());
++	_bufs->flip();
++	_invalid = false;
+ }
+ 
+ void Bar::setTag(int tag, int state, int numClients, int focusedClient)
+@@ -161,7 +177,7 @@ void Bar::setStatus(const std::string& status)
+ 
+ void Bar::invalidate()
+ {
+-	if (_invalid || !visible()) {
++	if (_invalid || !visible() || !_shown) {
+ 		return;
+ 	}
+ 	_invalid = true;
+@@ -203,13 +219,17 @@ void Bar::layerSurfaceConfigure(uint32_t serial, uint32_t width, uint32_t height
+ 	if (_bufs && width == _bufs->width && height == _bufs->height) {
+ 		return;
+ 	}
+-	_bufs.emplace(width, height, WL_SHM_FORMAT_XRGB8888);
+-	render();
++	_bufs.emplace(width, height, WL_SHM_FORMAT_ARGB8888);
++	if (_shown) {
++		render();
++	} else {
++		clear();
++	}
+ }
+ 
+ void Bar::render()
+ {
+-	if (!_bufs) {
++	if (!_bufs || !_shown) {
+ 		return;
+ 	}
+ 	auto img = wl_unique_ptr<cairo_surface_t> {cairo_image_surface_create_for_data(
+diff --git a/src/bar.hpp b/src/bar.hpp
+index 176a1bc..2d66e83 100644
+--- a/src/bar.hpp
++++ b/src/bar.hpp
+@@ -40,6 +40,7 @@ class Bar {
+ 	std::vector<Tag> _tags;
+ 	BarComponent _layoutCmp, _titleCmp, _statusCmp;
+ 	bool _selected;
++	bool _shown {true};
+ 	bool _invalid {false};
+ 
+ 	// only vaild during render()
+@@ -49,6 +50,7 @@ class Bar {
+ 
+ 	void layerSurfaceConfigure(uint32_t serial, uint32_t width, uint32_t height);
+ 	void render();
++	void clear();
+ 	void renderTags();
+ 	void renderStatus();
+ 
+diff --git a/src/main.cpp b/src/main.cpp
+index e6d9eb5..09f7253 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -201,13 +201,13 @@ void updatemon(Monitor& mon)
+ 	if (!mon.hasData) {
+ 		return;
+ 	}
++	if (!mon.bar.visible()) {
++		mon.bar.show(mon.wlOutput.get());
++	}
+ 	if (mon.desiredVisibility) {
+-		if (mon.bar.visible()) {
+-			mon.bar.invalidate();
+-		} else {
+-			mon.bar.show(mon.wlOutput.get());
+-		}
+-	} else if (mon.bar.visible()) {
++		mon.bar.show(mon.wlOutput.get());
++		mon.bar.invalidate();
++	} else {
+ 		mon.bar.hide();
+ 	}
+ }

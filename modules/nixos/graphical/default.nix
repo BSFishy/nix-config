@@ -6,5 +6,7 @@
     ./gnome.nix
 
     ./hyprland.nix
+
+    ./dwl.nix
   ];
 }

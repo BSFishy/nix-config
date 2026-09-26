@@ -1,0 +1,28 @@
+diff --git a/src/main.cpp b/src/main.cpp
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -387,6 +387,7 @@ struct HandleGlobalHelper {
+ 	wl_registry* registry;
+ 	uint32_t name;
+ 	const char* interface;
++	uint32_t globalVersion;
+ 
+ 	template<typename T>
+ 	bool handle(T& store, const wl_interface& iface, int version) {
+@@ -394,7 +395,8 @@ struct HandleGlobalHelper {
+ 		if (strcmp(interface, iface.name)) {
+ 			return false;
+ 		}
+-		store = static_cast<T>(wl_registry_bind(registry, name, &iface, version));
++		auto bindVersion = std::min(globalVersion, static_cast<uint32_t>(std::min(version, iface.version)));
++		store = static_cast<T>(wl_registry_bind(registry, name, &iface, bindVersion));
+ 		return true;
+ 	}
+ };
+@@ -401,5 +403,5 @@ void onGlobalAdd(void*, wl_registry* registry, uint32_t name, const char* interface, uint32_t version)
+ {
+-	auto reg = HandleGlobalHelper { registry, name, interface };
++	auto reg = HandleGlobalHelper { registry, name, interface, version };
+ 	if (reg.handle(compositor, wl_compositor_interface, 4)) return;
+ 	if (reg.handle(shm, wl_shm_interface, 1)) return;
+ 	if (reg.handle(wlrLayerShell, zwlr_layer_shell_v1_interface, 4)) return;

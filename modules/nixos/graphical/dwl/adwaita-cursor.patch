@@ -1,0 +1,6 @@
+diff --git a/dwl.c b/dwl.c
+--- a/dwl.c
++++ b/dwl.c
+@@ -2599 +2599 @@
+-	cursor_mgr = wlr_xcursor_manager_create(NULL, 24);
++	cursor_mgr = wlr_xcursor_manager_create("Adwaita", 24);

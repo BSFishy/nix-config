@@ -1,0 +1,21 @@
+diff --git a/src/bar.cpp b/src/bar.cpp
+--- a/src/bar.cpp
++++ b/src/bar.cpp
+@@ -226,9 +226,6 @@ void Bar::render()
+ 	_x = 0;
+ 
+ 	renderTags();
+-	setColorScheme(_selected ? colorActive : colorInactive);
+-	renderComponent(_layoutCmp);
+-	renderComponent(_titleCmp);
+ 	renderStatus();
+ 
+ 	_painter = nullptr;
+@@ -242,5 +239,7 @@ void Bar::renderTags()
+ {
+ 	for (auto &tag : _tags) {
++		if (!(tag.state & TagState::Active))
++			continue;
+ 		setColorScheme(
+ 			tag.state & TagState::Active ? colorActive : colorInactive,
+ 			tag.state & TagState::Urgent);

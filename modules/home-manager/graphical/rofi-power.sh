@@ -5,12 +5,12 @@ case "${1:-}" in
   printf "Sleep\nLogout\nReboot\nShutdown\n"
   ;;
 "Sleep")
-  loginctl lock-session
-  sleep 0.3
+  gtklock &
+  sleep 0.5
   systemctl suspend
   ;;
 "Logout")
-  hyprctl dispatch exit
+  loginctl terminate-session "$XDG_SESSION_ID"
   ;;
 "Reboot")
   systemctl reboot

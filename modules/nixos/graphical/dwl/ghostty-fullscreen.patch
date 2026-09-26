@@ -1,0 +1,12 @@
+diff --git a/dwl.c b/dwl.c
+--- a/dwl.c
++++ b/dwl.c
+@@ -499,6 +499,8 @@ applyrules(Client *c)
+ 		}
+ 	}
+ 
++	if (appid && strcmp(appid, "com.mitchellh.ghostty") == 0)
++		c->isfullscreen = 1;
+ 	c->isfloating |= client_is_float_type(c);
+ 	setmon(c, mon, newtags);
+ }
