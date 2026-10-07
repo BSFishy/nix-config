@@ -19,6 +19,8 @@ in
     lfs.enable = true;
     signing.format = null;
 
+    maintenance.enable = true;
+
     includes = [
       { path = "${delta-git}/themes.gitconfig"; }
     ];
@@ -39,6 +41,7 @@ in
 
       init.defaultBranch = "main";
       core.autocrlf = "input";
+      maintenance.strategy = "incremental";
 
       # aliases
       alias = {
