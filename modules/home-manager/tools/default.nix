@@ -17,7 +17,6 @@
     pkgs.lazydocker
     pkgs.jq
     pkgs.vault
-    pkgs.zotero
 
     inputs.agenix.packages.${system}.agenix
   ];
