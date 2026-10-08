@@ -22,6 +22,15 @@
       export PATH="$PATH:${config.home.homeDirectory}/.local/bin"
       ${pkgs.nix-your-shell}/bin/nix-your-shell ${pkgs.zsh}/bin/zsh | source /dev/stdin
 
+      captive() {
+        local state
+        state="$(nmcli networking connectivity)" || return
+        printf 'Network connectivity: %s\n' "$state"
+        if [[ "$state" == portal ]]; then
+          xdg-open http://neverssl.com
+        fi
+      }
+
       ### --- Vi mode for ZLE ---
       set -o vi
       bindkey -v
