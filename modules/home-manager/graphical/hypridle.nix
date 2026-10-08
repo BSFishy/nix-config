@@ -6,7 +6,7 @@ in
 {
   config = lib.mkIf isLinux {
     services.hypridle = {
-      enable = true;
+      enable = false;
 
       settings = {
         general = {
