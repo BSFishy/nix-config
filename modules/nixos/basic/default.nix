@@ -7,6 +7,7 @@ _:
     ./network.nix
     ./nix.nix
     ./nix-ld.nix
+    ./security.nix
     ./shell.nix
     ./user.nix
   ];
