@@ -118,29 +118,32 @@ fake_notifier="$SOCKET_DIR/notifier"
   cat <<'EOF'
 printf '%s\n' "$@" >> "$NOTIFIER_LOG"
 case " ${*} " in
-  *' --list '*) printf 'pending\n' ;;
-  *' --remove '*) ;;
+  *' -list '*) printf 'pending\n' ;;
+  *' -remove '*) ;;
   *)
     if [[ " ${*} " == *' --id-fd=3 '* ]]; then
       printf '42\n' >&3
     fi
+    while (($# > 0)); do
+      if [[ "$1" == -execute ]]; then
+        shift
+        "${BASH:-/bin/bash}" -c "$1"
+        exit
+      fi
+      shift
+    done
     printf '%s\n' "$NOTIFIER_RESULT"
     ;;
 esac
 EOF
 } > "$fake_notifier"
 chmod +x "$fake_notifier"
-PI_ATTENTION_OS=Darwin ALERTER_BIN="$fake_notifier" NOTIFIER_LOG="$notifier_log" NOTIFIER_RESULT='@CONTENTCLICKED' run_attention notify unread "$pane_two"
-for ((attempt = 0; attempt < 100; attempt++)); do
-  actual_target=$("$TMUX_BIN" -S "$SOCKET" display-message -p -c "$client" '#{pane_id}')
-  [[ "$actual_target" == "$pane_two" ]] && break
-  sleep 0.1
-done
-grep -Fx -- '--actions' "$notifier_log" >/dev/null
-grep -Fx -- 'Open' "$notifier_log" >/dev/null
+PI_ATTENTION_OS=Darwin TERMINAL_NOTIFIER_BIN="$fake_notifier" NOTIFIER_LOG="$notifier_log" run_attention notify unread "$pane_two"
+actual_target=$("$TMUX_BIN" -S "$SOCKET" display-message -p -c "$client" '#{pane_id}')
+grep -Fx -- '-execute' "$notifier_log" >/dev/null
 assert_equal "$pane_two" "$actual_target" 'macOS notification click focuses its pane'
-PI_ATTENTION_OS=Darwin ALERTER_BIN="$fake_notifier" NOTIFIER_LOG="$notifier_log" NOTIFIER_RESULT='' run_attention read "$pane_two"
-grep -Fx -- '--remove' "$notifier_log" >/dev/null
+PI_ATTENTION_OS=Darwin TERMINAL_NOTIFIER_BIN="$fake_notifier" NOTIFIER_LOG="$notifier_log" run_attention read "$pane_two"
+grep -Fx -- '-remove' "$notifier_log" >/dev/null
 assert_equal '1' "$(run_attention count)" 'reading a macOS notification clears its attention state'
 run_attention set waiting "$pane_two"
 

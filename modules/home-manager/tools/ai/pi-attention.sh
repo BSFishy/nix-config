@@ -6,7 +6,7 @@ TMUX_SOCKET=${PI_ATTENTION_TMUX_SOCKET:-}
 TMUX_CLIENT=${PI_ATTENTION_TMUX_CLIENT:-}
 FZF_BIN=${FZF_BIN:-fzf}
 OS_NAME=${PI_ATTENTION_OS:-$(uname -s)}
-ALERTER_BIN=${ALERTER_BIN:-alerter}
+TERMINAL_NOTIFIER_BIN=${TERMINAL_NOTIFIER_BIN:-terminal-notifier}
 NOTIFY_SEND_BIN=${NOTIFY_SEND_BIN:-notify-send}
 GDBUS_BIN=${GDBUS_BIN:-gdbus}
 
@@ -178,7 +178,7 @@ dismiss_notification() {
 
   case "$OS_NAME" in
     Darwin)
-      "$ALERTER_BIN" --remove "pi-attention-$pane" >/dev/null 2>&1 || true
+      "$TERMINAL_NOTIFIER_BIN" -remove "pi-attention-$pane" >/dev/null 2>&1 || true
       ;;
     Linux)
       notification_id=$(tmux_cmd show-options -pqv -t "$pane" @pi_notification_id 2>/dev/null || true)
@@ -371,22 +371,11 @@ notify_attention() {
 
   case "$OS_NAME" in
     Darwin)
-      (
-        action=$("$ALERTER_BIN" \
-          --title "$title" \
-          --message "$message" \
-          --group "pi-attention-$pane" \
-          --actions Open \
-          --close-label Dismiss) || exit 0
-        if [[ "$action" == '@CONTENTCLICKED' || "$action" == Open ]]; then
-          "$self" focus "$pane"
-        fi
-      ) </dev/null >/dev/null 2>&1 &
-
-      for ((attempt = 0; attempt < 20; attempt++)); do
-        [[ -n "$("$ALERTER_BIN" --list "pi-attention-$pane" 2>/dev/null)" ]] && break
-        sleep 0.05
-      done
+      "$TERMINAL_NOTIFIER_BIN" \
+        -title "$title" \
+        -message "$message" \
+        -group "pi-attention-$pane" \
+        -execute "$self focus $pane" >/dev/null 2>&1 || true
       ;;
     Linux)
       notification_id_file=$(mktemp "${TMPDIR:-/tmp}/pi-attention-notification.XXXXXX")
