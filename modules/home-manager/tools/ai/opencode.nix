@@ -20,7 +20,7 @@ in
     enableMcpIntegration = true;
     context = builtins.readFile ../AGENTS.md;
 
-    tui.theme = "gruvbox";
+    cli.theme = "gruvbox";
 
     settings = {
       autoshare = false;
