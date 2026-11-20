@@ -58,7 +58,9 @@ let
     export XDG_SESSION_TYPE=wayland
     export XCURSOR_THEME=Adwaita
     export XCURSOR_SIZE=24
+    unset DISPLAY
     before_sockets="$(find "$XDG_RUNTIME_DIR" -maxdepth 1 -type s -name 'wayland-*' -printf '%f %i\n' 2>/dev/null | sort)"
+    before_x_sockets="$(find /tmp/.X11-unix -maxdepth 1 -type s -name 'X[0-9]*' -printf '%f %i\n' 2>/dev/null | sort)"
     ${dwlBin}/bin/dwl "$@" &
     dwl_pid=$!
     trap 'kill "$dwl_pid" 2>/dev/null || true' EXIT INT TERM
@@ -85,6 +87,27 @@ let
     fi
     export WAYLAND_DISPLAY
     printf 'dwl-session: compositor socket is %s\n' "$WAYLAND_DISPLAY" >&2
+
+    for _ in {1..200}; do
+      while read -r socket inode; do
+        if ! grep -Fxq "$socket $inode" <<<"$before_x_sockets"; then
+          DISPLAY=":''${socket#X}"
+          break
+        fi
+      done < <(find /tmp/.X11-unix -maxdepth 1 -type s -name 'X[0-9]*' -printf '%f %i\n' 2>/dev/null | sort)
+      [[ -n "''${DISPLAY:-}" ]] && break
+      sleep 0.05
+    done
+
+    if [[ -n "''${DISPLAY:-}" ]]; then
+      export DISPLAY
+      printf 'dwl-session: XWayland display is %s\n' "$DISPLAY" >&2
+      dbus-update-activation-environment --systemd DISPLAY
+      systemctl --user import-environment DISPLAY
+    else
+      printf 'dwl-session: no XWayland socket found; continuing without DISPLAY\n' >&2
+    fi
+
     dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE XCURSOR_THEME XCURSOR_SIZE
     systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE XCURSOR_THEME XCURSOR_SIZE
     systemctl --user start dwl-session.target

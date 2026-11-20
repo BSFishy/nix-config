@@ -3,6 +3,7 @@
 static const int sloppyfocus = 1;
 static const int bypass_surface_visibility = 0;
 static const unsigned int borderpx = 1;
+static const unsigned int snap = 32;
 static const float rootcolor[] = COLOR(0x222222ff);
 static const float bordercolor[] = COLOR(0x444444ff);
 static const float focuscolor[] = COLOR(0x005577ff);
@@ -17,6 +18,11 @@ static const Rule rules[] = {
 	{ "zen", NULL, 1 << 0, 0, -1 },
 	{ "com.mitchellh.ghostty", NULL, 1 << 8, 0, -1 },
 	{ NULL, NULL, 0, 0, -1 },
+};
+
+static const Axis axes[] = {
+	/* Keep the array non-empty; no ordinary modifier combination matches this. */
+	{ UINT32_MAX, AxisUp, focusstack, { .i = 0 } },
 };
 
 static const Layout layouts[] = {
@@ -62,16 +68,10 @@ static const char *brightnessupcmd[] = { "@BRIGHTNESS@", "set", "5%+", NULL };
 static const Key keys[] = {
 	{ MODKEY, XKB_KEY_space, spawn, { .v = menucmd } },
 	{ MODKEY | WLR_MODIFIER_SHIFT, XKB_KEY_Return, spawn, { .v = termcmd } },
-	{ MODKEY, XKB_KEY_j, focusstack, { .i = +1 } },
-	{ MODKEY, XKB_KEY_k, focusstack, { .i = -1 } },
-	{ MODKEY, XKB_KEY_h, setmfact, { .f = -0.05f } },
-	{ MODKEY, XKB_KEY_l, setmfact, { .f = +0.05f } },
+	/* Keep Ctrl+F/H/J/K/L available to applications such as Neovim. */
 	{ MODKEY, XKB_KEY_Return, zoom, { 0 } },
 	{ MODKEY, XKB_KEY_Tab, view, { 0 } },
 	{ MODKEY | WLR_MODIFIER_SHIFT, XKB_KEY_c, killclient, { 0 } },
-	{ MODKEY, XKB_KEY_t, setlayout, { .v = &layouts[0] } },
-	{ MODKEY, XKB_KEY_f, setlayout, { .v = &layouts[1] } },
-	{ MODKEY, XKB_KEY_m, setlayout, { .v = &layouts[2] } },
 	{ MODKEY, XKB_KEY_space, setlayout, { 0 } },
 	{ MODKEY | WLR_MODIFIER_SHIFT, XKB_KEY_space, togglefloating, { 0 } },
 	{ MODKEY, XKB_KEY_e, togglefullscreen, { 0 } },
